@@ -1,15 +1,11 @@
 {
   "version": 2,
-  "cleanUrls": true,
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/", "destination": "/Docs/index.html" },
-    { "source": "/readme", "destination": "/Docs/readme.html" },
-    { "source": "/01", "destination": "/Docs/01_master_plan.html" },
-    { "source": "/02", "destination": "/Docs/02_browser_agent.html" },
-    { "source": "/03", "destination": "/Docs/03_perception_problem.html" },
-    { "source": "/04", "destination": "/Docs/04_hld.html" },
-    { "source": "/05", "destination": "/Docs/05_browser_extension.html" },
-    { "source": "/Docs/(.*)", "destination": "/Docs/$1" }
+    { "source": "/Docs/(.*)", "destination": "/Docs/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {

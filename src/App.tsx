@@ -1,16 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MODULES_DATA } from './data/modulesData';
 import { Sidebar } from './components/Sidebar';
 import { MasterHero } from './components/MasterHero';
 import { ArchitectureInspector } from './components/ArchitectureInspector';
+import { PrivacyShieldSimulator } from './components/PrivacyShieldSimulator';
+import { RubricCalculator } from './components/RubricCalculator';
+import { SprintTimeline } from './components/SprintTimeline';
+import { JudgeDefenseMatrix } from './components/JudgeDefenseMatrix';
+import { ModuleDetails } from './components/ModuleDetails';
 
 export const App: React.FC = () => {
   const [activeModule, setActiveModule] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeSection, setActiveSection] = useState<string>('m0-overview');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+
+  // Track reading scroll progress
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
+        setScrollProgress(progress);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSelectModule = (modNum: string) => {
     setActiveModule(modNum);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectSection = (id: string) => {
@@ -35,7 +57,61 @@ export const App: React.FC = () => {
   });
 
   return (
-    <div style={{ display: 'flex', width: '100%', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', width: '100%', minHeight: '100vh', position: 'relative' }}>
+      {/* Top Reading Progress Bar */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: `${scrollProgress}%`,
+          height: '3.5px',
+          background: 'linear-gradient(90deg, #EA580C 0%, #D97706 50%, #2563EB 100%)',
+          zIndex: 9999,
+          transition: 'width 0.1s ease'
+        }}
+      />
+
+      {/* Mobile Top Header */}
+      <header
+        className="mobile-header"
+        style={{
+          display: 'none',
+          position: 'sticky',
+          top: 0,
+          background: '#1C1917',
+          color: '#FFFFFF',
+          padding: '12px 18px',
+          zIndex: 90,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid #332E2A'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '18px' }}>🚀</span>
+          <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '16px' }}>
+            PRATYAKSHA
+          </span>
+        </div>
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          style={{
+            background: 'var(--isro-orange)',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '6px',
+            padding: '6px 12px',
+            fontSize: '12px',
+            fontWeight: 700,
+            cursor: 'pointer'
+          }}
+        >
+          Menu ☰
+        </button>
+      </header>
+
+      {/* Obsidian Sidebar */}
       <Sidebar
         modules={MODULES_DATA}
         activeModule={activeModule}
@@ -44,13 +120,19 @@ export const App: React.FC = () => {
         onSearchChange={setSearchQuery}
         activeSection={activeSection}
         onSelectSection={handleSelectSection}
+        isOpenMobile={mobileMenuOpen}
+        onCloseMobile={() => setMobileMenuOpen(false)}
       />
 
-      <main className="main-wrap">
+      {/* Main Warm Cream Canvas */}
+      <main className="main-wrap" style={{ flex: 1, minWidth: 0 }}>
         <MasterHero modules={MODULES_DATA} onSelectModule={handleSelectModule} />
 
+        {/* Live Interactive Tools */}
+        <PrivacyShieldSimulator />
         <ArchitectureInspector />
 
+        {/* Module Content Views */}
         <div className="modules-container">
           {filteredModules.map((m) => (
             <div key={m.id} className="doc-module" id={m.id}>
@@ -100,19 +182,22 @@ export const App: React.FC = () => {
                   {m.desc}
                 </p>
 
+                {/* Subsystem specific interactive modules */}
+                <ModuleDetails moduleId={m.id} />
+
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
                   gap: '12px',
-                  marginTop: '16px'
+                  marginTop: '18px'
                 }}>
                   {m.sections.map((sec) => (
                     <div
                       key={sec.id}
                       id={sec.id}
                       style={{
-                        background: '#FAF7F2',
-                        border: '1px solid #E7E0D6',
+                        background: activeSection === sec.id ? '#FFF7ED' : '#FAF7F2',
+                        border: '1px solid ' + (activeSection === sec.id ? '#FDBA74' : '#E7E0D6'),
                         borderRadius: '10px',
                         padding: '14px 16px',
                         cursor: 'pointer',
@@ -136,6 +221,11 @@ export const App: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* Global Strategy, Rubric & Defense Modules */}
+        <RubricCalculator />
+        <SprintTimeline />
+        <JudgeDefenseMatrix />
       </main>
     </div>
   );
