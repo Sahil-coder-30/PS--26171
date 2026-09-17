@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/readme", "destination": "/readme.html" },
+    { "source": "/01", "destination": "/01_master_plan.html" },
+    { "source": "/02", "destination": "/02_browser_agent.html" },
+    { "source": "/03", "destination": "/03_perception_problem.html" },
+    { "source": "/04", "destination": "/04_hld.html" },
+    { "source": "/05", "destination": "/05_browser_extension.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
+}

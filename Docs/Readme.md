@@ -13,10 +13,13 @@
 
 | File | Description |
 |------|-------------|
-| [`index.html`](./index.html) | **Master Documentation Portal**: Unified executive dashboard, visual comparison diagrams, and module navigator in warm light cream mode |
+| [`index.html`](./index.html) | **Master Hub**: Unified executive dashboard, visual comparison diagrams, and module navigator for all 5 modules |
+| [`readme.html`](./readme.html) | **Project Readme (HTML)**: Interactive, beautifully formatted web version of this README with rubric gauges, architecture diagrams, and quick module links |
 | [`01_master_plan.html`](./01_master_plan.html) | **Module 01**: Full research, PS analysis, competitive landscape, architecture, evaluation strategy, and team sprint plan |
 | [`02_browser_agent.html`](./02_browser_agent.html) | **Module 02**: Browser extension agent — perception-action loop, DOM interaction engine, rehydration vault, wire protocol, and demo script |
 | [`03_perception_problem.html`](./03_perception_problem.html) | **Module 03**: The perception problem — 7 DOM blindspots (PDF, canvas, video, shadow DOM), dual-channel WebGPU vision pipeline, and model specs |
+| [`04_hld.html`](./04_hld.html) | **Module 04**: High-Level Design (HLD) — 8 microservices inventory, 7-step data-flow architecture, API contract spec, security matrix, database schema, deployment topology, scalability targets, and Architecture Decision Records (ADRs) |
+| [`05_browser_extension.html`](./05_browser_extension.html) | **Module 05**: Browser Extension deep dive — Manifest V3 architecture, full file structure, component deep-dive for all 6 contexts (Service Worker, Offscreen Document, Content Script, Side Panel, Vault, Agent Runner), message passing protocol, WebGPU ONNX code, Vault implementation, permissions justification, and distribution plan |
 
 ---
 
