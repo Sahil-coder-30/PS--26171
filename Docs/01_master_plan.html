@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
     :root {
       --bg-cream: #FAF7F2;
@@ -592,7 +593,8 @@
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
-      overflow: hidden;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       box-shadow: var(--shadow-sm);
       margin: 20px 0;
     }
@@ -970,34 +972,241 @@
       text-decoration: underline;
     }
 
-    /* Mobile Responsive Toggle */
-    .menu-toggle {
+    /* ── MOBILE RESPONSIVE SUITE ── */
+    .mobile-topbar {
       display: none;
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      top: 0; left: 0; right: 0;
+      height: 60px;
       background: var(--sidebar-bg);
-      color: #FFFFFF;
-      border: 1px solid var(--sidebar-border);
-      padding: 12px 18px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: var(--shadow-lg);
-      z-index: 200;
-      cursor: pointer;
+      border-bottom: 1px solid var(--sidebar-border);
+      color: var(--sidebar-text);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 150;
+      box-shadow: var(--shadow-md);
     }
+    .mobile-menu-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #FFFFFF;
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 5px; cursor: pointer; padding: 8px;
+    }
+    .mobile-menu-btn span {
+      display: block; width: 20px; height: 2px;
+      background: #FFFFFF; border-radius: 2px;
+    }
+    .mobile-brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px; font-weight: 800;
+      color: #FFFFFF; display: flex; align-items: center; gap: 6px;
+    }
+    .mobile-brand .brand-devanagari { color: #FB923C; font-size: 15px; }
+    .mobile-hub-badge {
+      font-size: 11px; font-weight: 700;
+      background: rgba(234, 88, 12, 0.2);
+      border: 1px solid rgba(234, 88, 12, 0.4);
+      color: #FB923C; padding: 4px 10px;
+      border-radius: 20px; text-decoration: none;
+    }
+    .sidebar-backdrop {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(3px);
+      z-index: 180; opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active { display: block; opacity: 1; }
+    .sidebar-close-btn {
+      display: none; position: absolute;
+      top: 20px; right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #D6D3D1; width: 32px; height: 32px;
+      border-radius: 8px; cursor: pointer;
+      font-size: 16px; line-height: 1;
+      align-items: center; justify-content: center;
+    }
+
     @media (max-width: 900px) {
+      body { flex-direction: column; }
+      .mobile-topbar { display: flex; }
       .sidebar {
-        position: fixed;
-        left: -320px;
-        transition: left 0.3s ease;
+        position: fixed; top: 0; left: 0; bottom: 0;
+        width: 290px; transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.6);
+        z-index: 200;
       }
-      .sidebar.open {
-        left: 0;
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-close-btn { display: flex; }
+      .main-wrap { padding-top: 60px; }
+      .content-container { padding: 26px 18px 60px; }
+    }
+
+    /* ── MERMAID & ARCHITECTURE DIAGRAM CONTAINER ── */
+    .mermaid-wrapper {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin: 28px 0 32px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .mermaid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .mermaid-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mermaid-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mermaid-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .mt-orange { background: #FFF7ED; border-color: #FDBA74; color: #C2410C; }
+    .mt-green { background: #ECFDF5; border-color: #A7F3D0; color: #047857; }
+    .mt-purple { background: #F5F3FF; border-color: #DDD6FE; color: #6D28D9; }
+    .mt-blue { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+
+    .mermaid-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mermaid-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      color: var(--text-body);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm);
+    }
+    .mermaid-btn:hover {
+      background: var(--bg-cream);
+      border-color: #D6CBBC;
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+    .mermaid-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      align-items: center;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .ld-client { background: #EFF6FF; border-color: #2563EB; }
+    .ld-shield { background: #FFF7ED; border-color: #EA580C; }
+    .ld-vault { background: #F5F3FF; border-color: #7C3AED; }
+    .ld-gateway { background: #FEF3C7; border-color: #D97706; }
+    .ld-cloud { background: #ECFDF5; border-color: #059669; }
+
+    .mermaid-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: relative;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: grab;
+      min-height: 540px;
+      height: 580px;
+      display: block;
+    }
+    .mermaid-box.is-panning {
+      cursor: grabbing !important;
+    }
+    .mermaid-box svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      pointer-events: auto;
+      max-width: none !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+    .mermaid-canvas-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      background: rgba(28, 25, 23, 0.82);
+      color: #F5F5F4;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.9;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    @media (max-width: 600px) {
+      .mermaid-box {
+        min-height: 440px;
+        height: 480px;
       }
-      .menu-toggle { display: block; }
-      .content-container { padding: 24px 20px 60px; }
+      .mermaid-canvas-hint {
+        font-size: 10px;
+        padding: 3px 8px;
+        bottom: 8px;
+        right: 8px;
+      }
     }
   </style>
 </head>
@@ -1401,6 +1610,105 @@
         <p class="section-lead">
           PRATYAKSHA operates as a Manifest V3 browser extension with an Offscreen Worker running quantized ONNX models over WebGPU, communicating with an isolated intranet-hosted VLM.
         </p>
+
+        <!-- ── INTERACTIVE MERMAID ARCHITECTURE CANVAS ── -->
+        <div class="mermaid-wrapper" id="masterPlanArchWrap">
+          <div class="mermaid-header">
+            <div class="mermaid-title">
+              <span>🏛️ End-to-End System Topology &amp; Privacy Boundary Flow</span>
+            </div>
+            <div class="mermaid-controls">
+              <button class="mermaid-btn" id="mpZoomInBtn" title="Zoom In">🔍 +</button>
+              <button class="mermaid-btn" id="mpZoomOutBtn" title="Zoom Out">🔍 &minus;</button>
+              <button class="mermaid-btn" id="mpZoomResetBtn" title="Reset View">&#x23FA; Reset</button>
+            </div>
+            <div class="mermaid-meta">
+              <span class="mermaid-tag mt-orange">Zero-Raw-PII Wire</span>
+              <span class="mermaid-tag mt-purple">Local Ephemeral Vault</span>
+              <span class="mermaid-tag mt-green">WebGPU &lt;120ms</span>
+            </div>
+          </div>
+
+          <div class="mermaid-legend">
+            <div class="legend-item"><span class="legend-dot ld-client"></span> Browser Sandbox (MV3)</div>
+            <div class="legend-item"><span class="legend-dot ld-shield"></span> WebGPU Privacy Shield</div>
+            <div class="legend-item"><span class="legend-dot ld-vault"></span> Reversible Vault</div>
+            <div class="legend-item"><span class="legend-dot ld-gateway"></span> Security Gateway</div>
+            <div class="legend-item"><span class="legend-dot ld-cloud"></span> Sovereign VLM Intranet</div>
+          </div>
+
+          <div class="mermaid-box" id="masterPlanMermaidBox">
+            <pre class="mermaid" id="mpMermaidPre">
+flowchart TD
+    classDef client fill:#EFF6FF,stroke:#2563EB,stroke-width:2px,color:#1E40AF;
+    classDef shield fill:#FFF7ED,stroke:#EA580C,stroke-width:2px,color:#9A3412;
+    classDef vault fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#5B21B6;
+    classDef gateway fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef cloud fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#065F46;
+
+    subgraph MV3 ["🔒 CLIENT BROWSER EXTENSION (Chrome MV3 On-Device Sandbox)"]
+        direction TB
+        User(["👤 User / Security Operator"]):::client
+        SidePanel["🖥️ Side Panel UI (Audit HUD · Approval Gate)"]:::client
+        TargetTab["🌐 Active Web Tab (ISRO e-Procurement / Portal)"]:::client
+        ContentScript["📜 Content Script (DOM Tree Walker & Synthesizer)"]:::client
+        
+        subgraph PRIVACY_SHIELD ["⚡ WebGPU Privacy Shield (Offscreen Document)"]
+            FrameDiff["⚡ 8x8 Tile Diff (Skips 85% Static Frames)"]:::shield
+            Detector["🎯 Multi-Model Detector (DBNet + Face + CRNN)"]:::shield
+            Redactor["🛡️ Inpainting Redactor (4px Safety Dilation)"]:::shield
+        end
+
+        subgraph LOCAL_VAULT ["🔐 In-Memory Vault Service (Ephemeral)"]
+            TokenGen["🎲 Deterministic Session Tokenizer"]:::vault
+            AESVault["🗄️ AES-256-GCM RAM Vault"]:::vault
+            Rehydration["🔄 Rehydration Engine (Token -> Real Value)"]:::vault
+        end
+    end
+
+    subgraph WIRE_INGRESS ["🛡️ ISRO INTRANET SECURE INGRESS"]
+        direction TB
+        APIGateway["🚪 mTLS API Gateway (Strict Zero-Raw-PII Inspector)"]:::gateway
+        AuditQueue["📋 Cryptographic Action Ledger (WORM Log)"]:::gateway
+    end
+
+    subgraph CLOUD_CORE ["☁️ AIR-GAPPED REASONING CLUSTER"]
+        direction TB
+        Orchestrator["🧠 LangGraph Dual-Track Agent Orchestrator"]:::cloud
+        VLM["🤖 Sovereign Qwen2.5-VL Reasoning Engine"]:::cloud
+        SafetyVerifier["⚖️ Policy & Deterministic Constraint Checker"]:::cloud
+    end
+
+    User -->|"1. Submit Task Intent"| SidePanel
+    SidePanel -->|"2. Initiate Perception Loop"| ContentScript
+    ContentScript -->|"3. DOM Extraction + Capture Viewport"| TargetTab
+    TargetTab -->|"4. Raw Pixels + DOM Node Hierarchy"| FrameDiff
+    FrameDiff -->|"5. Dirty Tiles Only"| Detector
+    Detector -->|"6. Detected PII Bounds & Text"| TokenGen
+    TokenGen -->|"7. Cache Real PII (RAM Only)"| AESVault
+    TokenGen -->|"8. Token Replacement Map"| Redactor
+    Redactor -->|"9. Sanitized Image + Anonymized JSON Tree"| APIGateway
+
+    APIGateway -->|"10. Forward Anonymized Prompt & Image"| Orchestrator
+    Orchestrator -->|"11. Visual Reasoner Prompt"| VLM
+    VLM -->|"12. Structured Action Plan with Tokens"| SafetyVerifier
+    SafetyVerifier -->|"13. Validated Action Stream"| APIGateway
+    APIGateway -->|"14. Real-Time Action Stream"| SidePanel
+
+    SidePanel -->|"15. Request User Approval if High Risk"| User
+    SidePanel -->|"16. Authorized Action Frame"| Rehydration
+    Rehydration -->|"17. Decrypt Real Value Locally"| AESVault
+    Rehydration -->|"18. Dispatch Native Event to DOM"| ContentScript
+    ContentScript -->|"19. Synthesize Click / Input"| TargetTab
+    ContentScript -.->|"20. Closed-Loop Next Frame Verification"| FrameDiff
+            </pre>
+            <div class="mermaid-canvas-hint">
+              <span>🖐️ Drag to Pan</span>
+              <span>·</span>
+              <span>🔍 Pinch or Scroll to Zoom</span>
+            </div>
+          </div>
+        </div>
 
         <div class="arch-schematic">
           <div class="arch-block">
@@ -1868,28 +2176,322 @@
   </main>
 
   <script>
-    // Scroll Spy for TOC active indicator
-    const sections = document.querySelectorAll('.doc-section');
-    const navLinks = document.querySelectorAll('.toc-link');
+  // ── MERMAID 10 INITIALIZATION ──
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        fontFamily: "'Inter', sans-serif",
+        primaryColor: '#EFF6FF',
+        primaryTextColor: '#1E40AF',
+        primaryBorderColor: '#2563EB',
+        lineColor: '#EA580C',
+        secondaryColor: '#FFF7ED',
+        tertiaryColor: '#F5F3FF',
+        clusterBkg: '#FAF7F2',
+        clusterBorder: '#E7E0D6',
+        edgeLabelBackground: '#FFFFFF',
+        nodeTextColor: '#1C1917',
+        fontSize: '13px'
+      }
+    });
+  }
 
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        if (pageYOffset >= sectionTop) {
-          current = section.getAttribute('id');
-        }
+  // ── TOUCH, FINGER, TRACKPAD & MOUSE PAN-ZOOM CONTROLLER ──
+  function setupPanZoom(containerId, zoomInId, zoomOutId, zoomResetId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    let targetSvg = null;
+    let scale = 1;
+    let panX = 0;
+    let panY = 0;
+    let isPanning = false;
+    let isPinching = false;
+    
+    // Mouse pan tracking
+    let startX = 0;
+    let startY = 0;
+
+    // Touch tracking
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let initialPinchDist = 0;
+    let initialPinchScale = 1;
+    let initialPinchMidX = 0;
+    let initialPinchMidY = 0;
+    let initialPanX = 0;
+    let initialPanY = 0;
+
+    function getSvgDimensions() {
+      if (!targetSvg) return { w: 1000, h: 600 };
+      let w = 0, h = 0;
+      if (targetSvg.viewBox && targetSvg.viewBox.baseVal && targetSvg.viewBox.baseVal.width > 0) {
+        w = targetSvg.viewBox.baseVal.width;
+        h = targetSvg.viewBox.baseVal.height;
+      } else {
+        try {
+          const b = targetSvg.getBBox();
+          if (b && b.width > 0) {
+            w = b.width;
+            h = b.height;
+          }
+        } catch (err) {}
+      }
+      if (!w || !h) {
+        w = targetSvg.clientWidth || targetSvg.scrollWidth || 1000;
+        h = targetSvg.clientHeight || targetSvg.scrollHeight || 600;
+      }
+      return { w, h };
+    }
+
+    function bindSvg() {
+      targetSvg = container.querySelector('svg');
+      if (!targetSvg) return false;
+      targetSvg.style.transformOrigin = '0 0';
+      targetSvg.style.transition = 'none';
+
+      const dims = getSvgDimensions();
+      targetSvg.style.width = dims.w + 'px';
+      targetSvg.style.height = dims.h + 'px';
+
+      centerInitial();
+      return true;
+    }
+
+    function centerInitial() {
+      if (!targetSvg) return;
+      const cRect = container.getBoundingClientRect();
+      const dims = getSvgDimensions();
+      const svgW = dims.w;
+      const svgH = dims.h;
+
+      const padX = 24;
+      const padY = 24;
+      const availW = Math.max(100, cRect.width - padX * 2);
+      const availH = Math.max(100, cRect.height - padY * 2);
+
+      let fitScale = Math.min(availW / svgW, availH / svgH);
+      scale = Math.max(0.25, Math.min(1.05, fitScale));
+
+      panX = Math.round((cRect.width - svgW * scale) / 2);
+      panY = Math.round((cRect.height - svgH * scale) / 2);
+      if (panY < 12) panY = 12;
+
+      updateTransform(false);
+    }
+
+    function updateTransform(smooth) {
+      if (!targetSvg) return;
+      targetSvg.style.transition = smooth ? 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+      targetSvg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    }
+
+    // Wait for Mermaid async rendering
+    if (!bindSvg()) {
+      const observer = new MutationObserver(() => {
+        if (bindSvg()) observer.disconnect();
       });
+      observer.observe(container, { childList: true, subtree: true });
+    }
 
+    // ── 1. MOUSE DRAG / PAN ──
+    container.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      if (!targetSvg) bindSvg();
+      isPanning = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+      container.classList.add('is-panning');
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform(false);
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isPanning) {
+        isPanning = false;
+        container.classList.remove('is-panning');
+      }
+    });
+
+    // ── 2. MOUSE WHEEL & TRACKPAD PINCH / SCROLL (Centered at Cursor) ──
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (!targetSvg) bindSvg();
+
+      const rect = container.getBoundingClientRect();
+      const cursorX = e.clientX - rect.left;
+      const cursorY = e.clientY - rect.top;
+
+      let zoomDelta;
+      if (e.ctrlKey) {
+        // Trackpad pinch gesture
+        zoomDelta = -e.deltaY * 0.012;
+      } else {
+        // Normal mouse wheel or trackpad scroll: clamp delta to prevent extreme jumps
+        const clampedDelta = Math.max(-100, Math.min(100, e.deltaY));
+        zoomDelta = -clampedDelta * 0.0022;
+      }
+
+      const factor = Math.exp(zoomDelta);
+      const newScale = Math.max(0.2, Math.min(4.5, scale * factor));
+
+      panX = cursorX - (cursorX - panX) * (newScale / scale);
+      panY = cursorY - (cursorY - panY) * (newScale / scale);
+      scale = newScale;
+
+      updateTransform(false);
+    }, { passive: false });
+
+    // ── 3. TOUCH GESTURES (FINGER PAN & PINCH-TO-ZOOM) ──
+    container.addEventListener('touchstart', (e) => {
+      if (!targetSvg) bindSvg();
+      if (e.touches.length === 1) {
+        isPanning = true;
+        isPinching = false;
+        touchStartX = e.touches[0].clientX - panX;
+        touchStartY = e.touches[0].clientY - panY;
+        container.classList.add('is-panning');
+      } else if (e.touches.length >= 2) {
+        isPanning = false;
+        isPinching = true;
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        initialPinchDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        initialPinchScale = scale;
+        initialPanX = panX;
+        initialPanY = panY;
+        const rect = container.getBoundingClientRect();
+        initialPinchMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+        initialPinchMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (isPanning && e.touches.length === 1) {
+        panX = e.touches[0].clientX - touchStartX;
+        panY = e.touches[0].clientY - touchStartY;
+        updateTransform(false);
+      } else if (isPinching && e.touches.length >= 2) {
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        if (initialPinchDist > 5) {
+          const pinchRatio = currentDist / initialPinchDist;
+          const newScale = Math.max(0.2, Math.min(4.5, initialPinchScale * pinchRatio));
+
+          const rect = container.getBoundingClientRect();
+          const currentMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+          const currentMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
+
+          panX = currentMidX - (initialPinchMidX - initialPanX) * (newScale / initialPinchScale);
+          panY = currentMidY - (initialPinchMidY - initialPanY) * (newScale / initialPinchScale);
+          scale = newScale;
+
+          updateTransform(false);
+        }
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchend', (e) => {
+      if (e.touches.length === 1) {
+        isPinching = false;
+        isPanning = true;
+        touchStartX = e.touches[0].clientX - panX;
+        touchStartY = e.touches[0].clientY - panY;
+      } else if (e.touches.length === 0) {
+        isPanning = false;
+        isPinching = false;
+        container.classList.remove('is-panning');
+      }
+    });
+
+    container.addEventListener('touchcancel', () => {
+      isPanning = false;
+      isPinching = false;
+      container.classList.remove('is-panning');
+    });
+
+    // ── 4. DOUBLE CLICK / DOUBLE TAP TO ZOOM ──
+    container.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      if (!targetSvg) bindSvg();
+      if (scale > 1.3) {
+        centerInitial();
+        updateTransform(true);
+      } else {
+        const rect = container.getBoundingClientRect();
+        const cursorX = e.clientX - rect.left;
+        const cursorY = e.clientY - rect.top;
+        const newScale = Math.min(3.5, scale * 1.8);
+        panX = cursorX - (cursorX - panX) * (newScale / scale);
+        panY = cursorY - (cursorY - panY) * (newScale / scale);
+        scale = newScale;
+        updateTransform(true);
+      }
+    });
+
+    // ── 5. BUTTON CONTROLS ──
+    const zoomInBtn = document.getElementById(zoomInId);
+    const zoomOutBtn = document.getElementById(zoomOutId);
+    const zoomResetBtn = document.getElementById(zoomResetId);
+
+    function buttonZoom(factor) {
+      if (!targetSvg) bindSvg();
+      const rect = container.getBoundingClientRect();
+      const midX = rect.width / 2;
+      const midY = rect.height / 2;
+      const newScale = Math.max(0.2, Math.min(4.5, scale * factor));
+      panX = midX - (midX - panX) * (newScale / scale);
+      panY = midY - (midY - panY) * (newScale / scale);
+      scale = newScale;
+      updateTransform(true);
+    }
+
+    if (zoomInBtn) zoomInBtn.addEventListener('click', () => buttonZoom(1.3));
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => buttonZoom(0.77));
+    if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {
+      centerInitial();
+      updateTransform(true);
+    });
+  }
+
+  // Initialize for Master Plan Architecture Diagram
+  setupPanZoom('masterPlanMermaidBox', 'mpZoomInBtn', 'mpZoomOutBtn', 'mpZoomResetBtn');
+
+  // ── SCROLL SPY (Handles .main-wrap and window scrolling) ──
+  const scrollContainer = document.querySelector('.main-wrap') || window;
+  const sections = document.querySelectorAll('.doc-section');
+  const navLinks = document.querySelectorAll('.toc-link');
+
+  scrollContainer.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= 140) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    if (current) {
       navLinks.forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href') === '#' + current) {
           link.classList.add('active');
         }
       });
-    });
+    }
+  }, { passive: true });
 
-  // Mobile Drawer Toggle
+  // ── MOBILE DRAWER TOGGLE ──
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const sidebar = document.getElementById('sidebar');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');

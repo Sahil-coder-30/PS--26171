@@ -1004,18 +1004,90 @@
       box-shadow: var(--shadow-md);
     }
     .mermaid-box {
-      background: #FAF8F5;
+      background: #FFFFFF;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 20px 14px;
-      overflow-x: auto;
-      text-align: center;
+      padding: 0;
+      overflow: hidden;
       margin: 16px 0;
+      position: relative;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: grab;
+      min-height: 540px;
+      height: 580px;
+      display: block;
     }
-    .mermaid svg {
-      max-width: 100% !important;
-      height: auto !important;
+    .mermaid-box.is-panning {
+      cursor: grabbing !important;
+    }
+    .mermaid-box svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      pointer-events: auto;
+      max-width: none !important;
       font-family: 'Inter', sans-serif !important;
+    }
+    .mermaid-canvas-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      background: rgba(28, 25, 23, 0.82);
+      color: #F5F5F4;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.9;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .mermaid-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mermaid-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      color: var(--text-body);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm);
+    }
+    .mermaid-btn:hover {
+      background: var(--bg-cream);
+      border-color: #D6CBBC;
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+    @media (max-width: 600px) {
+      .mermaid-box {
+        min-height: 440px;
+        height: 480px;
+      }
+      .mermaid-canvas-hint {
+        font-size: 10px;
+        padding: 3px 8px;
+        bottom: 8px;
+        right: 8px;
+      }
     }
 
   </style>
@@ -1194,9 +1266,14 @@
 
                 <!-- ── MERMAID MICROSERVICES TOPOLOGY ── -->
         <div class="mermaid-wrapper">
-          <div class="flow-canvas-header" style="margin-bottom:16px;">
+          <div class="flow-canvas-header" style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div class="flow-canvas-title">
               <span>🏛️ PRATYAKSHA Microservices Architecture Topology</span>
+            </div>
+            <div class="mermaid-controls">
+              <button class="mermaid-btn" id="readmeZoomInBtn" title="Zoom In">🔍 +</button>
+              <button class="mermaid-btn" id="readmeZoomOutBtn" title="Zoom Out">🔍 &minus;</button>
+              <button class="mermaid-btn" id="readmeZoomResetBtn" title="Reset View">&#x23FA; Reset</button>
             </div>
             <div class="flow-canvas-meta">
               <span class="flow-meta-tag fmt-orange">Mermaid 10.x Vector</span>
@@ -1207,7 +1284,7 @@
           <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
             Complete architectural relationships between the 4 on-device local services, edge ingress gateway, and air-gapped intranet reasoning services:
           </p>
-          <div class="mermaid-box">
+          <div class="mermaid-box" id="readmeMermaidBox">
             <pre class="mermaid">
 flowchart TD
     %% Custom Semantic Styling Classes
@@ -1311,6 +1388,11 @@ flowchart TD
     DOMDispatcher -->|"22. Apply Mutation to Active DOM"| MutatedTab
     MutatedTab -.->|"23. Next Frame Closed-Loop Perception"| TargetTab
             </pre>
+            <div class="mermaid-canvas-hint">
+              <span>🖐️ Drag to Pan</span>
+              <span>·</span>
+              <span>🔍 Pinch or Scroll to Zoom</span>
+            </div>
           </div>
         </div>
 
@@ -2009,7 +2091,264 @@ flowchart TD
         htmlLabels: true
       }
     });
+  // ── TOUCH, FINGER, TRACKPAD & MOUSE PAN-ZOOM CONTROLLER ──
+  function setupPanZoom(containerId, zoomInId, zoomOutId, zoomResetId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    let targetSvg = null;
+    let scale = 1;
+    let panX = 0;
+    let panY = 0;
+    let isPanning = false;
+    let isPinching = false;
+    
+    let startX = 0;
+    let startY = 0;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let initialPinchDist = 0;
+    let initialPinchScale = 1;
+    let initialPinchMidX = 0;
+    let initialPinchMidY = 0;
+    let initialPanX = 0;
+    let initialPanY = 0;
+
+    function getSvgDimensions() {
+      if (!targetSvg) return { w: 1000, h: 600 };
+      let w = 0, h = 0;
+      if (targetSvg.viewBox && targetSvg.viewBox.baseVal && targetSvg.viewBox.baseVal.width > 0) {
+        w = targetSvg.viewBox.baseVal.width;
+        h = targetSvg.viewBox.baseVal.height;
+      } else {
+        try {
+          const b = targetSvg.getBBox();
+          if (b && b.width > 0) {
+            w = b.width;
+            h = b.height;
+          }
+        } catch (err) {}
+      }
+      if (!w || !h) {
+        w = targetSvg.clientWidth || targetSvg.scrollWidth || 1000;
+        h = targetSvg.clientHeight || targetSvg.scrollHeight || 600;
+      }
+      return { w, h };
+    }
+
+    function bindSvg() {
+      targetSvg = container.querySelector('svg');
+      if (!targetSvg) return false;
+      targetSvg.style.transformOrigin = '0 0';
+      targetSvg.style.transition = 'none';
+
+      const dims = getSvgDimensions();
+      targetSvg.style.width = dims.w + 'px';
+      targetSvg.style.height = dims.h + 'px';
+
+      centerInitial();
+      return true;
+    }
+
+    function centerInitial() {
+      if (!targetSvg) return;
+      const cRect = container.getBoundingClientRect();
+      const dims = getSvgDimensions();
+      const svgW = dims.w;
+      const svgH = dims.h;
+
+      const padX = 24;
+      const padY = 24;
+      const availW = Math.max(100, cRect.width - padX * 2);
+      const availH = Math.max(100, cRect.height - padY * 2);
+
+      let fitScale = Math.min(availW / svgW, availH / svgH);
+      scale = Math.max(0.25, Math.min(1.05, fitScale));
+
+      panX = Math.round((cRect.width - svgW * scale) / 2);
+      panY = Math.round((cRect.height - svgH * scale) / 2);
+      if (panY < 12) panY = 12;
+
+      updateTransform(false);
+    }
+
+    function updateTransform(smooth) {
+      if (!targetSvg) return;
+      targetSvg.style.transition = smooth ? 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+      targetSvg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    }
+
+    if (!bindSvg()) {
+      const observer = new MutationObserver(() => {
+        if (bindSvg()) observer.disconnect();
+      });
+      observer.observe(container, { childList: true, subtree: true });
+    }
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      if (!targetSvg) bindSvg();
+      isPanning = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+      container.classList.add('is-panning');
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform(false);
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isPanning) {
+        isPanning = false;
+        container.classList.remove('is-panning');
+      }
+    });
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (!targetSvg) bindSvg();
+
+      const rect = container.getBoundingClientRect();
+      const cursorX = e.clientX - rect.left;
+      const cursorY = e.clientY - rect.top;
+
+      let zoomDelta;
+      if (e.ctrlKey) {
+        zoomDelta = -e.deltaY * 0.012;
+      } else {
+        const clampedDelta = Math.max(-100, Math.min(100, e.deltaY));
+        zoomDelta = -clampedDelta * 0.0022;
+      }
+
+      const factor = Math.exp(zoomDelta);
+      const newScale = Math.max(0.2, Math.min(4.5, scale * factor));
+
+      panX = cursorX - (cursorX - panX) * (newScale / scale);
+      panY = cursorY - (cursorY - panY) * (newScale / scale);
+      scale = newScale;
+
+      updateTransform(false);
+    }, { passive: false });
+
+    container.addEventListener('touchstart', (e) => {
+      if (!targetSvg) bindSvg();
+      if (e.touches.length === 1) {
+        isPanning = true;
+        isPinching = false;
+        touchStartX = e.touches[0].clientX - panX;
+        touchStartY = e.touches[0].clientY - panY;
+        container.classList.add('is-panning');
+      } else if (e.touches.length >= 2) {
+        isPanning = false;
+        isPinching = true;
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        initialPinchDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        initialPinchScale = scale;
+        initialPanX = panX;
+        initialPanY = panY;
+        const rect = container.getBoundingClientRect();
+        initialPinchMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+        initialPinchMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (isPanning && e.touches.length === 1) {
+        panX = e.touches[0].clientX - touchStartX;
+        panY = e.touches[0].clientY - touchStartY;
+        updateTransform(false);
+      } else if (isPinching && e.touches.length >= 2) {
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        if (initialPinchDist > 5) {
+          const pinchRatio = currentDist / initialPinchDist;
+          const newScale = Math.max(0.2, Math.min(4.5, initialPinchScale * pinchRatio));
+
+          const rect = container.getBoundingClientRect();
+          const currentMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+          const currentMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
+
+          panX = currentMidX - (initialPinchMidX - initialPanX) * (newScale / initialPinchScale);
+          panY = currentMidY - (initialPinchMidY - initialPanY) * (newScale / initialPinchScale);
+          scale = newScale;
+
+          updateTransform(false);
+        }
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchend', (e) => {
+      if (e.touches.length === 1) {
+        isPinching = false;
+        isPanning = true;
+        touchStartX = e.touches[0].clientX - panX;
+        touchStartY = e.touches[0].clientY - panY;
+      } else if (e.touches.length === 0) {
+        isPanning = false;
+        isPinching = false;
+        container.classList.remove('is-panning');
+      }
+    });
+
+    container.addEventListener('touchcancel', () => {
+      isPanning = false;
+      isPinching = false;
+      container.classList.remove('is-panning');
+    });
+
+    container.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      if (!targetSvg) bindSvg();
+      if (scale > 1.3) {
+        centerInitial();
+        updateTransform(true);
+      } else {
+        const rect = container.getBoundingClientRect();
+        const cursorX = e.clientX - rect.left;
+        const cursorY = e.clientY - rect.top;
+        const newScale = Math.min(3.5, scale * 1.8);
+        panX = cursorX - (cursorX - panX) * (newScale / scale);
+        panY = cursorY - (cursorY - panY) * (newScale / scale);
+        scale = newScale;
+        updateTransform(true);
+      }
+    });
+
+    const zoomInBtn = document.getElementById(zoomInId);
+    const zoomOutBtn = document.getElementById(zoomOutId);
+    const zoomResetBtn = document.getElementById(zoomResetId);
+
+    function buttonZoom(factor) {
+      if (!targetSvg) bindSvg();
+      const rect = container.getBoundingClientRect();
+      const midX = rect.width / 2;
+      const midY = rect.height / 2;
+      const newScale = Math.max(0.2, Math.min(4.5, scale * factor));
+      panX = midX - (midX - panX) * (newScale / scale);
+      panY = midY - (midY - panY) * (newScale / scale);
+      scale = newScale;
+      updateTransform(true);
+    }
+
+    if (zoomInBtn) zoomInBtn.addEventListener('click', () => buttonZoom(1.3));
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => buttonZoom(0.77));
+    if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {
+      centerInitial();
+      updateTransform(true);
+    });
   }
+
+  // Initialize Pan-Zoom on README Mermaid Architecture Box
+  setupPanZoom('readmeMermaidBox', 'readmeZoomInBtn', 'readmeZoomOutBtn', 'readmeZoomResetBtn');
 
 </script>
 </body>
