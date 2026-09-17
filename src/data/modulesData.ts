@@ -39,7 +39,8 @@ export const MODULES_DATA: DocModule[] = [
   {
     id: 'module-00',
     num: '00',
-    title: 'Project Vision & Executive Summary',
+    route: '/00-vision',
+    title: 'Project Vision & Executive Blueprint',
     icon: '📖',
     badge: 'FOUNDATION & PROBLEM STATEMENT',
     desc: 'Strategic problem statement analysis (ISRO SAC PS-26171), core perception dilemma, and the 5-step execution flow.',
@@ -54,20 +55,23 @@ export const MODULES_DATA: DocModule[] = [
   {
     id: 'module-01',
     num: '01',
+    route: '/01-strategy',
     title: 'Master Plan, Strategy & Competitive Moats',
     icon: '🎯',
     badge: 'EVALUATION & STRATEGY',
-    desc: '100-point rubric breakdown, market analysis, 6 core innovations, and benchmark target metrics.',
+    desc: '100-point rubric breakdown, master plan flowchart, market analysis, 6 core innovations, and benchmark target metrics.',
     sections: [
       { id: 'm1-s1', origId: 's1', title: '01. Executive Overview & Problem Context', icon: '🚀', summary: 'Strategic alignment with national space missions.' },
       { id: 'm1-s2', origId: 's2', title: '02. 100-Point Evaluation Rubric Breakdown', icon: '⚖️', summary: 'Scoring breakdown across all 5 evaluation dimensions.' },
-      { id: 'm1-s3', origId: 's3', title: '03. Competitive Landscape & Market Moats', icon: '🛡️', summary: 'Head-to-head comparison with Browser-Use, Adept, and OpenAI Operator.' },
-      { id: 'm1-s4', origId: 's4', title: '04. Six Core Technological Innovations', icon: '⚡', summary: 'Deep dive into our architectural patents and moats.' }
+      { id: 'm1-s3', origId: 's3', title: '03. Master Plan Architecture Flowchart', icon: '📐', summary: 'Mermaid strategy flowchart of client-to-cloud execution.' },
+      { id: 'm1-s4', origId: 's4', title: '04. Competitive Landscape & Market Moats', icon: '🛡️', summary: 'Head-to-head comparison with Browser-Use, Adept, and OpenAI Operator.' },
+      { id: 'm1-s5', origId: 's5', title: '05. Six Core Technological Innovations', icon: '⚡', summary: 'Deep dive into our architectural patents and moats.' }
     ]
   },
   {
     id: 'module-02',
     num: '02',
+    route: '/02-browser-agent',
     title: 'Browser Agent Autonomous Execution Engine',
     icon: '🤖',
     badge: 'AGENT ARCHITECTURE',
@@ -82,32 +86,43 @@ export const MODULES_DATA: DocModule[] = [
   {
     id: 'module-03',
     num: '03',
+    route: '/03-privacy-shield',
     title: 'Dual-Channel Perception Shield & WebGPU Privacy Vault',
     icon: '🛡️',
     badge: 'PRIVACY & WEBGPU',
-    desc: 'Mathematical formulation, WebGPU offscreen ML pipeline, AES-256 local vault, and benchmark tables.',
+    desc: 'Mathematical formulation, WebGPU offscreen ML pipeline, interactive PII simulator, AES-256 local vault, and benchmark tables.',
     sections: [
       { id: 'm3-s1', origId: 's1', title: '01. Mathematical Zero-Egress Formulation', icon: '📐', summary: 'Formal proof of ε-differential privacy and token preservation.' },
-      { id: 'm3-s2', origId: 's2', title: '02. WebGPU Offscreen Neural Pipeline', icon: '⚡', summary: 'DBNet text detection and Ultra-Light face detection in browser.' },
-      { id: 'm3-s3', origId: 's3', title: '03. In-Memory AES-256 Token Vault', icon: '🔐', summary: 'Ephemeral cryptographic key lifecycle and zero-disk persistence.' }
+      { id: 'm3-s2', origId: 's2', title: '02. Interactive WebGPU Privacy Shield Simulator', icon: '⚡', summary: 'Real-time testbed with instant Verhoeff checksum & PII sanitization.' },
+      { id: 'm3-s3', origId: 's3', title: '03. WebGPU Offscreen Neural Pipeline', icon: '🚀', summary: 'DBNet text detection and Ultra-Light face detection in browser.' },
+      { id: 'm3-s4', origId: 's4', title: '04. In-Memory AES-256 Token Vault Lifecycle', icon: '🔐', summary: 'Ephemeral cryptographic key lifecycle and zero-disk persistence.' }
     ]
   },
   {
     id: 'module-04',
     num: '04',
+    route: '/04-hld',
     title: 'High-Level Architecture & Microservices Specification',
     icon: '📐',
     badge: 'SYSTEM DESIGN & INTERACTION',
-    desc: 'Mermaid 10 architecture diagram with interactive pan-zoom, sequence flow, and API contracts.',
+    desc: 'Authentic Mermaid 10 architecture diagram on PanZoom canvas, operational sequence flow, microservices inventory, and API contracts.',
     sections: [
-      { id: 'm4-s1', origId: 's1', title: '01. Complete High-Level Architecture Topology', icon: '📐', summary: 'Interactive pan-zoom architecture topology diagram.' },
-      { id: 'm4-s2', origId: 's2', title: '02. Seven-Step Operational Sequence Flow', icon: '⏱️', summary: 'End-to-end request/response sequence between client and cluster.' },
-      { id: 'm4-s3', origId: 's3', title: '03. Microservices Contract & API Specifications', icon: '📜', summary: 'REST and WebSocket schemas with mTLS authentication.' }
+      { id: 'm4-s1', origId: 's1', title: '01. 4-Stage System Architecture Topology (Mermaid)', icon: '📐', summary: 'Complete interactive PanZoom Mermaid architecture topology.' },
+      { id: 'm4-s2', origId: 's2', title: '02. Microservices Inventory & Specs', icon: '📦', summary: 'Detailed specifications for all 7 platform services.' },
+      { id: 'm4-s3', origId: 's3', title: '03. 7-Step Operational Sequence Flow (Mermaid)', icon: '⏱️', summary: 'Full cryptographic sequence flow across 8 participants.' },
+      { id: 'm4-s4', origId: 's4', title: '04. Microservices API & WebSocket Contracts', icon: '📜', summary: 'REST, WebSocket, and JSON Schema interface definitions.' },
+      { id: 'm4-s5', origId: 's5', title: '05. Security Architecture & Zero-Trust Boundary', icon: '🔒', summary: 'Egress filtering, mTLS 1.3, and Merkle audit chain.' },
+      { id: 'm4-s6', origId: 's6', title: '06. Enterprise Data Storage Design', icon: '💾', summary: 'Postgres, Redis Cluster, TimescaleDB, and MinIO S3.' },
+      { id: 'm4-s7', origId: 's7', title: '07. Deployment Topology & ISRO Intranet DMZ', icon: '🌐', summary: 'Air-gapped enterprise deployment and hardware allocation.' },
+      { id: 'm4-s8', origId: 's8', title: '08. Scalability, Resilience & Circuit Breakers', icon: '⚡', summary: 'Fault isolation, automated fallback, and rate limits.' },
+      { id: 'm4-s9', origId: 's9', title: '09. Architectural Decision Records (ADRs)', icon: '📋', summary: 'Formal ADR-001 through ADR-003 engineering records.' },
+      { id: 'm4-s10', origId: 's10', title: '10. Build Roadmap & Sprint Milestones', icon: '🗓️', summary: 'Detailed development and testing delivery schedule.' }
     ]
   },
   {
     id: 'module-05',
     num: '05',
+    route: '/05-extension',
     title: 'Manifest V3 Browser Extension & Privacy Shield Implementation',
     icon: '🧩',
     badge: 'CHROME MV3 CODEBASE',
@@ -122,13 +137,14 @@ export const MODULES_DATA: DocModule[] = [
   {
     id: 'module-06',
     num: '06',
+    route: '/06-roadmap',
     title: 'Hackathon Delivery Roadmap & Judge Defense Protocol',
     icon: '⏱️',
     badge: 'EXECUTION & JURY WINNING',
-    desc: '36-hour sprint schedule, jury defense cheat sheet, and 60-second closing pitch.',
+    desc: '36-hour sprint schedule, interactive timeline, jury defense cheat sheet, and 60-second closing pitch.',
     sections: [
-      { id: 'm6-roadmap', origId: 'roadmap', title: '36-Hour Hackathon Delivery Timeline & Milestones', icon: '⏱️', summary: 'Four 9-hour sprints dividing frontend, vision, and orchestrator.' },
-      { id: 'm6-defense', origId: 'defense', title: 'Judge Defense Cheat Sheet & Competitive Moats', icon: '🛡️', summary: 'Mathematical answers to jury objections and closing pitch.' }
+      { id: 'm6-roadmap', origId: 'roadmap', title: '01. 36-Hour Hackathon Delivery Timeline & Milestones', icon: '⏱️', summary: 'Four 9-hour sprints dividing frontend, vision, and orchestrator.' },
+      { id: 'm6-defense', origId: 'defense', title: '02. Judge Defense Cheat Sheet & Competitive Moats', icon: '🛡️', summary: 'Mathematical answers to jury objections and closing pitch.' }
     ]
   }
 ];

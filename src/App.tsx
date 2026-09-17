@@ -1,20 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { MODULES_DATA } from './data/modulesData';
 import { Sidebar } from './components/Sidebar';
-import { MasterHero } from './components/MasterHero';
-import { ArchitectureInspector } from './components/ArchitectureInspector';
-import { PrivacyShieldSimulator } from './components/PrivacyShieldSimulator';
-import { RubricCalculator } from './components/RubricCalculator';
-import { SprintTimeline } from './components/SprintTimeline';
-import { JudgeDefenseMatrix } from './components/JudgeDefenseMatrix';
-import { ModuleDetails } from './components/ModuleDetails';
+import { Module00Vision } from './pages/Module00Vision';
+import { Module01Strategy } from './pages/Module01Strategy';
+import { Module02AgentEngine } from './pages/Module02AgentEngine';
+import { Module03PrivacyShield } from './pages/Module03PrivacyShield';
+import { Module04ArchitectureHLD } from './pages/Module04ArchitectureHLD';
+import { Module05ExtensionMV3 } from './pages/Module05ExtensionMV3';
+import { Module06HackathonJury } from './pages/Module06HackathonJury';
 
 export const App: React.FC = () => {
-  const [activeModule, setActiveModule] = useState<string>('all');
+  // Parse initial route from URL hash
+  const getInitialRoute = (): { route: string; sectionId?: string } => {
+    const hash = window.location.hash.replace(/^#\/?/, '');
+    if (!hash) return { route: '/00-vision' };
+    const parts = hash.split('#');
+    const routePart = parts[0].startsWith('/') ? parts[0] : `/${parts[0]}`;
+    const valid = MODULES_DATA.some((m) => m.route === routePart);
+    return {
+      route: valid ? routePart : '/00-vision',
+      sectionId: parts[1] || undefined
+    };
+  };
+
+  const initial = getInitialRoute();
+  const [currentRoute, setCurrentRoute] = useState<string>(initial.route);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [activeSection, setActiveSection] = useState<string>('m0-overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
+
+  // Sync route on hash change (back/forward browser buttons, direct links)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const parsed = getInitialRoute();
+      setCurrentRoute(parsed.route);
+      if (parsed.sectionId) {
+        setTimeout(() => {
+          const el = document.getElementById(parsed.sectionId!);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 80);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Track reading scroll progress
   useEffect(() => {
@@ -30,34 +60,47 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSelectModule = (modNum: string) => {
-    setActiveModule(modNum);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleSelectSection = (id: string) => {
-    setActiveSection(id);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+  // Handle programmatic navigation
+  const handleNavigate = (route: string, sectionId?: string) => {
+    setCurrentRoute(route);
+    if (sectionId) {
+      window.location.hash = `#${route}#${sectionId}`;
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 80);
+    } else {
+      window.location.hash = `#${route}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const filteredModules = MODULES_DATA.filter((m) => {
-    if (activeModule !== 'all' && m.num !== activeModule) return false;
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      m.title.toLowerCase().includes(q) ||
-      m.desc.toLowerCase().includes(q) ||
-      m.sections.some(
-        (s) => s.title.toLowerCase().includes(q) || s.summary.toLowerCase().includes(q)
-      )
-    );
-  });
+  // Render the appropriate active module component
+  const renderActiveModulePage = () => {
+    switch (currentRoute) {
+      case '/00-vision':
+        return <Module00Vision onNavigate={handleNavigate} />;
+      case '/01-strategy':
+        return <Module01Strategy onNavigate={handleNavigate} />;
+      case '/02-browser-agent':
+        return <Module02AgentEngine onNavigate={handleNavigate} />;
+      case '/03-privacy-shield':
+        return <Module03PrivacyShield onNavigate={handleNavigate} />;
+      case '/04-hld':
+        return <Module04ArchitectureHLD onNavigate={handleNavigate} />;
+      case '/05-extension':
+        return <Module05ExtensionMV3 onNavigate={handleNavigate} />;
+      case '/06-roadmap':
+        return <Module06HackathonJury onNavigate={handleNavigate} />;
+      default:
+        return <Module00Vision onNavigate={handleNavigate} />;
+    }
+  };
 
   return (
-    <div style={{ display: 'flex', width: '100%', minHeight: '100vh', position: 'relative' }}>
+    <div style={{ display: 'flex', width: '100%', minHeight: '100vh', position: 'relative', background: 'var(--bg-warm)' }}>
       {/* Top Reading Progress Bar */}
       <div
         style={{
@@ -72,7 +115,7 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* Mobile Top Header */}
+      {/* Mobile Header Bar */}
       <header
         className="mobile-header"
         style={{
@@ -85,13 +128,17 @@ export const App: React.FC = () => {
           zIndex: 90,
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderBottom: '1px solid #332E2A'
+          borderBottom: '1px solid #332E2A',
+          width: '100%'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '18px' }}>🚀</span>
-          <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '16px' }}>
+          <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '15px' }}>
             PRATYAKSHA
+          </span>
+          <span style={{ fontSize: '11px', color: '#EA580C', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>
+            {currentRoute.replace('/', '').toUpperCase()}
           </span>
         </div>
         <button
@@ -101,7 +148,7 @@ export const App: React.FC = () => {
             color: '#FFFFFF',
             border: 'none',
             borderRadius: '6px',
-            padding: '6px 12px',
+            padding: '6px 14px',
             fontSize: '12px',
             fontWeight: 700,
             cursor: 'pointer'
@@ -111,121 +158,28 @@ export const App: React.FC = () => {
         </button>
       </header>
 
-      {/* Obsidian Sidebar */}
+      {/* Obsidian Sidebar with Module Routing */}
       <Sidebar
         modules={MODULES_DATA}
-        activeModule={activeModule}
-        onSelectModule={handleSelectModule}
+        currentRoute={currentRoute}
+        onNavigate={handleNavigate}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        activeSection={activeSection}
-        onSelectSection={handleSelectSection}
         isOpenMobile={mobileMenuOpen}
         onCloseMobile={() => setMobileMenuOpen(false)}
       />
 
-      {/* Main Warm Cream Canvas */}
-      <main className="main-wrap" style={{ flex: 1, minWidth: 0 }}>
-        <MasterHero modules={MODULES_DATA} onSelectModule={handleSelectModule} />
-
-        {/* Live Interactive Tools */}
-        <PrivacyShieldSimulator />
-        <ArchitectureInspector />
-
-        {/* Module Content Views */}
-        <div className="modules-container">
-          {filteredModules.map((m) => (
-            <div key={m.id} className="doc-module" id={m.id}>
-              <div style={{
-                background: '#FFFFFF',
-                border: '1px solid var(--border-warm)',
-                borderRadius: '16px',
-                padding: '28px 32px',
-                marginBottom: '24px',
-                boxShadow: 'var(--shadow-sm)',
-                position: 'relative'
-              }}>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '10px' }}>
-                  <span style={{
-                    background: 'var(--isro-orange)',
-                    color: '#FFFFFF',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    padding: '2px 8px',
-                    borderRadius: '4px'
-                  }}>
-                    MODULE {m.num}
-                  </span>
-                  <span style={{
-                    background: 'var(--bg-subtle)',
-                    color: 'var(--text-muted)',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: '10.5px',
-                    padding: '2px 8px',
-                    borderRadius: '4px',
-                    fontWeight: 600
-                  }}>
-                    {m.badge}
-                  </span>
-                </div>
-                <h2 style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: '24px',
-                  fontWeight: 800,
-                  color: 'var(--text-main)',
-                  marginBottom: '8px'
-                }}>
-                  {m.icon} {m.title}
-                </h2>
-                <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '16px' }}>
-                  {m.desc}
-                </p>
-
-                {/* Subsystem specific interactive modules */}
-                <ModuleDetails moduleId={m.id} />
-
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                  gap: '12px',
-                  marginTop: '18px'
-                }}>
-                  {m.sections.map((sec) => (
-                    <div
-                      key={sec.id}
-                      id={sec.id}
-                      style={{
-                        background: activeSection === sec.id ? '#FFF7ED' : '#FAF7F2',
-                        border: '1px solid ' + (activeSection === sec.id ? '#FDBA74' : '#E7E0D6'),
-                        borderRadius: '10px',
-                        padding: '14px 16px',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease'
-                      }}
-                      onClick={() => setActiveSection(sec.id)}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <span>{sec.icon}</span>
-                        <h4 style={{ margin: 0, fontSize: '13.5px', fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: 'var(--text-main)' }}>
-                          {sec.title}
-                        </h4>
-                      </div>
-                      <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                        {sec.summary}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Global Strategy, Rubric & Defense Modules */}
-        <RubricCalculator />
-        <SprintTimeline />
-        <JudgeDefenseMatrix />
+      {/* Main Warm Cream Canvas (Renders ONLY Active Module) */}
+      <main
+        className="main-wrap"
+        style={{
+          flex: 1,
+          minWidth: 0,
+          padding: '40px 48px',
+          background: 'var(--bg-warm)'
+        }}
+      >
+        {renderActiveModulePage()}
       </main>
     </div>
   );

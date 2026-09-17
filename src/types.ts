@@ -9,6 +9,7 @@ export interface Section {
 export interface DocModule {
   id: string;
   num: string;
+  route: string;
   title: string;
   icon: string;
   badge: string;
