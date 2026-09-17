@@ -20,7 +20,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
   <style>
-    :root {{
+    :root {
       --bg-cream: #FAF7F2;
       --bg-surface: #FFFFFF;
       --bg-subtle: #F4EFE6;
@@ -66,11 +66,11 @@
       --radius-md: 12px;
       --radius-lg: 16px;
       --radius-xl: 20px;
-    }}
+    }
 
-    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-    html {{ scroll-behavior: smooth; }}
-    body {{
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-cream);
       color: var(--text-body);
@@ -78,10 +78,10 @@
       display: flex;
       min-height: 100vh;
       overflow-x: hidden;
-    }}
+    }
 
     /* ── OBSIDIAN SIDEBAR ── */
-    .sidebar {{
+    .sidebar {
       width: 320px;
       background-color: var(--sidebar-bg);
       color: var(--sidebar-text);
@@ -94,15 +94,15 @@
       display: flex;
       flex-direction: column;
       z-index: 100;
-    }}
-    .sidebar::-webkit-scrollbar {{ width: 5px; }}
-    .sidebar::-webkit-scrollbar-thumb {{ background: #3E3834; border-radius: 4px; }}
+    }
+    .sidebar::-webkit-scrollbar { width: 5px; }
+    .sidebar::-webkit-scrollbar-thumb { background: #3E3834; border-radius: 4px; }
 
-    .sidebar-header {{
+    .sidebar-header {
       padding: 24px 20px 16px;
       border-bottom: 1px solid var(--sidebar-border);
-    }}
-    .brand-badge {{
+    }
+    .brand-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -117,8 +117,8 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 12px;
-    }}
-    .sidebar-title {{
+    }
+    .sidebar-title {
       font-family: 'Outfit', sans-serif;
       font-size: 20px;
       font-weight: 800;
@@ -126,13 +126,13 @@
       letter-spacing: -0.02em;
       line-height: 1.25;
       margin-bottom: 4px;
-    }}
-    .sidebar-subtitle {{
+    }
+    .sidebar-subtitle {
       font-size: 11.5px;
       color: var(--sidebar-muted);
       line-height: 1.45;
-    }}
-    .sidebar-status-tag {{
+    }
+    .sidebar-status-tag {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -144,24 +144,24 @@
       padding: 2px 8px;
       border-radius: 4px;
       border: 1px solid rgba(163, 230, 53, 0.25);
-    }}
-    .pulse-dot {{
+    }
+    .pulse-dot {
       width: 6px; height: 6px;
       background: #A3E635;
       border-radius: 50%;
       display: inline-block;
       box-shadow: 0 0 6px #A3E635;
-    }}
+    }
 
     /* Search Input */
-    .sidebar-search-box {{
+    .sidebar-search-box {
       padding: 12px 18px;
       border-bottom: 1px solid var(--sidebar-border);
-    }}
-    .search-input-wrap {{
+    }
+    .search-input-wrap {
       position: relative;
-    }}
-    .search-input-wrap input {{
+    }
+    .search-input-wrap input {
       width: 100%;
       background: #282422;
       border: 1px solid #3E3834;
@@ -172,30 +172,30 @@
       font-family: 'Inter', sans-serif;
       outline: none;
       transition: all 0.15s ease;
-    }}
-    .search-input-wrap input:focus {{
+    }
+    .search-input-wrap input:focus {
       border-color: var(--isro-orange);
       box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.25);
-    }}
-    .search-icon {{
+    }
+    .search-icon {
       position: absolute;
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 12px;
       color: var(--sidebar-muted);
-    }}
+    }
 
     /* Module Filter Bar */
-    .module-filter-bar {{
+    .module-filter-bar {
       display: flex;
       gap: 4px;
       padding: 10px 18px;
       border-bottom: 1px solid var(--sidebar-border);
       background: #191615;
       overflow-x: auto;
-    }}
-    .mod-filter-btn {{
+    }
+    .mod-filter-btn {
       background: transparent;
       border: 1px solid #38322E;
       color: var(--sidebar-muted);
@@ -206,34 +206,34 @@
       cursor: pointer;
       transition: all 0.15s ease;
       flex-shrink: 0;
-    }}
-    .mod-filter-btn:hover {{
+    }
+    .mod-filter-btn:hover {
       color: #FFFFFF;
       border-color: #554D46;
-    }}
-    .mod-filter-btn.active {{
+    }
+    .mod-filter-btn.active {
       background: var(--isro-orange);
       color: #FFFFFF;
       border-color: var(--isro-orange);
       font-weight: 700;
-    }}
+    }
 
     /* Sidebar TOC */
-    .sidebar-toc {{
+    .sidebar-toc {
       flex: 1;
       overflow-y: auto;
       padding: 14px 0 24px;
-    }}
-    .toc-group {{
+    }
+    .toc-group {
       margin-bottom: 14px;
-    }}
-    .toc-group-header {{
+    }
+    .toc-group-header {
       padding: 6px 18px;
       display: flex;
       align-items: center;
       gap: 8px;
-    }}
-    .toc-group-num {{
+    }
+    .toc-group-num {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 700;
@@ -241,8 +241,8 @@
       color: #FF8A4C;
       padding: 2px 5px;
       border-radius: 4px;
-    }}
-    .toc-group-title {{
+    }
+    .toc-group-title {
       font-family: 'Outfit', sans-serif;
       font-size: 12px;
       font-weight: 700;
@@ -251,16 +251,16 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
       transition: color 0.15s ease;
-    }}
-    .toc-group-title:hover {{
+    }
+    .toc-group-title:hover {
       color: #FFFFFF;
-    }}
-    .toc-sublinks {{
+    }
+    .toc-sublinks {
       display: flex;
       flex-direction: column;
       margin-top: 4px;
-    }}
-    .sidebar-toc-link {{
+    }
+    .sidebar-toc-link {
       display: flex;
       align-items: center;
       gap: 9px;
@@ -271,26 +271,26 @@
       border-left: 3px solid transparent;
       transition: all 0.15s ease;
       line-height: 1.35;
-    }}
-    .sidebar-toc-link:hover {{
+    }
+    .sidebar-toc-link:hover {
       color: #FFFFFF;
       background: rgba(255, 255, 255, 0.03);
-    }}
-    .sidebar-toc-link.active {{
+    }
+    .sidebar-toc-link.active {
       color: #FFFFFF;
       background: linear-gradient(90deg, rgba(234, 88, 12, 0.18) 0%, transparent 100%);
       border-left-color: var(--isro-orange);
       font-weight: 600;
-    }}
-    .toc-sec-icon {{ font-size: 12px; flex-shrink: 0; }}
-    .toc-sec-text {{
+    }
+    .toc-sec-icon { font-size: 12px; flex-shrink: 0; }
+    .toc-sec-text {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }}
+    }
 
     /* Sidebar Footer */
-    .sidebar-footer {{
+    .sidebar-footer {
       padding: 14px 18px;
       border-top: 1px solid var(--sidebar-border);
       background: #161413;
@@ -299,25 +299,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }}
-    .footer-pill {{
+    }
+    .footer-pill {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       color: #EA580C;
-    }}
+    }
 
     /* ── MAIN CONTENT AREA ── */
-    .main-wrap {{
+    .main-wrap {
       flex: 1;
       min-width: 0;
       background: var(--bg-cream);
       padding: 36px 48px 80px;
       max-width: 1160px;
       margin: 0 auto;
-    }}
+    }
 
     /* Master Top Hero */
-    .master-hero {{
+    .master-hero {
       background: linear-gradient(135deg, #FFFFFF 0%, #FAF4EB 100%);
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-xl);
@@ -326,22 +326,22 @@
       box-shadow: var(--shadow-md);
       position: relative;
       overflow: hidden;
-    }}
-    .master-hero::before {{
+    }
+    .master-hero::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 5px;
       background: linear-gradient(90deg, #EA580C 0%, #D97706 40%, #2563EB 100%);
-    }}
-    .hero-pre-title {{
+    }
+    .hero-pre-title {
       display: flex;
       gap: 10px;
       align-items: center;
       flex-wrap: wrap;
       margin-bottom: 16px;
-    }}
-    .hero-badge-pill {{
+    }
+    .hero-badge-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -355,8 +355,8 @@
       border-radius: 20px;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-    }}
-    .hero-meta-pill {{
+    }
+    .hero-meta-pill {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       color: var(--text-muted);
@@ -364,8 +364,8 @@
       font-size: 11px;
       padding: 4px 10px;
       border-radius: 20px;
-    }}
-    .master-hero-title {{
+    }
+    .master-hero-title {
       font-family: 'Outfit', sans-serif;
       font-size: clamp(30px, 4vw, 44px);
       font-weight: 800;
@@ -373,21 +373,21 @@
       line-height: 1.15;
       letter-spacing: -0.025em;
       margin-bottom: 14px;
-    }}
-    .master-hero-subtitle {{
+    }
+    .master-hero-subtitle {
       font-size: 16px;
       color: var(--text-body);
       max-width: 900px;
       line-height: 1.6;
       margin-bottom: 22px;
-    }}
-    .master-hero-tags {{
+    }
+    .master-hero-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 24px;
-    }}
-    .tag-chip {{
+    }
+    .tag-chip {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       padding: 5px 12px;
@@ -396,16 +396,16 @@
       font-weight: 500;
       color: var(--text-body);
       box-shadow: var(--shadow-sm);
-    }}
-    .master-module-cards {{
+    }
+    .master-module-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 12px;
       margin-top: 24px;
       padding-top: 20px;
       border-top: 1px solid var(--border-warm);
-    }}
-    .mod-jump-card {{
+    }
+    .mod-jump-card {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-md);
@@ -417,41 +417,41 @@
       gap: 3px;
       transition: all 0.15s ease;
       box-shadow: var(--shadow-sm);
-    }}
-    .mod-jump-card:hover {{
+    }
+    .mod-jump-card:hover {
       border-color: var(--isro-orange);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
-    }}
-    .mod-card-top {{
+    }
+    .mod-card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }}
-    .mod-card-num {{
+    }
+    .mod-card-num {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 700;
       color: #EA580C;
-    }}
-    .mod-card-name {{
+    }
+    .mod-card-name {
       font-family: 'Outfit', sans-serif;
       font-weight: 700;
       font-size: 13.5px;
       color: var(--text-main);
-    }}
+    }
 
     /* ── REACT INTERACTIVE MOUNT BOX ── */
-    #reactInteractiveRoot {{
+    #reactInteractiveRoot {
       margin: 30px 0;
-    }}
+    }
 
     /* ── DOC MODULE WRAPPER ── */
-    .doc-module {{
+    .doc-module {
       margin-bottom: 60px;
       scroll-margin-top: 24px;
-    }}
-    .module-header-banner {{
+    }
+    .module-header-banner {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
@@ -459,22 +459,22 @@
       margin-bottom: 30px;
       box-shadow: var(--shadow-sm);
       position: relative;
-    }}
-    .module-header-banner::before {{
+    }
+    .module-header-banner::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
       background: var(--isro-orange);
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }}
-    .module-badge-row {{
+    }
+    .module-badge-row {
       display: flex;
       gap: 8px;
       align-items: center;
       margin-bottom: 10px;
-    }}
-    .mod-pill-badge {{
+    }
+    .mod-pill-badge {
       background: var(--isro-orange);
       color: #FFFFFF;
       font-family: 'JetBrains Mono', monospace;
@@ -482,8 +482,8 @@
       font-weight: 700;
       padding: 2px 8px;
       border-radius: 4px;
-    }}
-    .mod-cat-badge {{
+    }
+    .mod-cat-badge {
       background: var(--bg-subtle);
       color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
@@ -491,37 +491,37 @@
       padding: 2px 8px;
       border-radius: 4px;
       font-weight: 600;
-    }}
-    .module-main-title {{
+    }
+    .module-main-title {
       font-family: 'Outfit', sans-serif;
       font-size: 26px;
       font-weight: 800;
       color: var(--text-main);
       margin-bottom: 8px;
-    }}
-    .module-main-desc {{
+    }
+    .module-main-desc {
       font-size: 14px;
       color: var(--text-muted);
       line-height: 1.55;
       margin-bottom: 14px;
-    }}
-    .module-quick-nav {{
+    }
+    .module-quick-nav {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       align-items: center;
       padding-top: 12px;
       border-top: 1px solid var(--border-subtle);
-    }}
-    .quick-nav-label {{
+    }
+    .quick-nav-label {
       font-size: 11px;
       font-weight: 700;
       color: var(--text-muted);
       margin-right: 4px;
       text-transform: uppercase;
       font-family: 'JetBrains Mono', monospace;
-    }}
-    .quick-nav-pill {{
+    }
+    .quick-nav-pill {
       background: var(--bg-cream);
       border: 1px solid var(--border-warm);
       padding: 3px 9px;
@@ -530,15 +530,15 @@
       color: var(--text-body);
       text-decoration: none;
       transition: all 0.12s ease;
-    }}
-    .quick-nav-pill:hover {{
+    }
+    .quick-nav-pill:hover {
       background: #FFFFFF;
       border-color: var(--isro-orange);
       color: var(--isro-orange);
-    }}
+    }
 
     /* ── SECTION STYLES ── */
-    .doc-section {{
+    .doc-section {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
@@ -546,16 +546,16 @@
       margin-bottom: 30px;
       box-shadow: var(--shadow-sm);
       scroll-margin-top: 24px;
-    }}
-    .section-header {{
+    }
+    .section-header {
       display: flex;
       align-items: center;
       gap: 14px;
       padding-bottom: 16px;
       margin-bottom: 22px;
       border-bottom: 2px solid var(--border-subtle);
-    }}
-    .section-icon-badge {{
+    }
+    .section-icon-badge {
       width: 40px;
       height: 40px;
       border-radius: var(--radius-md);
@@ -566,55 +566,55 @@
       justify-content: center;
       font-size: 20px;
       flex-shrink: 0;
-    }}
-    .section-title {{
+    }
+    .section-title {
       font-family: 'Outfit', sans-serif;
       font-size: 22px;
       font-weight: 700;
       color: var(--text-main);
       letter-spacing: -0.01em;
-    }}
-    .section-lead {{
+    }
+    .section-lead {
       font-size: 15px;
       color: var(--text-body);
       margin-bottom: 24px;
       line-height: 1.7;
-    }}
+    }
 
-    h3 {{
+    h3 {
       font-family: 'Outfit', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: var(--text-main);
       margin: 28px 0 12px;
-    }}
-    h4 {{
+    }
+    h4 {
       font-family: 'Outfit', sans-serif;
       font-size: 15px;
       font-weight: 600;
       color: var(--text-main);
       margin: 18px 0 8px;
-    }}
-    p {{
+    }
+    p {
       margin-bottom: 14px;
       color: var(--text-body);
-    }}
+    }
 
     /* Tables */
-    .table-container {{
+    .table-container {
       overflow-x: auto;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-md);
       background: #FFFFFF;
       margin: 20px 0 26px;
-    }}
-    table {{
+    }
+    table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13.5px;
       text-align: left;
-    }}
-    th {{
+    }
+    th {
       background: var(--bg-subtle);
       padding: 12px 16px;
       font-family: 'JetBrains Mono', monospace;
@@ -624,19 +624,19 @@
       letter-spacing: 0.05em;
       color: var(--text-muted);
       border-bottom: 1px solid var(--border-warm);
-    }}
-    td {{
+    }
+    td {
       padding: 12px 16px;
       border-bottom: 1px solid var(--border-warm);
       color: var(--text-body);
       vertical-align: top;
-    }}
-    tr:last-child td {{ border-bottom: none; }}
-    tr:hover td {{ background: #FAF7F2; }}
-    td.strong-col {{ font-weight: 600; color: var(--text-main); }}
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FAF7F2; }
+    td.strong-col { font-weight: 600; color: var(--text-main); }
 
     /* Callouts */
-    .callout {{
+    .callout {
       display: flex;
       gap: 14px;
       padding: 16px 20px;
@@ -644,32 +644,32 @@
       margin: 20px 0;
       font-size: 13.5px;
       line-height: 1.6;
-    }}
-    .callout-icon {{ font-size: 20px; flex-shrink: 0; line-height: 1.2; }}
-    .callout-body strong {{ color: var(--text-main); }}
-    .callout.danger {{
+    }
+    .callout-icon { font-size: 20px; flex-shrink: 0; line-height: 1.2; }
+    .callout-body strong { color: var(--text-main); }
+    .callout.danger {
       background: var(--color-danger-bg);
       border: 1px solid var(--color-danger-border);
       color: #991B1B;
-    }}
-    .callout.warn {{
+    }
+    .callout.warn {
       background: var(--color-warn-bg);
       border: 1px solid var(--color-warn-border);
       color: #92400E;
-    }}
-    .callout.success {{
+    }
+    .callout.success {
       background: var(--color-success-bg);
       border: 1px solid var(--color-success-border);
       color: #065F46;
-    }}
-    .callout.info {{
+    }
+    .callout.info {
       background: var(--color-info-bg);
       border: 1px solid var(--color-info-border);
       color: #1E40AF;
-    }}
+    }
 
     /* Badges */
-    .badge {{
+    .badge {
       display: inline-flex;
       align-items: center;
       padding: 2px 8px;
@@ -677,77 +677,77 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
-    }}
-    .badge.pass {{ background: var(--color-success-bg); color: var(--color-success); border: 1px solid var(--color-success-border); }}
-    .badge.fail {{ background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid var(--color-danger-border); }}
-    .badge.warn {{ background: var(--color-warn-bg); color: var(--color-warn); border: 1px solid var(--color-warn-border); }}
-    .badge.info {{ background: var(--color-info-bg); color: var(--color-info); border: 1px solid var(--color-info-border); }}
+    }
+    .badge.pass { background: var(--color-success-bg); color: var(--color-success); border: 1px solid var(--color-success-border); }
+    .badge.fail { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid var(--color-danger-border); }
+    .badge.warn { background: var(--color-warn-bg); color: var(--color-warn); border: 1px solid var(--color-warn-border); }
+    .badge.info { background: var(--color-info-bg); color: var(--color-info); border: 1px solid var(--color-info-border); }
 
     /* Rubric Scorecards */
-    .rubric-grid {{
+    .rubric-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
       margin: 22px 0;
-    }}
-    .rubric-card {{
+    }
+    .rubric-card {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-md);
       padding: 20px;
       box-shadow: var(--shadow-sm);
       position: relative;
-    }}
-    .rubric-card::before {{
+    }
+    .rubric-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
       border-radius: var(--radius-md) var(--radius-md) 0 0;
-    }}
-    .rubric-card.c-amber::before {{ background: #D97706; }}
-    .rubric-card.c-orange::before {{ background: #EA580C; }}
-    .rubric-card.c-red::before {{ background: #DC2626; }}
-    .rubric-card.c-blue::before {{ background: #2563EB; }}
-    .rubric-card.c-green::before {{ background: #059669; }}
+    }
+    .rubric-card.c-amber::before { background: #D97706; }
+    .rubric-card.c-orange::before { background: #EA580C; }
+    .rubric-card.c-red::before { background: #DC2626; }
+    .rubric-card.c-blue::before { background: #2563EB; }
+    .rubric-card.c-green::before { background: #059669; }
 
-    .rubric-header {{
+    .rubric-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 12px;
-    }}
-    .rubric-title {{
+    }
+    .rubric-title {
       font-family: 'Outfit', sans-serif;
       font-size: 15px;
       font-weight: 700;
       color: var(--text-main);
-    }}
-    .rubric-pts {{
+    }
+    .rubric-pts {
       font-family: 'Outfit', sans-serif;
       font-size: 26px;
       font-weight: 800;
       color: var(--text-main);
       line-height: 1;
-    }}
-    .rubric-pts-unit {{
+    }
+    .rubric-pts-unit {
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
-    }}
-    .rubric-body {{
+    }
+    .rubric-body {
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.5;
-    }}
+    }
 
     /* Code Blocks */
-    .code-block-wrap {{
+    .code-block-wrap {
       position: relative;
       margin: 18px 0;
-    }}
-    pre {{
+    }
+    pre {
       background: #1C1917;
       color: #F5F5F4;
       border-radius: var(--radius-md);
@@ -757,14 +757,14 @@
       line-height: 1.6;
       overflow-x: auto;
       border: 1px solid #332E2A;
-    }}
-    pre code {{
+    }
+    pre code {
       background: transparent !important;
       padding: 0 !important;
       color: inherit;
       border: none;
-    }}
-    code {{
+    }
+    code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       background: var(--bg-subtle);
@@ -772,8 +772,8 @@
       padding: 2px 6px;
       border-radius: 4px;
       border: 1px solid var(--border-warm);
-    }}
-    .copy-btn {{
+    }
+    .copy-btn {
       position: absolute;
       top: 10px;
       right: 10px;
@@ -786,23 +786,23 @@
       font-size: 11px;
       cursor: pointer;
       transition: all 0.15s ease;
-    }}
-    .copy-btn:hover {{
+    }
+    .copy-btn:hover {
       background: var(--isro-orange);
       color: #FFFFFF;
       border-color: var(--isro-orange);
-    }}
+    }
 
     /* ── PAN-ZOOM MERMAID FRAME ── */
-    .mermaid-panzoom-container {{
+    .mermaid-panzoom-container {
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-xl);
       background: #FFFFFF;
       margin: 24px 0 30px;
       overflow: hidden;
       box-shadow: var(--shadow-sm);
-    }}
-    .mermaid-toolbar {{
+    }
+    .mermaid-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -813,21 +813,21 @@
       color: var(--text-muted);
       flex-wrap: wrap;
       gap: 8px;
-    }}
-    .mermaid-toolbar-title {{
+    }
+    .mermaid-toolbar-title {
       font-family: 'Outfit', sans-serif;
       font-weight: 700;
       color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 6px;
-    }}
-    .panzoom-actions {{
+    }
+    .panzoom-actions {
       display: flex;
       align-items: center;
       gap: 6px;
-    }}
-    .pz-btn {{
+    }
+    .pz-btn {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: 6px;
@@ -840,20 +840,20 @@
       align-items: center;
       gap: 4px;
       transition: all 0.15s ease;
-    }}
-    .pz-btn:hover {{
+    }
+    .pz-btn:hover {
       background: var(--isro-orange-light);
       border-color: var(--isro-orange-border);
       color: var(--isro-orange);
-    }}
-    .pz-scale-readout {{
+    }
+    .pz-scale-readout {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--text-muted);
       min-width: 46px;
       text-align: center;
-    }}
-    .mermaid-viewport {{
+    }
+    .mermaid-viewport {
       height: 520px;
       width: 100%;
       position: relative;
@@ -864,43 +864,43 @@
       cursor: grab;
       touch-action: none;
       user-select: none;
-    }}
-    .mermaid-viewport:active {{
+    }
+    .mermaid-viewport:active {
       cursor: grabbing;
-    }}
-    .mermaid-canvas {{
+    }
+    .mermaid-canvas {
       transform-origin: 0 0;
       position: absolute;
       top: 0;
       left: 0;
       will-change: transform;
       padding: 40px;
-    }}
+    }
 
     /* Sprint Cards */
-    .sprint-grid {{
+    .sprint-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
       margin: 22px 0;
-    }}
-    .sprint-card {{
+    }
+    .sprint-card {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-md);
       padding: 20px;
       box-shadow: var(--shadow-sm);
       position: relative;
-    }}
-    .sprint-card::before {{
+    }
+    .sprint-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
       background: var(--isro-orange);
       border-radius: var(--radius-md) var(--radius-md) 0 0;
-    }}
-    .sprint-phase-num {{
+    }
+    .sprint-phase-num {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 700;
@@ -908,24 +908,24 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 6px;
-    }}
-    .sprint-title {{
+    }
+    .sprint-title {
       font-family: 'Outfit', sans-serif;
       font-size: 15px;
       font-weight: 700;
       color: var(--text-main);
       margin-bottom: 8px;
-    }}
-    .sprint-card ul {{ list-style: none; padding: 0; }}
-    .sprint-card li {{
+    }
+    .sprint-card ul { list-style: none; padding: 0; }
+    .sprint-card li {
       font-size: 12.5px;
       color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 7px;
       position: relative;
       padding-left: 14px;
-    }}
-    .sprint-card li::before {{ content: '•'; color: #EA580C; position: absolute; left: 0; font-size: 16px; }}
+    }
+    .sprint-card li::before { content: '•'; color: #EA580C; position: absolute; left: 0; font-size: 16px; }
 
     /* ── COMPONENT EXTRACTED CUSTOM STYLES ── */
     
@@ -3644,23 +3644,23 @@
   
 
     /* Responsive */
-    @media (max-width: 900px) {{
-      body {{ flex-direction: column; }}
-      .sidebar {{
+    @media (max-width: 900px) {
+      body { flex-direction: column; }
+      .sidebar {
         width: 100%;
         height: auto;
         position: relative;
-      }}
-      .main-wrap {{
+      }
+      .main-wrap {
         padding: 24px 18px 60px;
-      }}
-      .doc-section {{
+      }
+      .doc-section {
         padding: 24px 18px;
-      }}
-      .mermaid-viewport {{
+      }
+      .mermaid-viewport {
         height: 380px;
-      }}
-    }}
+      }
+    }
   </style>
 </head>
 <body>
@@ -8327,28 +8327,28 @@ sequenceDiagram
       const curr = services[activeService];
 
       return (
-        <div style={{
+        <div style={
           background: '#FFFFFF',
           border: '1px solid var(--border-warm)',
           borderRadius: '16px',
           padding: '24px 28px',
           marginBottom: '36px',
           boxShadow: 'var(--shadow-sm)'
-        }}>
-          <div style={{
+        }>
+          <div style={
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '16px',
             flexWrap: 'wrap',
             gap: '10px'
-          }}>
-            <div style={{
+          }>
+            <div style={
               display: 'flex',
               alignItems: 'center',
               gap: '8px'
-            }}>
-              <span style={{
+            }>
+              <span style={
                 background: 'rgba(234, 88, 12, 0.15)',
                 color: '#EA580C',
                 fontFamily: "'JetBrains Mono', monospace",
@@ -8356,17 +8356,17 @@ sequenceDiagram
                 fontWeight: 700,
                 padding: '3px 8px',
                 borderRadius: '6px'
-              }}>REACT INTERACTIVE CONTROLLER</span>
-              <h3 style={{ margin: 0, fontSize: '16px', fontFamily: "'Outfit', sans-serif" }}>
+              }>REACT INTERACTIVE CONTROLLER</span>
+              <h3 style={ margin: 0, fontSize: '16px', fontFamily: "'Outfit', sans-serif" }>
                 Architecture Microservice Live Inspector
               </h3>
             </div>
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div style={ display: 'flex', gap: '6px' }>
               {Object.keys(services).map(key => (
                 <button
                   key={key}
                   onClick={() => setActiveService(key)}
-                  style={{
+                  style={
                     background: activeService === key ? '#EA580C' : '#FAF7F2',
                     color: activeService === key ? '#FFFFFF' : '#736B63',
                     border: '1px solid ' + (activeService === key ? '#EA580C' : '#E7E0D6'),
@@ -8377,7 +8377,7 @@ sequenceDiagram
                     fontWeight: 600,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
-                  }}
+                  }
                 >
                   {key.toUpperCase()}
                 </button>
@@ -8385,26 +8385,26 @@ sequenceDiagram
             </div>
           </div>
 
-          <div style={{
+          <div style={
             background: '#FAF7F2',
             border: '1px solid #E7E0D6',
             borderRadius: '12px',
             padding: '18px 22px'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+          }>
+            <div style={ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }>
               <div>
-                <span style={{
+                <span style={
                   fontSize: '10px',
                   fontFamily: "'JetBrains Mono', monospace",
                   color: '#EA580C',
                   fontWeight: 700,
                   textTransform: 'uppercase'
-                }}>{curr.badge}</span>
-                <h4 style={{ margin: '2px 0 0', fontSize: '16px', color: '#1C1917', fontFamily: "'Outfit', sans-serif" }}>
+                }>{curr.badge}</span>
+                <h4 style={ margin: '2px 0 0', fontSize: '16px', color: '#1C1917', fontFamily: "'Outfit', sans-serif" }>
                   {curr.title}
                 </h4>
               </div>
-              <span style={{
+              <span style={
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '11px',
                 background: '#FFFFFF',
@@ -8412,14 +8412,14 @@ sequenceDiagram
                 padding: '3px 8px',
                 borderRadius: '6px',
                 color: '#2563EB'
-              }}>
+              }>
                 {curr.runtime}
               </span>
             </div>
-            <p style={{ fontSize: '13px', color: '#332F2B', lineHeight: 1.6, margin: '10px 0' }}>
+            <p style={ fontSize: '13px', color: '#332F2B', lineHeight: 1.6, margin: '10px 0' }>
               {curr.desc}
             </p>
-            <div style={{
+            <div style={
               display: 'inline-block',
               background: '#FFFFFF',
               border: '1px solid #E7E0D6',
@@ -8429,7 +8429,7 @@ sequenceDiagram
               fontSize: '11px',
               color: '#059669',
               fontWeight: 600
-            }}>
+            }>
               ✓ {curr.spec}
             </div>
           </div>
@@ -8446,10 +8446,10 @@ sequenceDiagram
   <!-- INTERACTIVE LOGIC: PANZOOM, MERMAID, SEARCH, MODULE FILTER, SCROLLSPY -->
   <script>
     // Initialize Mermaid 10
-    mermaid.initialize({{
+    mermaid.initialize({
       startOnLoad: true,
       theme: 'base',
-      themeVariables: {{
+      themeVariables: {
         primaryColor: '#FFF7ED',
         primaryBorderColor: '#EA580C',
         primaryTextColor: '#1C1917',
@@ -8460,12 +8460,12 @@ sequenceDiagram
         tertiaryBorderColor: '#7C3AED',
         fontFamily: 'Inter, sans-serif',
         fontSize: '13px'
-      }},
-      flowchart: {{
+      },
+      flowchart: {
         curve: 'basis',
         htmlLabels: true
-      }},
-      sequence: {{
+      },
+      sequence: {
         diagramMarginX: 50,
         diagramMarginY: 10,
         actorMargin: 50,
@@ -8475,11 +8475,11 @@ sequenceDiagram
         boxTextMargin: 5,
         noteMargin: 10,
         messageMargin: 35
-      }}
-    }});
+      }
+    });
 
     // ── BATTLE-TESTED TOUCH, FINGER, TRACKPAD & MOUSE PAN-ZOOM CONTROLLER ──
-    function setupPanZoom(containerId, zoomInId, zoomOutId, zoomResetId) {{
+    function setupPanZoom(containerId, zoomInId, zoomOutId, zoomResetId) {
       const container = document.getElementById(containerId);
       if (!container) return;
 
@@ -8501,29 +8501,29 @@ sequenceDiagram
       let initialPanX = 0;
       let initialPanY = 0;
 
-      function getSvgDimensions() {{
-        if (!targetSvg) return {{ w: 1000, h: 600 }};
+      function getSvgDimensions() {
+        if (!targetSvg) return { w: 1000, h: 600 };
         let w = 0, h = 0;
-        if (targetSvg.viewBox && targetSvg.viewBox.baseVal && targetSvg.viewBox.baseVal.width > 0) {{
+        if (targetSvg.viewBox && targetSvg.viewBox.baseVal && targetSvg.viewBox.baseVal.width > 0) {
           w = targetSvg.viewBox.baseVal.width;
           h = targetSvg.viewBox.baseVal.height;
-        }} else {{
-          try {{
+        } else {
+          try {
             const b = targetSvg.getBBox();
-            if (b && b.width > 0) {{
+            if (b && b.width > 0) {
               w = b.width;
               h = b.height;
-            }}
-          }} catch (err) {{}}
-        }}
-        if (!w || !h) {{
+            }
+          } catch (err) {}
+        }
+        if (!w || !h) {
           w = targetSvg.clientWidth || targetSvg.scrollWidth || 1000;
           h = targetSvg.clientHeight || targetSvg.scrollHeight || 600;
-        }}
-        return {{ w, h }};
-      }}
+        }
+        return { w, h };
+      }
 
-      function bindSvg() {{
+      function bindSvg() {
         targetSvg = container.querySelector('svg');
         if (!targetSvg) return false;
         targetSvg.style.transformOrigin = '0 0';
@@ -8535,9 +8535,9 @@ sequenceDiagram
 
         centerInitial();
         return true;
-      }}
+      }
 
-      function centerInitial() {{
+      function centerInitial() {
         if (!targetSvg) return;
         const cRect = container.getBoundingClientRect();
         const dims = getSvgDimensions();
@@ -8557,50 +8557,50 @@ sequenceDiagram
         if (panY < 12) panY = 12;
 
         updateTransform(false);
-      }}
+      }
 
-      function updateTransform(smooth) {{
+      function updateTransform(smooth) {
         if (!targetSvg) return;
         targetSvg.style.transition = smooth ? 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
-        targetSvg.style.transform = `translate(${{panX}}px, ${{panY}}px) scale(${{scale}})`;
+        targetSvg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
         const readout = container.querySelector('.pz-scale-readout');
-        if (readout) {{
-          readout.textContent = `${{Math.round(scale * 100)}}%`;
-        }}
-      }}
+        if (readout) {
+          readout.textContent = `${Math.round(scale * 100)}%`;
+        }
+      }
 
       // Wait for Mermaid async rendering
-      if (!bindSvg()) {{
-        const observer = new MutationObserver(() => {{
+      if (!bindSvg()) {
+        const observer = new MutationObserver(() => {
           if (bindSvg()) observer.disconnect();
-        }});
-        observer.observe(container, {{ childList: true, subtree: true }});
-      }}
+        });
+        observer.observe(container, { childList: true, subtree: true });
+      }
 
       // 1. Mouse Drag
-      container.addEventListener('mousedown', (e) => {{
+      container.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
         if (!targetSvg) bindSvg();
         isPanning = true;
         startX = e.clientX - panX;
         startY = e.clientY - panY;
         container.style.cursor = 'grabbing';
-      }});
+      });
 
-      window.addEventListener('mousemove', (e) => {{
+      window.addEventListener('mousemove', (e) => {
         if (!isPanning) return;
         panX = e.clientX - startX;
         panY = e.clientY - startY;
         updateTransform(false);
-      }});
+      });
 
-      window.addEventListener('mouseup', () => {{
+      window.addEventListener('mouseup', () => {
         isPanning = false;
         if (container) container.style.cursor = 'grab';
-      }});
+      });
 
       // 2. Mouse Wheel & Trackpad Pinch
-      container.addEventListener('wheel', (e) => {{
+      container.addEventListener('wheel', (e) => {
         e.preventDefault();
         if (!targetSvg) bindSvg();
         const rect = container.getBoundingClientRect();
@@ -8608,28 +8608,28 @@ sequenceDiagram
         const cursorY = e.clientY - rect.top;
 
         let zoomFactor;
-        if (e.ctrlKey) {{
+        if (e.ctrlKey) {
           zoomFactor = Math.exp(-e.deltaY * 0.01);
-        }} else {{
+        } else {
           zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-        }}
+        }
 
         const newScale = Math.max(0.2, Math.min(4.5, scale * zoomFactor));
         panX = cursorX - (cursorX - panX) * (newScale / scale);
         panY = cursorY - (cursorY - panY) * (newScale / scale);
         scale = newScale;
         updateTransform(false);
-      }}, {{ passive: false }});
+      }, { passive: false });
 
       // 3. Touch Gestures (Finger Pan & Pinch-to-Zoom)
-      container.addEventListener('touchstart', (e) => {{
+      container.addEventListener('touchstart', (e) => {
         if (!targetSvg) bindSvg();
-        if (e.touches.length === 1) {{
+        if (e.touches.length === 1) {
           isPanning = true;
           isPinching = false;
           touchStartX = e.touches[0].clientX - panX;
           touchStartY = e.touches[0].clientY - panY;
-        }} else if (e.touches.length >= 2) {{
+        } else if (e.touches.length >= 2) {
           isPanning = false;
           isPinching = true;
           const t1 = e.touches[0];
@@ -8641,20 +8641,20 @@ sequenceDiagram
           const rect = container.getBoundingClientRect();
           initialPinchMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
           initialPinchMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
-        }}
-      }}, {{ passive: false }});
+        }
+      }, { passive: false });
 
-      container.addEventListener('touchmove', (e) => {{
+      container.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        if (isPanning && e.touches.length === 1) {{
+        if (isPanning && e.touches.length === 1) {
           panX = e.touches[0].clientX - touchStartX;
           panY = e.touches[0].clientY - touchStartY;
           updateTransform(false);
-        }} else if (isPinching && e.touches.length >= 2) {{
+        } else if (isPinching && e.touches.length >= 2) {
           const t1 = e.touches[0];
           const t2 = e.touches[1];
           const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-          if (initialPinchDist > 5) {{
+          if (initialPinchDist > 5) {
             const pinchRatio = currentDist / initialPinchDist;
             const newScale = Math.max(0.2, Math.min(4.5, initialPinchScale * pinchRatio));
 
@@ -8667,30 +8667,30 @@ sequenceDiagram
             scale = newScale;
 
             updateTransform(false);
-          }}
-        }}
-      }}, {{ passive: false }});
+          }
+        }
+      }, { passive: false });
 
-      container.addEventListener('touchend', (e) => {{
-        if (e.touches.length === 1) {{
+      container.addEventListener('touchend', (e) => {
+        if (e.touches.length === 1) {
           isPinching = false;
           isPanning = true;
           touchStartX = e.touches[0].clientX - panX;
           touchStartY = e.touches[0].clientY - panY;
-        }} else if (e.touches.length === 0) {{
+        } else if (e.touches.length === 0) {
           isPanning = false;
           isPinching = false;
-        }}
-      }});
+        }
+      });
 
       // 4. Double Click / Double Tap
-      container.addEventListener('dblclick', (e) => {{
+      container.addEventListener('dblclick', (e) => {
         e.preventDefault();
         if (!targetSvg) bindSvg();
-        if (scale > 1.3) {{
+        if (scale > 1.3) {
           centerInitial();
           updateTransform(true);
-        }} else {{
+        } else {
           const rect = container.getBoundingClientRect();
           const cursorX = e.clientX - rect.left;
           const cursorY = e.clientY - rect.top;
@@ -8699,15 +8699,15 @@ sequenceDiagram
           panY = cursorY - (cursorY - panY) * (newScale / scale);
           scale = newScale;
           updateTransform(true);
-        }}
-      }});
+        }
+      });
 
       // 5. Button Controls
       const zoomInBtn = document.getElementById(zoomInId);
       const zoomOutBtn = document.getElementById(zoomOutId);
       const zoomResetBtn = document.getElementById(zoomResetId);
 
-      function buttonZoom(factor) {{
+      function buttonZoom(factor) {
         if (!targetSvg) bindSvg();
         const rect = container.getBoundingClientRect();
         const midX = rect.width / 2;
@@ -8717,125 +8717,125 @@ sequenceDiagram
         panY = midY - (midY - panY) * (newScale / scale);
         scale = newScale;
         updateTransform(true);
-      }}
+      }
 
       if (zoomInBtn) zoomInBtn.addEventListener('click', () => buttonZoom(1.3));
       if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => buttonZoom(0.77));
-      if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {{
+      if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {
         centerInitial();
         updateTransform(true);
-      }});
-    }}
+      });
+    }
 
     // Bind on load
-    window.addEventListener('DOMContentLoaded', () => {{
+    window.addEventListener('DOMContentLoaded', () => {
       setupPanZoom('mermaidBoxMain', 'zoomInBtn', 'zoomOutBtn', 'zoomResetBtn');
       setupPanZoom('mermaidBoxSeq', 'seqZoomInBtn', 'seqZoomOutBtn', 'seqZoomResetBtn');
       setupPanZoom('masterPlanMermaidBox', 'mpZoomInBtn', 'mpZoomOutBtn', 'mpZoomResetBtn');
       setupCodeCopyButtons();
       setupScrollSpy();
-    }});
+    });
 
     // Code copy buttons
-    function setupCodeCopyButtons() {{
-      document.querySelectorAll('pre').forEach(pre => {{
+    function setupCodeCopyButtons() {
+      document.querySelectorAll('pre').forEach(pre => {
         if (pre.querySelector('.copy-btn')) return;
         const btn = document.createElement('button');
         btn.className = 'copy-btn';
         btn.textContent = 'Copy';
-        btn.onclick = () => {{
+        btn.onclick = () => {
           navigator.clipboard.writeText(pre.innerText.replace('Copy', '').trim());
           btn.textContent = 'Copied!';
           setTimeout(() => btn.textContent = 'Copy', 2000);
-        }};
+        };
         const wrap = document.createElement('div');
         wrap.className = 'code-block-wrap';
         pre.parentNode.insertBefore(wrap, pre);
         wrap.appendChild(pre);
         wrap.appendChild(btn);
-      }});
-    }}
+      });
+    }
 
     // Module Filtering (ALL, 00-06)
-    function filterModules(modNum) {{
+    function filterModules(modNum) {
       const buttons = document.querySelectorAll('.mod-filter-btn');
-      buttons.forEach(btn => {{
+      buttons.forEach(btn => {
         btn.classList.toggle('active', btn.textContent.trim() === modNum || (modNum === 'all' && btn.textContent.trim() === 'ALL'));
-      }});
+      });
 
       const modules = document.querySelectorAll('.doc-module');
       const tocGroups = document.querySelectorAll('.toc-group');
 
-      modules.forEach(m => {{
+      modules.forEach(m => {
         const mNum = m.getAttribute('data-module');
-        if (modNum === 'all' || mNum === modNum) {{
+        if (modNum === 'all' || mNum === modNum) {
           m.style.display = 'block';
-        }} else {{
+        } else {
           m.style.display = 'none';
-        }}
-      }});
+        }
+      });
 
-      tocGroups.forEach(g => {{
+      tocGroups.forEach(g => {
         const gNum = g.getAttribute('data-group-module');
-        if (modNum === 'all' || gNum === modNum) {{
+        if (modNum === 'all' || gNum === modNum) {
           g.style.display = 'block';
-        }} else {{
+        } else {
           g.style.display = 'none';
-        }}
-      }});
-    }}
+        }
+      });
+    }
 
-    function scrollToModule(modId) {{
+    function scrollToModule(modId) {
       const el = document.getElementById(modId);
-      if (el) {{
+      if (el) {
         el.style.display = 'block';
-        el.scrollIntoView({{ behavior: 'smooth' }});
-      }}
-    }}
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
 
     // Search function
-    function searchDocs(query) {{
+    function searchDocs(query) {
       const q = query.toLowerCase().trim();
       const sections = document.querySelectorAll('.doc-section');
       const tocLinks = document.querySelectorAll('.sidebar-toc-link');
 
-      if (!q) {{
+      if (!q) {
         sections.forEach(s => s.style.display = 'block');
         tocLinks.forEach(l => l.style.display = 'flex');
         return;
-      }}
+      }
 
-      sections.forEach(s => {{
+      sections.forEach(s => {
         const text = s.innerText.toLowerCase();
         s.style.display = text.includes(q) ? 'block' : 'none';
-      }});
+      });
 
-      tocLinks.forEach(l => {{
+      tocLinks.forEach(l => {
         const targetId = l.getAttribute('data-target');
         const targetSec = document.getElementById(targetId);
-        if (targetSec && targetSec.style.display !== 'none') {{
+        if (targetSec && targetSec.style.display !== 'none') {
           l.style.display = 'flex';
-        }} else {{
+        } else {
           l.style.display = 'none';
-        }}
-      }});
-    }}
+        }
+      });
+    }
 
     // ScrollSpy
-    function setupScrollSpy() {{
-      const observer = new IntersectionObserver((entries) => {{
-        entries.forEach(entry => {{
-          if (entry.isIntersecting) {{
+    function setupScrollSpy() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
             const id = entry.target.id;
-            document.querySelectorAll('.sidebar-toc-link').forEach(link => {{
+            document.querySelectorAll('.sidebar-toc-link').forEach(link => {
               link.classList.toggle('active', link.getAttribute('data-target') === id);
-            }});
-          }}
-        }});
-      }}, {{ rootMargin: '-20% 0px -70% 0px' }});
+            });
+          }
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
 
       document.querySelectorAll('.doc-section').forEach(sec => observer.observe(sec));
-    }}
+    }
   </script>
 </body>
 </html>
