@@ -993,7 +993,33 @@
       .hero-chips { flex-direction: column; }
       .hero-chip { width: 100%; }
     }
+  
+    /* ── MERMAID STYLING ── */
+    .mermaid-wrapper {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      margin: 24px 0;
+      box-shadow: var(--shadow-md);
+    }
+    .mermaid-box {
+      background: #FAF8F5;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px 14px;
+      overflow-x: auto;
+      text-align: center;
+      margin: 16px 0;
+    }
+    .mermaid svg {
+      max-width: 100% !important;
+      height: auto !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
 
@@ -1166,6 +1192,133 @@
           Interactive pill flow diagram representing the end-to-end execution loop. <strong>Click any pill node</strong> to jump directly to its architectural specification and code:
         </p>
 
+                <!-- ── MERMAID MICROSERVICES TOPOLOGY ── -->
+        <div class="mermaid-wrapper">
+          <div class="flow-canvas-header" style="margin-bottom:16px;">
+            <div class="flow-canvas-title">
+              <span>🏛️ PRATYAKSHA Microservices Architecture Topology</span>
+            </div>
+            <div class="flow-canvas-meta">
+              <span class="flow-meta-tag fmt-orange">Mermaid 10.x Vector</span>
+              <span class="flow-meta-tag fmt-green">8 Discrete Services</span>
+              <span class="flow-meta-tag fmt-purple">Zero-Knowledge Vault</span>
+            </div>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+            Complete architectural relationships between the 4 on-device local services, edge ingress gateway, and air-gapped intranet reasoning services:
+          </p>
+          <div class="mermaid-box">
+            <pre class="mermaid">
+flowchart TD
+    %% Custom Semantic Styling Classes
+    classDef client fill:#EFF6FF,stroke:#2563EB,stroke-width:2px,color:#1E40AF;
+    classDef shield fill:#FFF7ED,stroke:#EA580C,stroke-width:2px,color:#9A3412;
+    classDef vault fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#5B21B6;
+    classDef gateway fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef cloud fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#065F46;
+    classDef storage fill:#F8FAFC,stroke:#475569,stroke-width:2px,color:#1E293B;
+    classDef gate fill:#FFF1F2,stroke:#E11D48,stroke-width:2px,stroke-dasharray: 4 4,color:#9F1239;
+
+    subgraph PHASE1 ["🔒 STAGE 1: ON-DEVICE PERCEPTION & PRIVACY SHIELD (Client MV3 Sandbox)"]
+        direction TB
+        User(["👤 User / Security Operator"]):::client
+        SidePanel["🖥️ svc-ext-shell (Chrome Side Panel UI · Audit HUD)"]:::client
+        TargetTab["🌐 Target Web Portal (ISRO e-Procurement · GeM · SAKSHAM)"]:::client
+        ContentExtractor["📜 Content Script (DOM Scene Tree Extractor & Element Walker)"]:::client
+        
+        subgraph WEBGPU_PIPELINE ["⚡ svc-vision-local (Dedicated WebGPU Offscreen Context)"]
+            TileDiff["⚡ 8x8 Dirty-Tile dHash (Temporal Diff Filter · Skips >85% Static Frames)"]:::shield
+            NeuralDet["🔍 DBNet-Tiny + Ultra-Light-Face (Neural Text & Biometric Detectors)"]:::shield
+            IndicOCR["🔤 Indic CRNN Engine (Devanagari, Tamil, Hindi, Latin OCR)"]:::shield
+            PIIRules["🇮🇳 Sovereign PII Validator (Verhoeff Checksum · PAN · GSTIN)"]:::shield
+            Inpainter["🎨 Safety Halo Inpainter (4px Dilated Redaction Canvas)"]:::shield
+        end
+
+        VaultTokenize[("🔐 svc-vault-local: Tokenize<br/>(Maps Real PII ➔ ⟨SYNTHETIC_TOKENS⟩ in AES-256 Vault)")]:::vault
+        MerkleChain[("📜 Tamper-Proof Audit Chain (SHA-256 Merkle Ledger)")]:::vault
+    end
+
+    subgraph PHASE2 ["🚪 STAGE 2: ZERO-TRUST EDGE GATEWAY & EGRESS PERIMETER (DMZ)"]
+        direction TB
+        EgressGuard{"🛡️ Zero-Raw-PII Egress Guard<br/>(Hardware / Heuristic Packet Filter)"}:::gate
+        APIGateway["🚪 svc-gateway<br/>(Envoy Ingress · TLS 1.3 mTLS · WSS Proxy)"]:::gateway
+        AuthService["🔑 svc-auth<br/>(Device Attestation & Short-Lived JWT)"]:::gateway
+    end
+
+    subgraph PHASE3 ["🧠 STAGE 3: SOVEREIGN REASONING TIER (Air-Gapped Intranet)"]
+        direction TB
+        Orchestrator["🧠 svc-orchestrator<br/>(FastAPI · LangGraph State Machine Loop)"]:::cloud
+        SovereignVLM["🤖 svc-vlm-cloud<br/>(Qwen2.5-VL-7B · vLLM PagedAttention GPU)"]:::cloud
+        PolicyEngine["📜 svc-policy<br/>(Open Policy Agent · Rego Guardrails)"]:::cloud
+        
+        subgraph PERSISTENCE ["💾 Enterprise Telemetry & Persistence"]
+            PostgresDB[("🗄️ PostgreSQL (Session State & Trajectories)")]:::storage
+            RedisCluster[("⚡ Redis Cluster (Locks & Token Cache)")]:::storage
+            TimescaleDB[("📊 TimescaleDB (High-Throughput Telemetry)")]:::storage
+            MinIOS3[("📦 MinIO S3 (Sanitized Frames & Audit)")]:::storage
+        end
+    end
+
+    subgraph PHASE4 ["🔐 STAGE 4: LOCAL REHYDRATION & SAFE DOM EXECUTION (Service Worker & Tab)"]
+        direction TB
+        AgentRunner["🤖 svc-agent-local<br/>(Action Downlink Receiver & State Machine)"]:::client
+        HumanApprovalGate{"⚠️ Level-3 Risk Gate<br/>(Mandatory User Confirmation Modal)"}:::gate
+        VaultRehydrate[("🔐 svc-vault-local: Rehydrate<br/>(Swaps ⟨TOKEN⟩ ➔ Real PII in Local Volatile RAM)")]:::vault
+        DOMDispatcher["📜 Content Script (Synthetic Event Dispatcher)"]:::client
+        MutatedTab["🌐 Target Web Portal (Mutated DOM State / Form Filled)"]:::client
+    end
+
+    %% STAGE 1 FLOW
+    User -->|"1. Submit Task Intent"| SidePanel
+    SidePanel -->|"2. Trigger Capture"| ContentExtractor
+    ContentExtractor -->|"3a. DOM Scene Tree"| Inpainter
+    TargetTab -->|"3b. Viewport Pixels (captureVisibleTab)"| TileDiff
+    
+    TileDiff -->|"4. Changed Tiles"| NeuralDet
+    NeuralDet -->|"5. BBoxes (Text & Faces)"| IndicOCR
+    IndicOCR -->|"6. Extracted Strings"| PIIRules
+    PIIRules -->|"7. Verified Coordinates"| VaultTokenize
+    
+    VaultTokenize -->|"8. Synthetic Tokens (⟨AADHAAR_01⟩)"| Inpainter
+    Inpainter -->|"9. Sanitized Canvas + Token Graph"| MerkleChain
+    MerkleChain -->|"10. Chained Hash Proof"| EgressGuard
+
+    %% STAGE 2 FLOW
+    EgressGuard -->|"11. Verified Zero-PII Egress"| APIGateway
+    APIGateway <-->|"12. Validate JWT & Device Attestation"| AuthService
+    APIGateway -->|"13. Forward Sanitized Request"| Orchestrator
+
+    %% STAGE 3 FLOW
+    Orchestrator -->|"14. Visual Reasoning Prompt (Tokens Only)"| SovereignVLM
+    SovereignVLM -->|"15. Candidate Action Hypothesis"| PolicyEngine
+    PolicyEngine -->|"16. Validated Action JSON"| Orchestrator
+    
+    Orchestrator -.->|"Session State"| PostgresDB
+    Orchestrator -.->|"Token Locks"| RedisCluster
+    Orchestrator -.->|"Real-Time Metrics"| TimescaleDB
+    Orchestrator -.->|"Sanitized Frame Audit"| MinIOS3
+
+    %% STAGE 4 FLOW (Linear forward transition)
+    Orchestrator ==>|"17. WSS Action Plan Downlink"| AgentRunner
+    AgentRunner -->|"18. Evaluate Action Severity"| HumanApprovalGate
+    HumanApprovalGate -->|"L3 Mutation: Prompt User"| SidePanel
+    SidePanel -->|"User Approves"| AgentRunner
+    HumanApprovalGate -->|"L1/L2 Safe: Auto-Proceed"| VaultRehydrate
+    
+    AgentRunner -->|"19. Resolve Token ⟨AADHAAR_01⟩"| VaultRehydrate
+    VaultRehydrate -->|"20. Decrypted String (In-Memory Only)"| AgentRunner
+    AgentRunner -->|"21. Dispatch Synthetic Event (Click / Type)"| DOMDispatcher
+    DOMDispatcher -->|"22. Apply Mutation to Active DOM"| MutatedTab
+    MutatedTab -.->|"23. Next Frame Closed-Loop Perception"| TargetTab
+            </pre>
+          </div>
+        </div>
+
+        <div class="flow-canvas-header" style="margin-top:28px; margin-bottom:12px;">
+          <div class="flow-canvas-title">
+            <span>⚡ Interactive Execution Loop &amp; Sub-Component Inspector</span>
+          </div>
+        </div>
         <div class="flow-canvas">
           <div class="flow-canvas-header">
             <div class="flow-canvas-title">
@@ -1213,7 +1366,7 @@
                     <span class="pill-jump">&rarr;</span>
                   </a>
 
-                  <a href="./03_perception_problem.html#s3" class="flow-pill pill-blue">
+                  <a href="./03_perception_problem.html#dirty-tiles" class="flow-pill pill-blue">
                     <div class="pill-icon">&#x26A1;</div>
                     <div class="pill-text">
                       <div class="pill-title">8&times;8 Dirty-Tile dHash</div>
@@ -1242,7 +1395,7 @@
                   <div class="stage-latency">~32ms WebGPU Execution</div>
                 </div>
                 <div class="pill-cluster">
-                  <a href="./03_perception_problem.html#s4" class="flow-pill pill-orange">
+                  <a href="./03_perception_problem.html#models" class="flow-pill pill-orange">
                     <div class="pill-icon">&#x1F464;</div>
                     <div class="pill-text">
                       <div class="pill-title">Ultra-Light-Face ONNX</div>
@@ -1252,7 +1405,7 @@
                     <span class="pill-jump">&rarr;</span>
                   </a>
 
-                  <a href="./03_perception_problem.html#s4" class="flow-pill pill-orange">
+                  <a href="./03_perception_problem.html#models" class="flow-pill pill-orange">
                     <div class="pill-icon">&#x1F524;</div>
                     <div class="pill-text">
                       <div class="pill-title">DBNet-Tiny + CRNN OCR</div>
@@ -1262,7 +1415,7 @@
                     <span class="pill-jump">&rarr;</span>
                   </a>
 
-                  <a href="./03_perception_problem.html#s5" class="flow-pill pill-orange">
+                  <a href="./03_perception_problem.html#rule-engine" class="flow-pill pill-orange">
                     <div class="pill-icon">&#x1F1EE;&#x1F1F3;</div>
                     <div class="pill-text">
                       <div class="pill-title">Verhoeff &amp; Modulo-36</div>
@@ -1272,7 +1425,7 @@
                     <span class="pill-jump">&rarr;</span>
                   </a>
 
-                  <a href="./02_browser_agent.html#s3" class="flow-pill pill-purple">
+                  <a href="./02_browser_agent.html#perception-loop" class="flow-pill pill-purple">
                     <div class="pill-icon">&#x1F510;</div>
                     <div class="pill-text">
                       <div class="pill-title">Reversible Pseudonym Vault</div>
@@ -1282,7 +1435,7 @@
                     <span class="pill-jump">&rarr;</span>
                   </a>
 
-                  <a href="./03_perception_problem.html#s6" class="flow-pill pill-orange">
+                  <a href="./03_perception_problem.html#complete-perceive" class="flow-pill pill-orange">
                     <div class="pill-icon">&#x1F3A8;</div>
                     <div class="pill-text">
                       <div class="pill-title">Safety Halo Inpainter</div>
@@ -1336,7 +1489,7 @@
                 <span class="pill-jump">&rarr;</span>
               </a>
 
-              <a href="./01_master_plan.html#s4" class="flow-pill pill-green">
+              <a href="./01_master_plan.html#architecture" class="flow-pill pill-green">
                 <div class="pill-icon">&#x1F9E0;</div>
                 <div class="pill-text">
                   <div class="pill-title">Qwen2.5-VL-7B-Instruct</div>
@@ -1346,7 +1499,7 @@
                 <span class="pill-jump">&rarr;</span>
               </a>
 
-              <a href="./02_browser_agent.html#s5" class="flow-pill pill-green">
+              <a href="./02_browser_agent.html#rehydration" class="flow-pill pill-green">
                 <div class="pill-icon">&#x1F4CB;</div>
                 <div class="pill-text">
                   <div class="pill-title">Structured Action JSON</div>
@@ -1377,7 +1530,7 @@
               <div class="stage-latency" style="color:#0F766E; background:#CCFBF1; border-color:#5EEAD4;">&lt;5ms Injection</div>
             </div>
             <div class="pill-cluster">
-              <a href="./02_browser_agent.html#s3" class="flow-pill pill-teal">
+              <a href="./02_browser_agent.html#perception-loop" class="flow-pill pill-teal">
                 <div class="pill-icon">&#x1F504;</div>
                 <div class="pill-text">
                   <div class="pill-title">Local Vault Rehydration</div>
@@ -1387,7 +1540,7 @@
                 <span class="pill-jump">&rarr;</span>
               </a>
 
-              <a href="./02_browser_agent.html#s2" class="flow-pill pill-teal">
+              <a href="./02_browser_agent.html#mv3-arch" class="flow-pill pill-teal">
                 <div class="pill-icon">&#x26A1;</div>
                 <div class="pill-text">
                   <div class="pill-title">DOM Event Dispatcher</div>
@@ -1593,7 +1746,7 @@
         </div>
 
         <div class="innovations-grid">
-          <a href="./02_browser_agent.html#s3" class="inno-card">
+          <a href="./02_browser_agent.html#perception-loop" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#EFF6FF; color:#2563EB;">&#x1F510;</div>
               <div class="inno-title">Reversible Pseudonym Vault</div>
@@ -1603,7 +1756,7 @@
             </div>
           </a>
 
-          <a href="./03_perception_problem.html#s2" class="inno-card">
+          <a href="./03_perception_problem.html#dual-channel" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#FFF7ED; color:#EA580C;">&#x1F6E1;&#xFE0F;</div>
               <div class="inno-title">Fail-Closed Dual-Channel Fusion</div>
@@ -1613,7 +1766,7 @@
             </div>
           </a>
 
-          <a href="./03_perception_problem.html#s5" class="inno-card">
+          <a href="./03_perception_problem.html#rule-engine" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#ECFDF5; color:#059669;">&#x1F1EE;&#x1F1F3;</div>
               <div class="inno-title">Sovereign Indian PII Stack</div>
@@ -1663,25 +1816,25 @@
                 <td class="strong-col">On-Device ML Runtime</td>
                 <td>ONNX Runtime Web (<code>@webgpu</code> + <code>@wasm</code>)</td>
                 <td>Near-native GPU acceleration in browser sandbox without native binary drivers</td>
-                <td><a href="./03_perception_problem.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 03 ML &rarr;</a></td>
+                <td><a href="./03_perception_problem.html#models" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 03 ML &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Client Vision Models</td>
                 <td>DBNet-Tiny + Ultra-Light-Face + CRNN (~20MB)</td>
                 <td>Sub-50ms text &amp; face localization; quantized int8 execution</td>
-                <td><a href="./03_perception_problem.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">Model Specs &rarr;</a></td>
+                <td><a href="./03_perception_problem.html#models" style="color:#EA580C; font-weight:600; text-decoration:none;">Model Specs &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Server Reasoning VLM</td>
                 <td>Qwen2.5-VL-7B-Instruct on vLLM</td>
                 <td>Open-weights, state-of-the-art vision-language reasoning, 100% self-hosted</td>
-                <td><a href="./01_master_plan.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 01 VLM &rarr;</a></td>
+                <td><a href="./01_master_plan.html#architecture" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 01 VLM &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">PII Validation Logic</td>
                 <td>Pure TypeScript (Verhoeff, Modulo-36, Regex)</td>
                 <td>Zero external network calls; mathematically deterministic validation</td>
-                <td><a href="./03_perception_problem.html#s5" style="color:#EA580C; font-weight:600; text-decoration:none;">PII Code &rarr;</a></td>
+                <td><a href="./03_perception_problem.html#rule-engine" style="color:#EA580C; font-weight:600; text-decoration:none;">PII Code &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Egress Audit Ledger</td>
@@ -1728,7 +1881,7 @@
                 <td class="strong-col">PII &amp; Security Lead</td>
                 <td>Verhoeff/PAN/GSTIN rules, Pseudonym Vault, SHA-256 egress ledger</td>
                 <td>Rehydration vault, rule validator suite, Merkle audit trail</td>
-                <td><a href="./02_browser_agent.html#s3" style="color:#EA580C; font-weight:600; text-decoration:none;">Vault Spec</a> &amp; <a href="./04_hld.html#s5" style="color:#EA580C; font-weight:600; text-decoration:none;">HLD Sec</a></td>
+                <td><a href="./02_browser_agent.html#perception-loop" style="color:#EA580C; font-weight:600; text-decoration:none;">Vault Spec</a> &amp; <a href="./04_hld.html#s5" style="color:#EA580C; font-weight:600; text-decoration:none;">HLD Sec</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Server &amp; VLM Lead</td>
@@ -1740,7 +1893,7 @@
                 <td class="strong-col">Benchmark &amp; Demo Lead</td>
                 <td>Mock ISRO e-procurement portal, IndoGov-PII dataset, demo pitch video</td>
                 <td>Evaluation test suite, sample PDF forms, live judging presentation</td>
-                <td><a href="./02_browser_agent.html#s6" style="color:#EA580C; font-weight:600; text-decoration:none;">Demo Script</a></td>
+                <td><a href="./02_browser_agent.html#security" style="color:#EA580C; font-weight:600; text-decoration:none;">Demo Script</a></td>
               </tr>
             </tbody>
           </table>
@@ -1833,6 +1986,31 @@
         }
       });
     });
-  </script>
+  
+  // Initialize Mermaid.js
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#FFF7ED',
+        primaryBorderColor: '#EA580C',
+        primaryTextColor: '#1C1917',
+        lineColor: '#EA580C',
+        secondaryColor: '#EFF6FF',
+        secondaryBorderColor: '#2563EB',
+        tertiaryColor: '#F5F3FF',
+        tertiaryBorderColor: '#7C3AED',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px'
+      },
+      flowchart: {
+        curve: 'basis',
+        htmlLabels: true
+      }
+    });
+  }
+
+</script>
 </body>
 </html>

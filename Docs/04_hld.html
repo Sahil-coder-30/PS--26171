@@ -298,7 +298,138 @@
       .flow-step + .flow-step { margin-left: 0; margin-top: 24px; }
     }
     
+  
+    /* ── MERMAID & ARCHITECTURE DIAGRAM CONTAINER ── */
+    .mermaid-wrapper {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      margin: 28px 0 32px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .mermaid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-warm);
+    }
+    .mermaid-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mermaid-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mermaid-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .mt-orange { background: #FFF7ED; border-color: #FDBA74; color: #C2410C; }
+    .mt-green { background: #ECFDF5; border-color: #A7F3D0; color: #047857; }
+    .mt-purple { background: #F5F3FF; border-color: #DDD6FE; color: #6D28D9; }
+    .mt-blue { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+
+    .mermaid-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 16px;
+      overflow: auto;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .mermaid svg {
+      min-width: 900px;
+      max-width: 100%;
+      height: auto !important;
+      font-family: 'Inter', sans-serif !important;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: top center;
+    }
+    .mermaid-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mermaid-btn {
+      background: #FAF7F2;
+      border: 1px solid var(--border-warm);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mermaid-btn:hover {
+      background: #F0EAE1;
+      color: var(--text-main);
+      border-color: var(--isro-orange);
+    }
+    .mermaid-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      padding: 12px 16px;
+      background: #FAF7F2;
+      border: 1px solid var(--border-warm);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .ld-client { background: #EFF6FF; border-color: #2563EB; }
+    .ld-shield { background: #FFF7ED; border-color: #EA580C; }
+    .ld-vault { background: #F5F3FF; border-color: #7C3AED; }
+    .ld-gateway { background: #FEF3C7; border-color: #D97706; }
+    .ld-cloud { background: #ECFDF5; border-color: #059669; }
+    .ld-storage { background: #F8FAFC; border-color: #475569; }
+    .ld-gate { background: #FFF1F2; border-color: #E11D48; }
+
+    /* MICROSERVICE CONNECTIVITY MATRIX */
+    .matrix-table-wrap {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 16px;
+    }
+
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
 
@@ -320,7 +451,6 @@
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">&#x2715;</button>
-  <div class="sidebar-header">
     <div class="brand-badge">&#x1F6E1; PRATYAKSHA</div>
     <div class="brand-title">&#x092A;&#x094D;&#x0930;&#x0924;&#x094D;&#x092F;&#x0915;&#x094D;&#x0937;<span class="brand-devanagari">A</span></div>
     <div class="brand-subtitle">SIH 2026 &middot; PS-26171 (ISRO SAC)<br/>On-Device Visual Perception</div>
@@ -387,48 +517,205 @@
       <div class="callout-icon">&#x1F510;</div>
       <div class="callout-body"><div class="callout-title">The Core Privacy Contract</div>Raw screenshots, biometric data (faces), and Aadhaar/PAN numbers are <strong>NEVER transmitted</strong> outside the browser extension. The Vault service pseudonymises all PII before anything crosses the local boundary. The cloud sees only tokens like <span class="mono">&#x27E8;FACE_001&#x27E9;</span> and <span class="mono">&#x27E8;AADHAAR_01&#x27E9;</span>.</div>
     </div>
-    <!-- LAYERED ARCHITECTURE DIAGRAM -->
-    <div class="arch-diagram">
-      <div class="arch-title">&#x1F3D7;&#xFE0F; PRATYAKSHA &mdash; Layered Architecture Overview</div>
-      <div class="system-layer layer-client" data-label="CLIENT LAYER (Local — Chrome Extension)">
-        <div class="layer-services-grid">
-          <div class="svc-chip orange"><span class="svc-icon">&#x1F5A5;&#xFE0F;</span>Extension Shell<br/><small>Popup + Side Panel</small></div>
-          <div class="svc-chip blue"><span class="svc-icon">&#x1F441;&#xFE0F;</span>Vision Worker<br/><small>WebGPU ONNX</small></div>
-          <div class="svc-chip purple"><span class="svc-icon">&#x1F512;</span>Vault Service<br/><small>IndexedDB PII Store</small></div>
-          <div class="svc-chip amber"><span class="svc-icon">&#x1F916;</span>Agent Runner<br/><small>DOM Executor</small></div>
+        <!-- ── MERMAID MASTER ARCHITECTURE FLOWCHART ── -->
+    <div class="mermaid-wrapper" id="masterArchitectureWrap">
+      <div class="mermaid-header">
+        <div class="mermaid-title">
+          <span>🏛️ Master Microservices Architecture &amp; Service Relationships</span>
+        </div>
+        <div class="mermaid-controls">
+          <button class="mermaid-btn" id="zoomInBtn" title="Zoom In">🔍 +</button>
+          <button class="mermaid-btn" id="zoomOutBtn" title="Zoom Out">🔍 &minus;</button>
+          <button class="mermaid-btn" id="zoomResetBtn" title="Reset View">&#x23FA; Reset</button>
         </div>
       </div>
-      <div class="flow-arrow">&#x2B07;&#xFE0F;&nbsp; Only sanitized scene graph + tokens cross this boundary &nbsp;&#x2B07;&#xFE0F;</div>
-      <div class="system-layer layer-gateway" data-label="GATEWAY LAYER (Cloud Edge — Cloudflare Workers)">
-        <div class="layer-services-grid">
-          <div class="svc-chip orange"><span class="svc-icon">&#x1F6AA;</span>API Gateway<br/><small>Auth + Rate Limit</small></div>
-          <div class="svc-chip teal"><span class="svc-icon">&#x1F511;</span>Auth Service<br/><small>JWT + OAuth 2.0</small></div>
-        </div>
+
+      <div class="mermaid-legend">
+        <div class="legend-item"><span class="legend-dot ld-client"></span><span>Client Presentation &amp; Runner</span></div>
+        <div class="legend-item"><span class="legend-dot ld-shield"></span><span>WebGPU Vision Privacy Shield</span></div>
+        <div class="legend-item"><span class="legend-dot ld-vault"></span><span>Zero-Knowledge Cryptographic Vault</span></div>
+        <div class="legend-item"><span class="legend-dot ld-gateway"></span><span>Edge Ingress &amp; Auth (DMZ)</span></div>
+        <div class="legend-item"><span class="legend-dot ld-cloud"></span><span>Sovereign Cloud Reasoning (vLLM)</span></div>
+        <div class="legend-item"><span class="legend-dot ld-storage"></span><span>Enterprise Storage &amp; Telemetry</span></div>
+        <div class="legend-item"><span class="legend-dot ld-gate"></span><span>Security &amp; Human Approval Gate</span></div>
       </div>
-      <div class="flow-arrow">&#x2B07;&#xFE0F;&nbsp; Verified, sanitized requests only &nbsp;&#x2B07;&#xFE0F;</div>
-      <div class="system-layer layer-services" data-label="SERVICES LAYER (Cloud Compute — Docker + Kubernetes)">
-        <div class="layer-services-grid">
-          <div class="svc-chip purple"><span class="svc-icon">&#x1F9E0;</span>Agent Orchestrator<br/><small>FastAPI + LangGraph</small></div>
-          <div class="svc-chip blue"><span class="svc-icon">&#x1F52D;</span>Cloud VLM Reasoner<br/><small>Gemini / GPT-4V</small></div>
-          <div class="svc-chip green"><span class="svc-icon">&#x1F4DC;</span>Policy Engine<br/><small>OPA + Rego Rules</small></div>
-          <div class="svc-chip amber"><span class="svc-icon">&#x1F4CA;</span>Analytics Service<br/><small>TimescaleDB</small></div>
-        </div>
+
+      <div class="mermaid-box" id="mermaidBoxMain">
+        <pre class="mermaid" id="mermaidPreMain">
+flowchart TD
+    %% Custom Semantic Styling Classes
+    classDef client fill:#EFF6FF,stroke:#2563EB,stroke-width:2px,color:#1E40AF;
+    classDef shield fill:#FFF7ED,stroke:#EA580C,stroke-width:2px,color:#9A3412;
+    classDef vault fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#5B21B6;
+    classDef gateway fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef cloud fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#065F46;
+    classDef storage fill:#F8FAFC,stroke:#475569,stroke-width:2px,color:#1E293B;
+    classDef gate fill:#FFF1F2,stroke:#E11D48,stroke-width:2px,stroke-dasharray: 4 4,color:#9F1239;
+
+    subgraph PHASE1 ["🔒 STAGE 1: ON-DEVICE PERCEPTION & PRIVACY SHIELD (Client MV3 Sandbox)"]
+        direction TB
+        User(["👤 User / Security Operator"]):::client
+        SidePanel["🖥️ svc-ext-shell (Chrome Side Panel UI · Audit HUD)"]:::client
+        TargetTab["🌐 Target Web Portal (ISRO e-Procurement · GeM · SAKSHAM)"]:::client
+        ContentExtractor["📜 Content Script (DOM Scene Tree Extractor & Element Walker)"]:::client
+        
+        subgraph WEBGPU_PIPELINE ["⚡ svc-vision-local (Dedicated WebGPU Offscreen Context)"]
+            TileDiff["⚡ 8x8 Dirty-Tile dHash (Temporal Diff Filter · Skips >85% Static Frames)"]:::shield
+            NeuralDet["🔍 DBNet-Tiny + Ultra-Light-Face (Neural Text & Biometric Detectors)"]:::shield
+            IndicOCR["🔤 Indic CRNN Engine (Devanagari, Tamil, Hindi, Latin OCR)"]:::shield
+            PIIRules["🇮🇳 Sovereign PII Validator (Verhoeff Checksum · PAN · GSTIN)"]:::shield
+            Inpainter["🎨 Safety Halo Inpainter (4px Dilated Redaction Canvas)"]:::shield
+        end
+
+        VaultTokenize[("🔐 svc-vault-local: Tokenize<br/>(Maps Real PII ➔ ⟨SYNTHETIC_TOKENS⟩ in AES-256 Vault)")]:::vault
+        MerkleChain[("📜 Tamper-Proof Audit Chain (SHA-256 Merkle Ledger)")]:::vault
+    end
+
+    subgraph PHASE2 ["🚪 STAGE 2: ZERO-TRUST EDGE GATEWAY & EGRESS PERIMETER (DMZ)"]
+        direction TB
+        EgressGuard{"🛡️ Zero-Raw-PII Egress Guard<br/>(Hardware / Heuristic Packet Filter)"}:::gate
+        APIGateway["🚪 svc-gateway<br/>(Envoy Ingress · TLS 1.3 mTLS · WSS Proxy)"]:::gateway
+        AuthService["🔑 svc-auth<br/>(Device Attestation & Short-Lived JWT)"]:::gateway
+    end
+
+    subgraph PHASE3 ["🧠 STAGE 3: SOVEREIGN REASONING TIER (Air-Gapped Intranet)"]
+        direction TB
+        Orchestrator["🧠 svc-orchestrator<br/>(FastAPI · LangGraph State Machine Loop)"]:::cloud
+        SovereignVLM["🤖 svc-vlm-cloud<br/>(Qwen2.5-VL-7B · vLLM PagedAttention GPU)"]:::cloud
+        PolicyEngine["📜 svc-policy<br/>(Open Policy Agent · Rego Guardrails)"]:::cloud
+        
+        subgraph PERSISTENCE ["💾 Enterprise Telemetry & Persistence"]
+            PostgresDB[("🗄️ PostgreSQL (Session State & Trajectories)")]:::storage
+            RedisCluster[("⚡ Redis Cluster (Locks & Token Cache)")]:::storage
+            TimescaleDB[("📊 TimescaleDB (High-Throughput Telemetry)")]:::storage
+            MinIOS3[("📦 MinIO S3 (Sanitized Frames & Audit)")]:::storage
+        end
+    end
+
+    subgraph PHASE4 ["🔐 STAGE 4: LOCAL REHYDRATION & SAFE DOM EXECUTION (Service Worker & Tab)"]
+        direction TB
+        AgentRunner["🤖 svc-agent-local<br/>(Action Downlink Receiver & State Machine)"]:::client
+        HumanApprovalGate{"⚠️ Level-3 Risk Gate<br/>(Mandatory User Confirmation Modal)"}:::gate
+        VaultRehydrate[("🔐 svc-vault-local: Rehydrate<br/>(Swaps ⟨TOKEN⟩ ➔ Real PII in Local Volatile RAM)")]:::vault
+        DOMDispatcher["📜 Content Script (Synthetic Event Dispatcher)"]:::client
+        MutatedTab["🌐 Target Web Portal (Mutated DOM State / Form Filled)"]:::client
+    end
+
+    %% STAGE 1 FLOW
+    User -->|"1. Submit Task Intent"| SidePanel
+    SidePanel -->|"2. Trigger Capture"| ContentExtractor
+    ContentExtractor -->|"3a. DOM Scene Tree"| Inpainter
+    TargetTab -->|"3b. Viewport Pixels (captureVisibleTab)"| TileDiff
+    
+    TileDiff -->|"4. Changed Tiles"| NeuralDet
+    NeuralDet -->|"5. BBoxes (Text & Faces)"| IndicOCR
+    IndicOCR -->|"6. Extracted Strings"| PIIRules
+    PIIRules -->|"7. Verified Coordinates"| VaultTokenize
+    
+    VaultTokenize -->|"8. Synthetic Tokens (⟨AADHAAR_01⟩)"| Inpainter
+    Inpainter -->|"9. Sanitized Canvas + Token Graph"| MerkleChain
+    MerkleChain -->|"10. Chained Hash Proof"| EgressGuard
+
+    %% STAGE 2 FLOW
+    EgressGuard -->|"11. Verified Zero-PII Egress"| APIGateway
+    APIGateway <-->|"12. Validate JWT & Device Attestation"| AuthService
+    APIGateway -->|"13. Forward Sanitized Request"| Orchestrator
+
+    %% STAGE 3 FLOW
+    Orchestrator -->|"14. Visual Reasoning Prompt (Tokens Only)"| SovereignVLM
+    SovereignVLM -->|"15. Candidate Action Hypothesis"| PolicyEngine
+    PolicyEngine -->|"16. Validated Action JSON"| Orchestrator
+    
+    Orchestrator -.->|"Session State"| PostgresDB
+    Orchestrator -.->|"Token Locks"| RedisCluster
+    Orchestrator -.->|"Real-Time Metrics"| TimescaleDB
+    Orchestrator -.->|"Sanitized Frame Audit"| MinIOS3
+
+    %% STAGE 4 FLOW (Linear forward transition)
+    Orchestrator ==>|"17. WSS Action Plan Downlink"| AgentRunner
+    AgentRunner -->|"18. Evaluate Action Severity"| HumanApprovalGate
+    HumanApprovalGate -->|"L3 Mutation: Prompt User"| SidePanel
+    SidePanel -->|"User Approves"| AgentRunner
+    HumanApprovalGate -->|"L1/L2 Safe: Auto-Proceed"| VaultRehydrate
+    
+    AgentRunner -->|"19. Resolve Token ⟨AADHAAR_01⟩"| VaultRehydrate
+    VaultRehydrate -->|"20. Decrypted String (In-Memory Only)"| AgentRunner
+    AgentRunner -->|"21. Dispatch Synthetic Event (Click / Type)"| DOMDispatcher
+    DOMDispatcher -->|"22. Apply Mutation to Active DOM"| MutatedTab
+    MutatedTab -.->|"23. Next Frame Closed-Loop Perception"| TargetTab
+        </pre>
       </div>
-      <div class="flow-arrow">&#x2B07;&#xFE0F;&nbsp; Async events &amp; action plans &nbsp;&#x2B07;&#xFE0F;</div>
-      <div class="system-layer layer-data" data-label="DATA LAYER (Persistence)">
-        <div class="layer-services-grid">
-          <div class="svc-chip teal"><span class="svc-icon">&#x1F5C3;&#xFE0F;</span>PostgreSQL<br/><small>Sessions + Audit</small></div>
-          <div class="svc-chip blue"><span class="svc-icon">&#x1F534;</span>Redis<br/><small>Token Cache</small></div>
-          <div class="svc-chip purple"><span class="svc-icon">&#x1F4E6;</span>S3-Compatible<br/><small>Sanitized Artifacts</small></div>
-          <div class="svc-chip green"><span class="svc-icon">&#x1F4C8;</span>TimescaleDB<br/><small>Telemetry</small></div>
-        </div>
-      </div>
-      <div class="system-layer layer-infra" data-label="INFRASTRUCTURE (Observability + CI/CD)">
-        <div class="layer-services-grid">
-          <div class="svc-chip green"><span class="svc-icon">&#x1F4E1;</span>OpenTelemetry<br/><small>Traces + Metrics</small></div>
-          <div class="svc-chip slate"><span class="svc-icon">&#x1F527;</span>GitHub Actions<br/><small>CI/CD Pipeline</small></div>
-          <div class="svc-chip slate"><span class="svc-icon">&#x1F433;</span>Docker + K8s<br/><small>Container Orchestration</small></div>
-        </div>
+
+      <div class="matrix-table-wrap">
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Service Codename</th>
+              <th>Deployment Zone</th>
+              <th>Runtime &amp; Protocol</th>
+              <th>Upstream / Downstream Relationships</th>
+              <th>Security &amp; Data Contract</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>svc-ext-shell</code></td>
+              <td>Chrome MV3 Extension</td>
+              <td>Side Panel UI · Chrome Runtime WSS</td>
+              <td>User &rarr; <code>svc-agent-local</code>, <code>Content Script</code></td>
+              <td>Zero network egress authority; user intent input &amp; audit diff UI only.</td>
+            </tr>
+            <tr>
+              <td><code>svc-vision-local</code></td>
+              <td>Offscreen Document</td>
+              <td>WebGPU · ONNX Runtime Web</td>
+              <td>Tab Canvas &rarr; <code>svc-vault-local</code>, <code>svc-ledger-local</code></td>
+              <td>Local GPU acceleration; destroys raw pixel buffer immediately after sanitization.</td>
+            </tr>
+            <tr>
+              <td><code>svc-vault-local</code></td>
+              <td>Service Worker</td>
+              <td>IndexedDB (AES-256-GCM)</td>
+              <td><code>svc-vision-local</code> &harr; <code>svc-agent-local</code></td>
+              <td>Single source of truth for PII tokens; keys never leave client device memory.</td>
+            </tr>
+            <tr>
+              <td><code>svc-agent-local</code></td>
+              <td>Service Worker</td>
+              <td>TypeScript Event Loop</td>
+              <td><code>svc-orchestrator</code> &rarr; <code>Content Script</code></td>
+              <td>Executes action plans; prompts user on high-severity mutations (payment, delete).</td>
+            </tr>
+            <tr>
+              <td><code>svc-gateway</code></td>
+              <td>Edge Ingress (Envoy)</td>
+              <td>TLS 1.3 · Mutual Auth · WSS/HTTPS</td>
+              <td>Client Extension &rarr; <code>svc-orchestrator</code></td>
+              <td>Rejects any incoming payload failing heuristic Indian PII checks.</td>
+            </tr>
+            <tr>
+              <td><code>svc-orchestrator</code></td>
+              <td>Private Kubernetes Cluster</td>
+              <td>FastAPI + LangGraph · Python 3.11</td>
+              <td><code>svc-gateway</code> &harr; <code>svc-vlm-cloud</code>, <code>svc-policy</code></td>
+              <td>Multi-step goal decomposition; handles workflow state transitions.</td>
+            </tr>
+            <tr>
+              <td><code>svc-vlm-cloud</code></td>
+              <td>Air-Gapped Intranet GPU</td>
+              <td>vLLM · Qwen2.5-VL-7B-Instruct</td>
+              <td><code>svc-orchestrator</code></td>
+              <td>Pure vision reasoning over sanitized scene; emits token-targeted action hypotheses.</td>
+            </tr>
+            <tr>
+              <td><code>svc-policy</code></td>
+              <td>Private Kubernetes Cluster</td>
+              <td>Open Policy Agent (OPA) · Rego</td>
+              <td><code>svc-orchestrator</code></td>
+              <td>Enforces URL allowlists, rate limiting, and destructive action blocks.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class="highlight-row">
@@ -508,17 +795,55 @@
       <h2 class="section-title">7-Step Data-Flow Architecture</h2>
     </div>
     <p class="section-lead">Every PRATYAKSHA request follows a strict 7-step pipeline. Steps 1&#x2013;3 are executed locally; steps 4&#x2013;5 happen in the cloud (with only sanitized data); steps 6&#x2013;7 rehydrate tokens back to real values locally before the agent acts.</p>
-    <div class="flow-diagram">
-      <div class="arch-title">&#x1F4CA; The 7-Step Privacy-Preserving Data Flow</div>
-      <div class="flow-steps">
-        <div class="flow-step"><div class="flow-step-num">STEP 1</div><span class="flow-step-icon">&#x1F4F8;</span><div class="flow-step-name">PERCEIVE</div><div class="flow-step-svc">Extension Shell<br/>DOM + Tab Capture</div></div>
-        <div class="flow-step"><div class="flow-step-num">STEP 2</div><span class="flow-step-icon">&#x1F441;&#xFE0F;</span><div class="flow-step-name">DETECT</div><div class="flow-step-svc">Vision Worker<br/>ONNX / WebGPU</div></div>
-        <div class="flow-step"><div class="flow-step-num">STEP 3</div><span class="flow-step-icon">&#x1F512;</span><div class="flow-step-name">SANITIZE</div><div class="flow-step-svc">Vault Service<br/>PII &#x2192; Tokens</div></div>
-        <div class="flow-step"><div class="flow-step-num">STEP 4</div><span class="flow-step-icon">&#x1F52D;</span><div class="flow-step-name">REASON</div><div class="flow-step-svc">Cloud VLM<br/>Scene Understanding</div></div>
-        <div class="flow-step"><div class="flow-step-num">STEP 5</div><span class="flow-step-icon">&#x1F9E0;</span><div class="flow-step-name">PLAN</div><div class="flow-step-svc">Orchestrator<br/>Action Graph</div></div>
-        <div class="flow-step"><div class="flow-step-num">STEP 6</div><span class="flow-step-icon">&#x1F504;</span><div class="flow-step-name">REHYDRATE</div><div class="flow-step-svc">Vault Service<br/>Tokens &#x2192; PII (local)</div></div>
-        <div class="flow-step"><div class="flow-step-num">STEP 7</div><span class="flow-step-icon">&#x26A1;</span><div class="flow-step-name">EXECUTE</div><div class="flow-step-svc">Agent Runner<br/>DOM Events</div></div>
+        <!-- ── MERMAID 7-STEP CHRONOLOGICAL SEQUENCE ── -->
+    <div class="mermaid-wrapper">
+      <div class="mermaid-header">
+        <div class="mermaid-title">
+          <span>⏱️ The 7-Step Privacy-Preserving Execution Sequence</span>
+        </div>
+        <div class="mermaid-meta">
+          <span class="mermaid-tag mt-orange">Step-by-Step Call Stack</span>
+          <span class="mermaid-tag mt-purple">Reversible Vault Loop</span>
+          <span class="mermaid-tag mt-green">End-to-End Latency: &lt;1.2s</span>
+        </div>
       </div>
+
+      <div class="mermaid-box">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor User as 👤 User / Operator
+    participant Tab as 🌐 Target Tab DOM
+    participant Content as 📜 Content Script
+    participant Offscreen as ⚡ WebGPU Privacy Shield
+    participant Vault as 🔐 Local Vault Service
+    participant Gateway as 🚪 API Gateway
+    participant Orchestrator as 🧠 Orchestrator (LangGraph)
+    participant VLM as 🤖 Sovereign VLM (vLLM)
+
+    User->>Content: 1. Submit task intent via Side Panel ("Fill supplier bid")
+    Content->>Tab: 2. Traverse interactive elements & computed styles
+    Tab-->>Content: 3. Return structured DOM scene tree
+    Content->>Offscreen: 4. chrome.tabs.captureVisibleTab() + DOM scene tree
+    Note over Offscreen: Stage A: 8x8 dHash skips redundant static tiles<br/>Stage B: DBNet detects text regions in PDFs/Canvases<br/>Stage C: Ultra-Light-Face flags biometrics<br/>Stage D: CRNN OCR extracts Devanagari + Latin strings<br/>Stage E: Verhoeff algorithm validates 12-digit Aadhaar
+    Offscreen->>Vault: 5. Register verified PII {type: 'AADHAAR', raw: '5489-1234-8901', bbox}
+    Vault-->>Offscreen: 6. Return typed token ⟨AADHAAR_01⟩
+    Note over Offscreen: Stage F: 4px safety halo dilation inpainting on canvas<br/>Stage G: SHA-256 Merkle egress hash proof generated
+    Offscreen->>Gateway: 7. POST /v1/agent/task (Sanitized canvas + Tokenized scene + Hash proof)
+    Note over Gateway: Ingress inspection: Verify TLS 1.3 + JWT<br/>Heuristic check: Zero raw PII allowed across boundary
+    Gateway->>Orchestrator: 8. Forward sanitized task context
+    Orchestrator->>VLM: 9. Prompt Qwen2.5-VL with sanitized image & token IDs
+    Note over VLM: Model inspects layout & synthetic tokens<br/>Plans next step: Click input box ⟨AADHAAR_01⟩
+    VLM-->>Orchestrator: 10. Emits structured action plan JSON
+    Orchestrator-->>Content: 11. Stream Action Plan frame via WebSocket
+    Note over Content: Intercept action targeting ⟨AADHAAR_01⟩
+    Content->>Vault: 12. Query real decrypted value for token ⟨AADHAAR_01⟩
+    Vault-->>Content: 13. Return real Aadhaar string (in local RAM only)
+    Content->>Tab: 14. dispatchEvent(new InputEvent('input', {data: realValue}))
+    Tab-->>User: 15. Real-time visual confirmation in portal
+        </pre>
+      </div>
+    </div>
     </div>
     <div class="card"><div class="card-title">&#x1F4F8; Step 1 &mdash; PERCEIVE: Dual-Channel Screen Understanding</div><div class="card-body"><strong>Channel A &mdash; DOM Extraction:</strong> The content script enumerates all interactive and semantic DOM nodes (inputs, buttons, headings, paragraphs, tables), extracting text content, ARIA labels, bounding boxes, and computed styles to produce a structured node tree.<br/><br/><strong>Channel B &mdash; Pixel Capture:</strong> <span class="mono">chrome.tabs.captureVisibleTab()</span> captures the current viewport as a high-resolution PNG. This is passed directly to the Vision Worker &mdash; it <strong>NEVER</strong> leaves the local context before sanitization.<br/><br/><strong>Non-DOM Content (Key Innovation):</strong> PDFs rendered by the browser, embedded iframes, canvas elements, and SVG infographics cannot be read by DOM extraction alone. The Vision Worker's pixel pipeline handles these via the OCR + detection stack &mdash; this is the core problem this PS solves.</div></div>
     <div class="card"><div class="card-title">&#x1F441;&#xFE0F; Step 2 &mdash; DETECT: Vision Worker Model Pipeline</div><div class="card-body">The Vision Worker runs 4 models in sequence, each taking ~30 ms on WebGPU (total ~120 ms):<br/><br/><strong>&#x2460; Face Detector</strong> &mdash; YOLOv8-nano INT8: Detects all faces, produces bounding boxes. All detected faces are registered as <span class="mono">&#x27E8;FACE_N&#x27E9;</span> tokens in the Vault.<br/><strong>&#x2461; Text Region Detector</strong> &mdash; DBNet-small: Detects all text regions including regions inside images/PDFs that DOM can't reach.<br/><strong>&#x2462; Indic OCR</strong> &mdash; CRNN with Devanagari + Latin: Reads text from detected regions. Pattern-matches against PII regexes (Aadhaar: 12-digit, PAN: AAAAA-9999-A, phone numbers, bank accounts).<br/><strong>&#x2463; Content Classifier</strong> &mdash; MobileNetV4-tiny: Classifies screen context (BANKING, MEDICAL, GOVERNMENT, GENERAL) to apply appropriate sanitization policy level.</div></div>
@@ -878,6 +1203,63 @@
     link.addEventListener('click', () => {
       if (window.innerWidth <= 900) closeSidebar();
     });
+  });
+
+
+  // Initialize Mermaid.js
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#FFF7ED',
+        primaryBorderColor: '#EA580C',
+        primaryTextColor: '#1C1917',
+        lineColor: '#EA580C',
+        secondaryColor: '#EFF6FF',
+        secondaryBorderColor: '#2563EB',
+        tertiaryColor: '#F5F3FF',
+        tertiaryBorderColor: '#7C3AED',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px'
+      },
+      flowchart: {
+        curve: 'basis',
+        htmlLabels: true
+      },
+      sequence: {
+        diagramMarginX: 50,
+        diagramMarginY: 10,
+        actorMargin: 50,
+        width: 150,
+        height: 65,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35
+      }
+    });
+  }
+
+  // Interactive Zoom / Reset Controls for Master Architecture Diagram
+  let currentZoom = 1;
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomResetBtn = document.getElementById('zoomResetBtn');
+
+  function applyZoom(delta) {
+    const svg = document.querySelector('#mermaidBoxMain svg');
+    if (!svg) return;
+    currentZoom = Math.max(0.6, Math.min(2.4, currentZoom + delta));
+    svg.style.transform = `scale(${currentZoom})`;
+  }
+
+  if (zoomInBtn) zoomInBtn.addEventListener('click', () => applyZoom(0.15));
+  if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => applyZoom(-0.15));
+  if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {
+    currentZoom = 1;
+    const svg = document.querySelector('#mermaidBoxMain svg');
+    if (svg) svg.style.transform = 'scale(1)';
   });
 
 </script>
