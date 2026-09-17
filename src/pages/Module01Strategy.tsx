@@ -2,6 +2,7 @@ import React from 'react';
 import { MermaidView } from '../components/MermaidView';
 import { RubricCalculator } from '../components/RubricCalculator';
 import { MASTER_PLAN_MERMAID } from '../data/mermaidDiagrams';
+import { MASTER_PLAN_HTML } from '../data/rawHtml/masterPlanHtml';
 
 interface Props {
   onNavigate: (route: string, sectionId?: string) => void;
@@ -50,6 +51,17 @@ export const Module01Strategy: React.FC<Props> = ({ onNavigate }) => {
           }}>
             EVALUATION &amp; STRATEGY
           </span>
+          <span style={{
+            background: '#D1FAE5',
+            color: '#047857',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '11px',
+            padding: '3px 10px',
+            borderRadius: '6px',
+            fontWeight: 700
+          }}>
+            ✓ 100% COMPLETE SPECIFICATION
+          </span>
         </div>
 
         <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '32px', fontWeight: 800, color: 'var(--text-main)', margin: '0 0 12px' }}>
@@ -60,101 +72,61 @@ export const Module01Strategy: React.FC<Props> = ({ onNavigate }) => {
         </p>
       </header>
 
-      {/* SECTION 1: EXECUTIVE CONTEXT */}
-      <section id="m1-s1" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 01</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          Executive Overview &amp; National Space Context
-        </h2>
-        <div className="callout info" style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '12px', padding: '18px 22px', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-            <span style={{ fontSize: '24px' }}>🚀</span>
-            <div>
-              <strong style={{ color: '#1E40AF', fontSize: '14px' }}>ISRO SAC Mandate (Problem Statement 26171):</strong>
-              <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#1E3A8A', lineHeight: 1.6 }}>
-                National aerospace procurement systems (GeM, ISRO SAC e-procurement portals) process classified payloads, tender specifications, and vendor bank credentials. Deploying cloud-dependent browser agents introduces severe data sovereignty vulnerabilities. PRATYAKSHA ensures 100% on-premise, zero-trust sovereign automation.
-              </p>
-            </div>
-          </div>
+      {/* SECTION 1: OVERVIEW & CENTRAL CRISIS */}
+      <section id="overview" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.overview }} />
+      </section>
+
+      {/* SECTION 2: 100-POINT EVALUATION RUBRIC */}
+      <section id="rubric" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.rubric }} />
+
+        {/* Interactive Rubric Calculator */}
+        <div style={{ marginTop: '28px' }}>
+          <RubricCalculator />
         </div>
       </section>
 
-      {/* SECTION 2: 100-POINT RUBRIC CALCULATOR */}
-      <section id="m1-s2" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 02</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          100-Point Evaluation Rubric Breakdown
-        </h2>
-        <p style={{ fontSize: '14px', color: 'var(--text-body)', lineHeight: 1.6, marginBottom: '20px' }}>
-          Use the interactive scoring tool below to verify our 100-point alignment across Technical Innovation, Privacy Compliance, Portal Robustness, Self-Healing, and Production Readiness:
-        </p>
-
-        <RubricCalculator />
+      {/* SECTION 3: MARKET ANALYSIS */}
+      <section id="market" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.market }} />
       </section>
 
-      {/* SECTION 3: MASTER PLAN MERMAID FLOWCHART */}
-      <section id="m1-s3" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 03</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          Master Plan Architecture Flowchart (Mermaid)
-        </h2>
-        <p style={{ fontSize: '14px', color: 'var(--text-body)', lineHeight: 1.6, marginBottom: '16px' }}>
-          This flowchart models the end-to-end execution path from operator intent submission in the Chrome Side Panel, down through local WebGPU redactors, into the air-gapped sovereign cluster, and back for verified local rehydration:
-        </p>
+      {/* SECTION 4: FULL SYSTEM ARCHITECTURE & MERMAID FLOWCHART */}
+      <section id="architecture" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.architecture_part1 || MASTER_PLAN_HTML.architecture }} />
 
+        {/* Authentic Master Plan Mermaid Flowchart */}
         <MermaidView
-          id="master-plan-chart"
+          id="master-plan-canvas"
           chart={MASTER_PLAN_MERMAID}
           title="PRATYAKSHA Strategic Execution Flowchart"
           subtitle="Mermaid 10 interactive diagram — pan, zoom, inspect client-to-cloud boundary"
         />
+
+        {MASTER_PLAN_HTML.architecture_part2 && (
+          <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.architecture_part2 }} />
+        )}
       </section>
 
-      {/* SECTION 4: COMPETITIVE MOATS */}
-      <section id="m1-s4" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 04</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          Competitive Moats vs Generic Cloud Agents
-        </h2>
+      {/* SECTION 5: ON-DEVICE MODEL PIPELINE */}
+      <section id="models" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.models }} />
+      </section>
 
-        <div className="table-container" style={{ overflowX: 'auto', border: '1px solid var(--border-warm)', borderRadius: '12px', background: '#FFFFFF' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-            <thead>
-              <tr style={{ background: '#FAF7F2', borderBottom: '1px solid var(--border-warm)', textAlign: 'left' }}>
-                <th style={{ padding: '12px 16px' }}>Evaluation Criterion</th>
-                <th style={{ padding: '12px 16px' }}>Browser-Use / Adept</th>
-                <th style={{ padding: '12px 16px' }}>OpenAI Operator</th>
-                <th style={{ padding: '12px 16px', background: '#FFF7ED', color: '#EA580C' }}>PRATYAKSHA (Our Solution)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style={{ borderBottom: '1px solid var(--border-warm)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>PII Data Privacy</td>
-                <td style={{ padding: '12px 16px', color: '#DC2626' }}>❌ Raw viewports streamed to US cloud</td>
-                <td style={{ padding: '12px 16px', color: '#DC2626' }}>❌ Cloud telemetry logging</td>
-                <td style={{ padding: '12px 16px', background: '#FFF7ED', color: '#059669', fontWeight: 700 }}>✅ 0.00% PII Egress (On-Device WebGPU)</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-warm)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>Canvas &amp; Complex Portal OCR</td>
-                <td style={{ padding: '12px 16px', color: '#DC2626' }}>❌ DOM-only blind spots</td>
-                <td style={{ padding: '12px 16px', color: '#D97706' }}>⚠️ Latent cloud VLM inference</td>
-                <td style={{ padding: '12px 16px', background: '#FFF7ED', color: '#059669', fontWeight: 700 }}>✅ Dual-Stream Fusion + Indic CRNN</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-warm)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>State Resilience</td>
-                <td style={{ padding: '12px 16px', color: '#DC2626' }}>❌ Unchecked ReAct loops</td>
-                <td style={{ padding: '12px 16px', color: '#D97706' }}>⚠️ Proprietary black box</td>
-                <td style={{ padding: '12px 16px', background: '#FFF7ED', color: '#059669', fontWeight: 700 }}>✅ LangGraph DAG + 12-Turn Rollback</td>
-              </tr>
-              <tr>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>Deployment Sovereignty</td>
-                <td style={{ padding: '12px 16px', color: '#DC2626' }}>❌ SaaS only</td>
-                <td style={{ padding: '12px 16px', color: '#DC2626' }}>❌ Cloud API only</td>
-                <td style={{ padding: '12px 16px', background: '#FFF7ED', color: '#059669', fontWeight: 700 }}>✅ 100% Air-Gapped Intranet Deployable</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      {/* SECTION 6: 6 CORE INNOVATIONS & COMPETITIVE MOATS */}
+      <section id="innovations" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.innovations }} />
+      </section>
+
+      {/* SECTION 7: TARGET BENCHMARK METRICS */}
+      <section id="metrics" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.metrics }} />
+      </section>
+
+      {/* SECTION 8: SPRINT PLAN */}
+      <section id="sprint" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: MASTER_PLAN_HTML.sprint }} />
       </section>
 
       {/* Pagination Footer */}

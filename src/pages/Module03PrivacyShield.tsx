@@ -1,5 +1,6 @@
 import React from 'react';
 import { PrivacyShieldSimulator } from '../components/PrivacyShieldSimulator';
+import { PERCEPTION_HTML } from '../data/rawHtml/perceptionHtml';
 
 interface Props {
   onNavigate: (route: string, sectionId?: string) => void;
@@ -57,131 +58,76 @@ export const Module03PrivacyShield: React.FC<Props> = ({ onNavigate }) => {
             borderRadius: '6px',
             fontWeight: 700
           }}>
-            ✓ MATHEMATICAL PROOF READY
+            ✓ 100% COMPLETE SPECIFICATION
           </span>
         </div>
 
         <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '32px', fontWeight: 800, color: 'var(--text-main)', margin: '0 0 12px' }}>
-          🛡️ Dual-Channel Perception Shield &amp; WebGPU Vault
+          🛡️ Dual-Channel Perception Shield &amp; WebGPU Privacy Vault
         </h1>
         <p style={{ fontSize: '15px', color: 'var(--text-muted)', lineHeight: 1.65, maxWidth: '880px', margin: 0 }}>
-          Mathematical formulation, WebGPU hardware acceleration, on-device OCR redaction, and ephemeral in-memory AES-256 tokenization. Test the live simulator below to experience zero-egress PII sanitization in real time.
+          Deep perception problem analysis: the 7 fatal blindspots of DOM-only agents, capability comparison matrix, cascaded 8&times;8 dirty-tile hash filter, 4 local vision models, Indian sovereign PII rule engine, and full TypeScript perceive loop.
         </p>
       </header>
 
-      {/* SECTION 1: MATHEMATICAL FORMULATION */}
-      <section id="m3-s1" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 01</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          Mathematical Formulation of Zero-Egress Privacy
-        </h2>
+      {/* SECTION 1: THE 7 FATAL BLINDSPOTS */}
+      <section id="blindspots" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: PERCEPTION_HTML.blindspots }} />
+      </section>
 
-        <p style={{ fontSize: '14px', color: 'var(--text-body)', lineHeight: 1.6 }}>
-          Let the raw browser viewport be represented as an image tensor <code style={{ color: '#EA580C', fontWeight: 700 }}>I &isin; ℝ^(H&times;W&times;3)</code> and the extracted DOM accessibility tree as graph <code style={{ color: '#2563EB', fontWeight: 700 }}>G_dom = (V, E)</code>. The client-side privacy transformation operator <code style={{ color: '#EA580C', fontWeight: 700 }}>T_shield</code> operates strictly within volatile workstation RAM:
-        </p>
+      {/* SECTION 2: CAPABILITY MATRIX */}
+      <section id="dual-channel" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: PERCEPTION_HTML['dual-channel'] }} />
+      </section>
 
+      {/* Interactive WebGPU Privacy Simulator Sandbox */}
+      <section style={{ marginBottom: '56px' }}>
         <div style={{
-          background: '#1C1917',
-          color: '#F5F5F4',
-          borderRadius: '12px',
-          padding: '20px 24px',
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: '13px',
-          margin: '18px 0',
-          border: '1px solid #332E2A',
-          lineHeight: 1.7
+          background: 'linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%)',
+          border: '1px solid var(--border-warm)',
+          borderRadius: '16px',
+          padding: '24px 28px',
+          marginBottom: '20px'
         }}>
-          <code>
-            I_sanitized = T_shield(I, B_pii) = Inpaint(I, &cup; B_i) &oplus; RenderTokens(B_i, Token(v_i))<br/>
-            G_sanitized = SubstituteTokens(G_dom, &#123;v_i &rarr; &lang;TOKEN_i&rang;&#125;)<br/><br/>
-            <span style={{ color: '#10B981', fontWeight: 700 }}>MATHEMATICAL GUARANTEE:</span><br/>
-            P(PII_raw &isin; Network_Egress_Payload) &equiv; 0.0000000000%
-          </code>
-        </div>
-      </section>
-
-      {/* SECTION 2: INTERACTIVE PRIVACY SHIELD SIMULATOR */}
-      <section id="m3-s2" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 02</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          Interactive WebGPU Privacy Shield Simulator
-        </h2>
-        <p style={{ fontSize: '14px', color: 'var(--text-body)', lineHeight: 1.6, marginBottom: '20px' }}>
-          Type or select sample citizen credentials (Aadhaar, PAN, Phone, Email) below to observe real-time Verhoeff checksum validation, instant in-memory AES token mapping, and safety-halo visual pixel redaction:
-        </p>
-
-        <PrivacyShieldSimulator />
-      </section>
-
-      {/* SECTION 3: WEBGPU OFFSCREEN NEURAL PIPELINE */}
-      <section id="m3-s3" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 03</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          WebGPU Offscreen Neural Pipeline &amp; Benchmarks
-        </h2>
-
-        <div className="table-container" style={{ overflowX: 'auto', border: '1px solid var(--border-warm)', borderRadius: '12px', background: '#FFFFFF', margin: '20px 0' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-            <thead>
-              <tr style={{ background: '#FAF7F2', borderBottom: '1px solid var(--border-warm)', textAlign: 'left' }}>
-                <th style={{ padding: '12px 16px' }}>Subsystem / Model</th>
-                <th style={{ padding: '12px 16px' }}>Quantization</th>
-                <th style={{ padding: '12px 16px' }}>VRAM Footprint</th>
-                <th style={{ padding: '12px 16px' }}>Inference Latency (M2 Max)</th>
-                <th style={{ padding: '12px 16px' }}>Target Accuracy</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style={{ borderBottom: '1px solid var(--border-warm)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>DBNet Text Detector</td>
-                <td style={{ padding: '12px 16px' }}>INT8 ONNX</td>
-                <td style={{ padding: '12px 16px' }}>4.8 MB</td>
-                <td style={{ padding: '12px 16px', color: '#059669', fontWeight: 700 }}>28 ms</td>
-                <td style={{ padding: '12px 16px' }}>98.7% mAP</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-warm)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>Indic CRNN OCR</td>
-                <td style={{ padding: '12px 16px' }}>INT8 ONNX</td>
-                <td style={{ padding: '12px 16px' }}>8.2 MB</td>
-                <td style={{ padding: '12px 16px', color: '#059669', fontWeight: 700 }}>34 ms</td>
-                <td style={{ padding: '12px 16px' }}>97.9% Word Acc</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-warm)' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>Ultra-Light-Face Detector</td>
-                <td style={{ padding: '12px 16px' }}>FP16 ONNX</td>
-                <td style={{ padding: '12px 16px' }}>1.2 MB</td>
-                <td style={{ padding: '12px 16px', color: '#059669', fontWeight: 700 }}>12 ms</td>
-                <td style={{ padding: '12px 16px' }}>99.4% Recall</td>
-              </tr>
-              <tr style={{ background: '#FFF7ED' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 800, color: '#EA580C' }}>Combined Neural Pipeline</td>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>Fused Graph</td>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>&lt; 64 MB Total</td>
-                <td style={{ padding: '12px 16px', fontWeight: 800, color: '#EA580C' }}>62 ms Total</td>
-                <td style={{ padding: '12px 16px', fontWeight: 800, color: '#059669' }}>0.00% PII Leaked</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* SECTION 4: IN-MEMORY AES-256 VAULT */}
-      <section id="m3-s4" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 04</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          In-Memory AES-256 Token Vault Lifecycle
-        </h2>
-
-        <div style={{ background: '#FFFFFF', border: '1px solid var(--border-warm)', borderRadius: '14px', padding: '24px' }}>
-          <p style={{ fontSize: '13.5px', color: 'var(--text-body)', lineHeight: 1.6 }}>
-            The local vault service (<code>svc-vault-local</code>) runs in volatile browser memory. Keys are derived per session using <code>crypto.subtle.generateKey('AES-GCM', true, ['encrypt', 'decrypt'])</code>.
+          <span style={{
+            background: 'var(--isro-orange)',
+            color: '#FFFFFF',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '10.5px',
+            fontWeight: 800,
+            padding: '3px 8px',
+            borderRadius: '5px'
+          }}>
+            LIVE INTERACTIVE SIMULATOR
+          </span>
+          <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '20px', margin: '10px 0 6px', color: 'var(--text-main)' }}>
+            Test On-Device WebGPU Zero-Egress Sanitization in Real Time
+          </h3>
+          <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', margin: '0 0 16px' }}>
+            Input citizen credentials below to watch the Verhoeff algorithm, AES-256 token vault, and safety halo redactor execute in local RAM:
           </p>
-          <ul style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6, paddingLeft: '18px', margin: '12px 0 0' }}>
-            <li><strong>Zero Disk Persistence:</strong> Vault never writes to IndexedDB, localStorage, or cookies. If the machine loses power, keys vanish instantly.</li>
-            <li><strong>One-Way Token Isolation:</strong> Cloud reasoning cluster only sees <code>&lt;VAULT_AADHAAR_001&gt;</code> and cannot invert the token without the workstation key.</li>
-            <li><strong>Atomic Rehydration:</strong> During DOM form filling, the content script swaps the token for the plaintext string in a transient local closure immediately preceding <code>dispatchEvent()</code>.</li>
-          </ul>
+          <PrivacyShieldSimulator />
         </div>
+      </section>
+
+      {/* SECTION 3: DIRT TILES DIFF FILTER */}
+      <section id="dirty-tiles" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: PERCEPTION_HTML['dirty-tiles'] }} />
+      </section>
+
+      {/* SECTION 4: FOUR LOCAL VISION MODELS */}
+      <section id="models" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: PERCEPTION_HTML.models }} />
+      </section>
+
+      {/* SECTION 5: INDIAN SOVEREIGN PII RULE ENGINE */}
+      <section id="rule-engine" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: PERCEPTION_HTML['rule-engine'] }} />
+      </section>
+
+      {/* SECTION 6: COMPLETE PERCEIVE STEP */}
+      <section id="complete-perceive" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div dangerouslySetInnerHTML={{ __html: PERCEPTION_HTML['complete-perceive'] }} />
       </section>
 
       {/* Pagination Footer */}

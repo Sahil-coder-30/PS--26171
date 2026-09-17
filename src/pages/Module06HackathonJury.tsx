@@ -49,6 +49,17 @@ export const Module06HackathonJury: React.FC<Props> = ({ onNavigate }) => {
           }}>
             JURY PROTOCOL &amp; ROADMAP
           </span>
+          <span style={{
+            background: '#D1FAE5',
+            color: '#047857',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '11px',
+            padding: '3px 10px',
+            borderRadius: '6px',
+            fontWeight: 700
+          }}>
+            ✓ 100% COMPLETE ROADMAP
+          </span>
         </div>
 
         <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '32px', fontWeight: 800, color: 'var(--text-main)', margin: '0 0 12px' }}>
@@ -60,33 +71,33 @@ export const Module06HackathonJury: React.FC<Props> = ({ onNavigate }) => {
       </header>
 
       {/* SECTION 1: 36-HOUR SPRINT TIMELINE */}
-      <section id="m6-roadmap" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 01</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          36-Hour Hackathon Delivery Timeline &amp; Milestones
-        </h2>
-        <p style={{ fontSize: '14px', color: 'var(--text-body)', lineHeight: 1.6, marginBottom: '20px' }}>
-          Click through each sprint phase below to review deliverables, team responsibilities, and checkpoint criteria:
+      <section id="roadmap" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div className="section-header">
+          <div className="section-icon-badge">⏱️</div>
+          <h2 className="section-title">01. 36-Hour Hackathon Delivery Timeline &amp; Milestones</h2>
+        </div>
+        <p className="section-lead">
+          The 36-hour hackathon execution plan is divided into 4 high-velocity 9-hour phases with strict verification gates:
         </p>
 
         <SprintTimeline />
       </section>
 
       {/* SECTION 2: JUDGE DEFENSE CHEAT SHEET */}
-      <section id="m6-defense" style={{ marginBottom: '48px' }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#EA580C' }}>SECTION 02</span>
-        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '24px', fontWeight: 800, color: 'var(--text-main)', margin: '4px 0 16px' }}>
-          Judge Defense Cheat Sheet &amp; Winning Answers
-        </h2>
-        <p style={{ fontSize: '14px', color: 'var(--text-body)', lineHeight: 1.6, marginBottom: '20px' }}>
+      <section id="defense" className="doc-section" style={{ marginBottom: '56px' }}>
+        <div className="section-header">
+          <div className="section-icon-badge">🛡️</div>
+          <h2 className="section-title">02. Judge Defense Cheat Sheet &amp; Winning Answers</h2>
+        </div>
+        <p className="section-lead">
           Tough jury questions anticipated during ISRO SAC evaluation, paired with decisive technical counter-arguments:
         </p>
 
         <JudgeDefenseMatrix />
       </section>
 
-      {/* 60-Second Winning Elevator Pitch */}
-      <section style={{ marginBottom: '48px' }}>
+      {/* SECTION 3: 60-SECOND CLOSING ELEVATOR PITCH */}
+      <section id="pitch" className="doc-section" style={{ marginBottom: '56px' }}>
         <div style={{
           background: 'linear-gradient(135deg, #1C1917 0%, #292524 100%)',
           color: '#FAF8F5',
@@ -103,7 +114,7 @@ export const Module06HackathonJury: React.FC<Props> = ({ onNavigate }) => {
             padding: '3px 10px',
             borderRadius: '6px'
           }}>
-            60-SECOND CLOSING ELEVATOR PITCH
+            03. 60-SECOND CLOSING ELEVATOR PITCH
           </span>
           <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '22px', margin: '14px 0 10px', color: '#FFFFFF' }}>
             Why PRATYAKSHA Wins SIH PS-26171
