@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PRATYAKSHA — Project Readme & Overview | SIH 2026 PS-26171 (ISRO)</title>
+  <title>PRATYAKSHA — Project Readme & System Flow | SIH 2026 PS-26171 (ISRO)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -65,7 +65,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; font-size: 16px; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-cream);
@@ -73,6 +73,92 @@
       line-height: 1.7;
       display: flex;
       min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── MOBILE TOPBAR (Visible only <= 900px) ── */
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--sidebar-border);
+      color: var(--sidebar-text);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 150;
+      box-shadow: var(--shadow-md);
+    }
+    .mobile-menu-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      transition: background 0.15s;
+    }
+    .mobile-menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #FFFFFF;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .mobile-brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mobile-brand .brand-devanagari {
+      color: #FB923C;
+      font-size: 15px;
+    }
+    .mobile-hub-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(234, 88, 12, 0.2);
+      border: 1px solid rgba(234, 88, 12, 0.4);
+      color: #FB923C;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    /* ── SIDEBAR BACKDROP (Mobile) ── */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(3px);
+      z-index: 180;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
     }
 
     /* ── SIDEBAR ── */
@@ -88,14 +174,33 @@
       border-right: 1px solid var(--sidebar-border);
       display: flex;
       flex-direction: column;
-      z-index: 100;
+      z-index: 200;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .sidebar::-webkit-scrollbar { width: 5px; }
     .sidebar::-webkit-scrollbar-thumb { background: #3E3834; border-radius: 4px; }
 
     .sidebar-header {
-      padding: 28px 24px 20px;
+      padding: 26px 22px 18px;
       border-bottom: 1px solid var(--sidebar-border);
+      position: relative;
+    }
+    .sidebar-close-btn {
+      display: none;
+      position: absolute;
+      top: 20px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #D6D3D1;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
     }
     .brand-badge {
       display: inline-flex;
@@ -110,7 +215,7 @@
       font-weight: 700;
       letter-spacing: .06em;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .brand-title {
       font-family: 'Outfit', sans-serif;
@@ -121,11 +226,11 @@
       letter-spacing: -.01em;
     }
     .brand-devanagari { font-weight: 600; color: #FB923C; font-size: 18px; }
-    .brand-subtitle { font-size: 12.5px; color: var(--sidebar-muted); margin-top: 6px; line-height: 1.4; }
+    .brand-subtitle { font-size: 12px; color: var(--sidebar-muted); margin-top: 5px; line-height: 1.4; }
     .org-tag {
       display: inline-block;
-      margin-top: 10px;
-      font-size: 11.5px;
+      margin-top: 8px;
+      font-size: 11px;
       color: #E2E8F0;
       background: #27221E;
       padding: 3px 8px;
@@ -135,7 +240,7 @@
 
     /* Doc Tabs */
     .doc-tabs {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--sidebar-border);
       background: #171412;
     }
@@ -159,7 +264,7 @@
       font-size: 12.5px;
       font-weight: 500;
       transition: all .15s ease;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .doc-link:hover { background: rgba(255,255,255,.06); color: #fff; }
     .doc-link.active {
@@ -170,15 +275,15 @@
     }
     .doc-link .doc-num {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      opacity: .8;
+      font-size: 10px;
+      opacity: .85;
       background: rgba(255,255,255,.08);
       padding: 2px 5px;
       border-radius: 4px;
     }
 
     /* TOC */
-    .sidebar-toc { padding: 18px 16px; flex-grow: 1; }
+    .sidebar-toc { padding: 16px 14px; flex-grow: 1; }
     .toc-heading {
       font-size: 10.5px;
       font-weight: 700;
@@ -194,11 +299,11 @@
       display: flex;
       align-items: center;
       gap: 9px;
-      padding: 8px 10px;
+      padding: 7px 10px;
       border-radius: 8px;
       color: #D6D3D1;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
       transition: all .15s ease;
       line-height: 1.35;
@@ -210,26 +315,35 @@
       font-weight: 600;
       border-left: 3px solid var(--sidebar-accent);
     }
-    .toc-icon { font-size: 14px; width: 20px; display: inline-flex; justify-content: center; }
+    .toc-icon { font-size: 14px; width: 18px; display: inline-flex; justify-content: center; }
     .sidebar-footer {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-top: 1px solid var(--sidebar-border);
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--sidebar-muted);
       background: #171412;
     }
 
     /* ── MAIN CONTENT ── */
-    .main-wrap { flex: 1; overflow-y: auto; min-width: 0; }
-    .content-container { max-width: 1060px; margin: 0 auto; padding: 48px 48px 80px; }
+    .main-wrap {
+      flex: 1;
+      overflow-y: auto;
+      min-width: 0;
+      padding-top: 0;
+    }
+    .content-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 44px 44px 80px;
+    }
 
     /* HERO */
     .hero {
       background: linear-gradient(135deg, #fff 0%, #FAF4EB 100%);
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-xl);
-      padding: 44px 40px 38px;
-      margin-bottom: 40px;
+      padding: 40px 38px 34px;
+      margin-bottom: 36px;
       position: relative;
       box-shadow: var(--shadow-sm);
     }
@@ -246,8 +360,8 @@
       justify-content: space-between;
       align-items: flex-start;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 18px;
+      gap: 14px;
+      margin-bottom: 16px;
     }
     .hero-pill {
       display: inline-flex;
@@ -258,7 +372,7 @@
       color: var(--isro-orange);
       padding: 5px 14px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       letter-spacing: .04em;
       text-transform: uppercase;
@@ -271,83 +385,338 @@
       border: 1px solid var(--border-warm);
       padding: 5px 12px;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
       color: var(--text-muted);
     }
     .hero h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(32px, 4.2vw, 48px);
+      font-size: clamp(28px, 4vw, 46px);
       font-weight: 800;
       color: var(--text-main);
       line-height: 1.15;
       letter-spacing: -.02em;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .hero-tagline {
-      font-size: 17.5px;
+      font-size: clamp(15px, 1.8vw, 17px);
       color: var(--text-body);
       font-weight: 400;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       line-height: 1.65;
     }
-    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-chips { display: flex; gap: 8px; flex-wrap: wrap; }
     .hero-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       background: #fff;
       border: 1px solid var(--border-warm);
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 30px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-body);
       box-shadow: var(--shadow-sm);
     }
 
     /* SECTIONS */
-    .doc-section { margin-bottom: 60px; scroll-margin-top: 36px; }
+    .doc-section { margin-bottom: 56px; scroll-margin-top: 70px; }
     .section-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
       border-bottom: 2px solid var(--border-subtle);
     }
     .section-icon-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #FAF2E8, #F5E6D3);
       border: 1px solid var(--border-warm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 19px;
       flex-shrink: 0;
     }
     .section-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 24px;
+      font-size: clamp(20px, 2.5vw, 25px);
       font-weight: 700;
       color: var(--text-main);
       letter-spacing: -.01em;
     }
     .section-lead {
-      font-size: 15.5px;
+      font-size: clamp(14px, 1.6vw, 15.5px);
       color: var(--text-body);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       line-height: 1.75;
+    }
+
+    /* ── INTERACTIVE PILL FLOW CHART DIAGRAM ── */
+    .flow-canvas {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      margin: 28px 0;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .flow-canvas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-warm);
+    }
+    .flow-canvas-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .flow-canvas-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .flow-meta-tag {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .fmt-orange { background: #FFF7ED; border-color: #FDBA74; color: #C2410C; }
+    .fmt-green { background: #ECFDF5; border-color: #A7F3D0; color: #047857; }
+    .fmt-purple { background: #F5F3FF; border-color: #DDD6FE; color: #6D28D9; }
+
+    /* Security Perimeter Box */
+    .perimeter-box {
+      border: 2px dashed #EA580C;
+      background: linear-gradient(180deg, rgba(255, 247, 237, 0.4) 0%, rgba(255, 255, 255, 0.8) 100%);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .perimeter-badge {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #EA580C;
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 6px rgba(234, 88, 12, 0.3);
+    }
+
+    /* Stages Stack */
+    .flow-stages {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .flow-stage {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .flow-stage:hover {
+      border-color: #CBD5E1;
+      box-shadow: var(--shadow-md);
+    }
+    .flow-stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stage-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stage-num-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #1C1917;
+      color: #FFFFFF;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stage-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .stage-latency {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #A7F3D0;
+    }
+
+    /* Pill Clusters */
+    .pill-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .flow-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      flex: 1 1 calc(33.333% - 10px);
+      min-width: 200px;
+    }
+    .flow-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .flow-pill .pill-icon {
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .flow-pill .pill-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .flow-pill .pill-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .flow-pill .pill-desc {
+      font-size: 11px;
+      opacity: 0.85;
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+    .flow-pill .pill-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      flex-shrink: 0;
+    }
+    .flow-pill .pill-jump {
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0.6;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .flow-pill:hover .pill-jump {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    /* Pill Color Themes */
+    .pill-blue { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+    .pill-blue .pill-tag { background: #DBEAFE; color: #1D4ED8; }
+    .pill-blue:hover { border-color: #60A5FA; }
+
+    .pill-orange { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
+    .pill-orange .pill-tag { background: #FFEDD5; color: #C2410C; }
+    .pill-orange:hover { border-color: #FB923C; }
+
+    .pill-purple { background: #F5F3FF; border-color: #DDD6FE; color: #5B21B6; }
+    .pill-purple .pill-tag { background: #EDE9FE; color: #6D28D9; }
+    .pill-purple:hover { border-color: #A78BFA; }
+
+    .pill-green { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+    .pill-green .pill-tag { background: #D1FAE5; color: #047857; }
+    .pill-green:hover { border-color: #34D399; }
+
+    .pill-teal { background: #F0FDFA; border-color: #99F6E4; color: #0F766E; }
+    .pill-teal .pill-tag { background: #CCFBF1; color: #0D9488; }
+    .pill-teal:hover { border-color: #2DD4BF; }
+
+    /* Downward Flow Connector */
+    .flow-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
+      color: var(--text-muted);
+      gap: 2px;
+    }
+    .connector-line {
+      width: 2px;
+      height: 16px;
+      background: var(--border-warm);
+    }
+    .connector-arrow {
+      font-size: 16px;
+      line-height: 1;
+      color: var(--isro-orange);
+    }
+    .connector-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 2px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-warm);
     }
 
     /* MODULES GRID */
     .modules-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      margin: 24px 0;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+      margin: 22px 0;
     }
     .module-card {
       background: #fff;
@@ -384,7 +753,7 @@
     .module-card.m-5::before { background: #0D9488; }
     .module-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       color: var(--isro-orange);
       letter-spacing: .06em;
@@ -393,17 +762,17 @@
     }
     .module-name {
       font-family: 'Outfit', sans-serif;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--text-main);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       line-height: 1.3;
     }
     .module-desc {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-muted);
       line-height: 1.6;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       flex-grow: 1;
     }
     .module-action {
@@ -418,18 +787,18 @@
     /* CALLOUTS */
     .callout {
       border-radius: var(--radius-md);
-      padding: 20px 24px;
-      margin: 22px 0;
-      font-size: 14.5px;
+      padding: 18px 22px;
+      margin: 20px 0;
+      font-size: 14px;
       line-height: 1.65;
       display: flex;
-      gap: 16px;
+      gap: 14px;
       align-items: flex-start;
       border: 1px solid;
     }
-    .callout-icon { font-size: 22px; line-height: 1; margin-top: 2px; flex-shrink: 0; }
+    .callout-icon { font-size: 20px; line-height: 1; margin-top: 2px; flex-shrink: 0; }
     .callout-body { flex: 1; }
-    .callout-title { font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+    .callout-title { font-weight: 700; margin-bottom: 5px; font-size: 14.5px; }
     .callout.orange { background: var(--isro-orange-light); border-color: var(--isro-orange-border); color: #92400E; }
     .callout.blue { background: var(--color-info-bg); border-color: var(--color-info-border); color: #1E40AF; }
     .callout.green { background: var(--color-success-bg); border-color: var(--color-success-border); color: #065F46; }
@@ -438,18 +807,25 @@
     /* RUBRIC METRICS GRID */
     .rubric-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
-      gap: 16px;
-      margin: 24px 0;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin: 22px 0;
     }
     .rubric-card {
       background: #fff;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 18px;
       text-align: center;
       box-shadow: var(--shadow-sm);
-      position: relative;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .rubric-card:hover {
+      transform: translateY(-2px);
+      border-color: #FB923C;
     }
     .rubric-card.highlight {
       border: 2px solid var(--isro-orange-border);
@@ -457,7 +833,7 @@
     }
     .rubric-pct {
       font-family: 'Outfit', sans-serif;
-      font-size: 38px;
+      font-size: 34px;
       font-weight: 800;
       line-height: 1;
       margin-bottom: 6px;
@@ -466,32 +842,33 @@
     .rubric-pct.blue { color: #2563EB; }
     .rubric-pct.gray { color: #57534E; }
     .rubric-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--text-main);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .rubric-subtitle {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--text-muted);
       line-height: 1.4;
     }
 
-    /* TABLES */
+    /* RESPONSIVE TABLES */
     .table-container {
       background: #fff;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
-      overflow: hidden;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       box-shadow: var(--shadow-sm);
-      margin: 22px 0;
+      margin: 20px 0;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 580px; }
     thead { background: var(--bg-subtle); }
     th {
-      padding: 13px 18px;
+      padding: 12px 16px;
       text-align: left;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -499,7 +876,7 @@
       border-bottom: 2px solid var(--border-warm);
     }
     td {
-      padding: 13px 18px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border-subtle);
       color: var(--text-body);
       vertical-align: top;
@@ -508,50 +885,28 @@
     tr:hover td { background: #FDFAF7; }
     .strong-col { font-weight: 600; color: var(--text-main); }
 
-    /* CODE BOXES */
-    .code-box {
-      background: #1C1917;
-      color: #E7E5E4;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      margin: 20px 0;
-      border: 1px solid #332E2A;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      box-shadow: var(--shadow-md);
-    }
-    .code-header {
-      background: #262220;
-      padding: 10px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #332E2A;
-      font-size: 12px;
-      color: #A8A29E;
-    }
-    .code-pre {
-      padding: 18px;
-      overflow-x: auto;
-      line-height: 1.65;
-    }
-
     /* INNOVATIONS CARDS */
     .innovations-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin: 24px 0;
-    }
-    @media (max-width: 768px) {
-      .innovations-grid { grid-template-columns: 1fr; }
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+      margin: 22px 0;
     }
     .inno-card {
       background: #fff;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 22px;
       box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .inno-card:hover {
+      transform: translateY(-2px);
+      border-color: #FB923C;
+      box-shadow: var(--shadow-md);
     }
     .inno-header {
       display: flex;
@@ -560,23 +915,23 @@
       margin-bottom: 12px;
     }
     .inno-icon {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 19px;
       flex-shrink: 0;
     }
     .inno-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 16.5px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-main);
     }
     .inno-body {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-body);
       line-height: 1.65;
     }
@@ -586,14 +941,14 @@
       background: linear-gradient(135deg, #1C1917 0%, #2A2420 100%);
       color: #F5F5F4;
       border-radius: var(--radius-xl);
-      padding: 36px 36px;
-      margin: 32px 0;
+      padding: 32px 28px;
+      margin: 28px 0;
       border: 1px solid #3E3834;
       box-shadow: var(--shadow-lg);
     }
     .deploy-box h3 {
       font-family: 'Outfit', sans-serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
       color: #fff;
       margin-bottom: 10px;
@@ -603,23 +958,63 @@
     }
     .deploy-box p {
       color: #D6D3D1;
-      font-size: 14.5px;
+      font-size: 14px;
       line-height: 1.65;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
+    /* ── RESPONSIVE MEDIA QUERIES (FLUID LAYOUT) ── */
     @media (max-width: 900px) {
       body { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: static; }
-      .content-container { padding: 24px 20px 60px; }
+      .mobile-topbar { display: flex; }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 290px;
+        transform: translateX(-100%);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.6);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-close-btn { display: flex; }
+      .main-wrap { padding-top: 60px; }
+      .content-container { padding: 26px 18px 60px; }
+      .hero { padding: 28px 22px 24px; }
+      .flow-canvas { padding: 22px 16px; }
+      .flow-pill { flex: 1 1 100%; min-width: 100%; }
+    }
+
+    @media (max-width: 500px) {
+      .rubric-grid { grid-template-columns: 1fr 1fr; }
+      .modules-grid { grid-template-columns: 1fr; }
+      .hero-chips { flex-direction: column; }
+      .hero-chip { width: 100%; }
     }
   </style>
 </head>
 <body>
 
+  <!-- ── MOBILE TOPBAR ── -->
+  <div class="mobile-topbar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
+    </div>
+    <a href="./index.html" class="mobile-hub-badge">&#x1F5FA;&#xFE0F; HUB</a>
+  </div>
+
+  <!-- ── SIDEBAR BACKDROP (Mobile) ── -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
   <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">&#x2715;</button>
       <div class="brand-badge">&#x1F680; ISRO SIH-26171</div>
       <div class="brand-title">PRATYAKSHA <span class="brand-devanagari">&#x092A;&#x094D;&#x0930;&#x0924;&#x094D;&#x092F;&#x0915;&#x094D;&#x0937;</span></div>
       <div class="brand-subtitle">Privacy-Preserving On-Device Visual Agent Suite</div>
@@ -662,8 +1057,13 @@
           </a>
         </li>
         <li class="toc-item">
+          <a href="#flow-diagram" class="toc-link">
+            <span class="toc-icon">&#x26A1;</span> 5-Step System Flow (Pills)
+          </a>
+        </li>
+        <li class="toc-item">
           <a href="#index-suite" class="toc-link">
-            <span class="toc-icon">&#x1F4DA;</span> Documentation Index
+            <span class="toc-icon">&#x1F4DA;</span> Documentation Suite
           </a>
         </li>
         <li class="toc-item">
@@ -674,11 +1074,6 @@
         <li class="toc-item">
           <a href="#rubric" class="toc-link">
             <span class="toc-icon">&#x2696;&#xFE0F;</span> 40% Privacy Rubric
-          </a>
-        </li>
-        <li class="toc-item">
-          <a href="#architecture" class="toc-link">
-            <span class="toc-icon">&#x1F3DB;&#xFE0F;</span> System Architecture
           </a>
         </li>
         <li class="toc-item">
@@ -698,7 +1093,7 @@
         </li>
         <li class="toc-item">
           <a href="#vercel" class="toc-link">
-            <span class="toc-icon">&#x26A1;</span> Vercel Deployment
+            <span class="toc-icon">&#x1F680;</span> Vercel Deployment
           </a>
         </li>
       </ul>
@@ -706,7 +1101,7 @@
 
     <div class="sidebar-footer">
       PRATYAKSHA &middot; SIH 2026 PS-26171<br/>
-      ISRO SAC &middot; Ready for Vercel
+      ISRO SAC &middot; Fully Responsive
     </div>
   </aside>
 
@@ -724,13 +1119,13 @@
         <h1>PRATYAKSHA <span style="font-size:0.7em; color:#EA580C;">(&#x092A;&#x094D;&#x0930;&#x0924;&#x094D;&#x092F;&#x0915;&#x094D;&#x0937;)</span></h1>
         <p class="hero-tagline">
           <strong>Privacy-preserving Real-time Agentic Tokenizer &amp; Vision-Augmented Knowledge Shield for Autonomous Workflows</strong><br/>
-          On-Device Visual Perception for Light-Weight Browser Agents in Sovereign Indian Environments.
+          On-Device Visual Perception for Light-Weight Browser Agents in Sovereign Indian Space &amp; Defense Workflows.
         </p>
 
         <div class="hero-chips">
           <div class="hero-chip">&#x1F4BB; Category: Software</div>
           <div class="hero-chip">&#x26A1; Theme: Smart Automation</div>
-          <div class="hero-chip">&#x1F6E1;&#xFE0F; Zero-Cloud PII Guarantee</div>
+          <div class="hero-chip">&#x1F6E1;&#xFE0F; Zero-Cloud Raw PII</div>
           <div class="hero-chip">&#x1F9E0; Dual-Channel WebGPU ML</div>
           <div class="hero-chip">&#x1F510; Reversible Pseudonym Vault</div>
         </div>
@@ -740,27 +1135,284 @@
       <section class="doc-section" id="summary">
         <div class="section-header">
           <div class="section-icon-badge">&#x1F9ED;</div>
-          <h2 class="section-title">Executive Summary &amp; Overview</h2>
+          <h2 class="section-title">Executive Summary &amp; Core Dilemma</h2>
         </div>
 
         <p class="section-lead">
-          Commercial browser AI agents (MultiOn, Adept, Operator, Computer Use) require sending high-resolution, unredacted screen captures and full DOM dumps to third-party cloud LLM APIs. In national space missions, defense, and sovereign public administration, <strong>this represents an intolerable data breach risk</strong>.
+          Commercial browser AI agents (OpenAI Operator, Adept, MultiOn, Computer Use) require streaming high-resolution, unredacted desktop screens and entire DOM trees to foreign third-party cloud LLM APIs. In national space missions, defense operations, and sovereign public administration, <strong>this represents an intolerable data breach risk and a direct violation of India's Digital Personal Data Protection (DPDP) Act 2023</strong>.
         </p>
 
         <div class="callout orange">
           <div class="callout-icon">&#x26A0;&#xFE0F;</div>
           <div class="callout-body">
             <div class="callout-title">The ISRO Core Mandate</div>
-            Sensitive citizen identity (Aadhaar, PAN, Voter ID), defense credentials, session tokens, and classified telemetry must be sanitized <strong>on-device inside the browser sandbox before any network byte is emitted</strong>. Only anonymized, mathematically sanitized visual context may leave the perimeter.
+            Sensitive citizen identity (Aadhaar, PAN, Voter ID), defense credentials, internal telemetry, and employee sessions must be sanitized <strong>on-device inside the browser client before any network byte is emitted</strong>. Only anonymized visual context and synthetic token identifiers may leave the client device.
           </div>
         </div>
 
-        <p style="font-size:14.5px; color:var(--text-body); margin-top:14px;">
-          PRATYAKSHA solves this through a lightweight (~20MB total footprint) on-device neural vision stack compiled to WebGPU via ONNX Runtime Web. It runs client-side in an isolated Offscreen Document, pairing deep neural text/face detection with algorithmic Indian PII validators (Verhoeff checksum for Aadhaar, modulo-36 for GSTIN). The server VLM plans actions using synthetic placeholders (e.g. <code>&lang;AADHAAR_01&rang;</code>), and the local agent executes them seamlessly while never exposing raw PII.
+        <p style="font-size:14px; color:var(--text-body); margin-top:12px;">
+          PRATYAKSHA solves this through a lightweight (~20MB total footprint) on-device neural vision stack compiled to WebGPU via ONNX Runtime Web. It runs inside an isolated browser Offscreen Document, pairing deep neural text and face detectors with deterministic Indian PII validators (Verhoeff checksum for Aadhaar, modulo-36 for GSTIN). The server VLM reasons using synthetic tokens (<code>&lang;AADHAAR_01&rang;</code>), and the local agent executes actions securely without ever exposing sensitive data.
         </p>
       </section>
 
-      <!-- ── SECTION 2: DOCUMENTATION INDEX ── -->
+      <!-- ── SECTION 2: THE 5-STEP SYSTEM FLOW (PILL DIAGRAM) ── -->
+      <section class="doc-section" id="flow-diagram">
+        <div class="section-header">
+          <div class="section-icon-badge">&#x26A1;</div>
+          <h2 class="section-title">The 5-Step System Architecture Flow</h2>
+        </div>
+
+        <p class="section-lead">
+          Interactive pill flow diagram representing the end-to-end execution loop. <strong>Click any pill node</strong> to jump directly to its architectural specification and code:
+        </p>
+
+        <div class="flow-canvas">
+          <div class="flow-canvas-header">
+            <div class="flow-canvas-title">
+              <span>&#x1F6E1;&#xFE0F; PRATYAKSHA End-to-End Perception-Action Loop</span>
+            </div>
+            <div class="flow-canvas-meta">
+              <span class="flow-meta-tag fmt-orange">&#x26A1; Sub-50ms On-Device</span>
+              <span class="flow-meta-tag fmt-green">&#x1F510; Zero-Raw-PII Egress</span>
+              <span class="flow-meta-tag fmt-purple">&#x1F5FA;&#xFE0F; Click Pills to Inspect</span>
+            </div>
+          </div>
+
+          <!-- CLIENT SECURITY PERIMETER -->
+          <div class="perimeter-box">
+            <div class="perimeter-badge">&#x1F512; CLIENT DEVICE SECURITY PERIMETER &middot; ZERO SENSITIVE DATA LEAVES HERE</div>
+
+            <div class="flow-stages">
+              <!-- STAGE 1: PERCEIVE -->
+              <div class="flow-stage">
+                <div class="flow-stage-header">
+                  <div class="stage-title-wrap">
+                    <div class="stage-num-badge">01</div>
+                    <div class="stage-name">PERCEIVE &middot; Dual-Channel Page Ingestion</div>
+                  </div>
+                  <div class="stage-latency">~15ms Total Latency</div>
+                </div>
+                <div class="pill-cluster">
+                  <a href="./05_browser_extension.html#s6" class="flow-pill pill-blue">
+                    <div class="pill-icon">&#x1F4F8;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Screen Capture Stream</div>
+                      <div class="pill-desc">chrome.tabs.captureVisibleTab()</div>
+                    </div>
+                    <span class="pill-tag">MV3 API</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./05_browser_extension.html#s7" class="flow-pill pill-blue">
+                    <div class="pill-icon">&#x1F333;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">DOM Scene Tree Walker</div>
+                      <div class="pill-desc">Semantic text &amp; input bounding boxes</div>
+                    </div>
+                    <span class="pill-tag">Content Script</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s3" class="flow-pill pill-blue">
+                    <div class="pill-icon">&#x26A1;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">8&times;8 Dirty-Tile dHash</div>
+                      <div class="pill-desc">Skips 85%+ static redundant tiles</div>
+                    </div>
+                    <span class="pill-tag">Optimizer</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- CONNECTOR -->
+              <div class="flow-connector">
+                <div class="connector-line"></div>
+                <div class="connector-arrow">&#x2193;</div>
+                <div class="connector-label">Dual-Channel Raw Pixels + DOM Priors (Inside Sandbox)</div>
+              </div>
+
+              <!-- STAGE 2: SANITIZE -->
+              <div class="flow-stage">
+                <div class="flow-stage-header">
+                  <div class="stage-title-wrap">
+                    <div class="stage-num-badge">02</div>
+                    <div class="stage-name">SANITIZE &middot; On-Device WebGPU Privacy Shield</div>
+                  </div>
+                  <div class="stage-latency">~32ms WebGPU Execution</div>
+                </div>
+                <div class="pill-cluster">
+                  <a href="./03_perception_problem.html#s4" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F464;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Ultra-Light-Face ONNX</div>
+                      <div class="pill-desc">Biometric face detection (2.5MB int8)</div>
+                    </div>
+                    <span class="pill-tag">WebGPU</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s4" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F524;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">DBNet-Tiny + CRNN OCR</div>
+                      <div class="pill-desc">Multilingual Indic &amp; English text (14MB)</div>
+                    </div>
+                    <span class="pill-tag">ONNX Runtime</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s5" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F1EE;&#x1F1F3;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Verhoeff &amp; Modulo-36</div>
+                      <div class="pill-desc">Deterministic Aadhaar &amp; GSTIN rules</div>
+                    </div>
+                    <span class="pill-tag">Pure TS</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./02_browser_agent.html#s3" class="flow-pill pill-purple">
+                    <div class="pill-icon">&#x1F510;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Reversible Pseudonym Vault</div>
+                      <div class="pill-desc">Maps raw PII &harr; &lang;AADHAAR_01&rang;</div>
+                    </div>
+                    <span class="pill-tag">AES-GCM Memory</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s6" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F3A8;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Safety Halo Inpainter</div>
+                      <div class="pill-desc">4px dilated canvas pixel redaction</div>
+                    </div>
+                    <span class="pill-tag">Canvas2D</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./04_hld.html#s5" class="flow-pill pill-purple">
+                    <div class="pill-icon">&#x1F9FE;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">SHA-256 Merkle Ledger</div>
+                      <div class="pill-desc">Tamper-proof cryptographic egress proof</div>
+                    </div>
+                    <span class="pill-tag">WebCrypto</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR ACROSS NETWORK BOUNDARY -->
+          <div class="flow-connector">
+            <div class="connector-line" style="height:24px; border-left:2px dashed #059669;"></div>
+            <div class="connector-arrow" style="color:#059669;">&#x2193;</div>
+            <div class="connector-label" style="background:#ECFDF5; border-color:#A7F3D0; color:#065F46;">
+              &#x1F6E1;&#xFE0F; ONLY SANITIZED PIXELS + SYNTHETIC TOKENS TRANSMITTED OVER HTTPS/WSS
+            </div>
+            <div class="connector-line" style="height:20px; border-left:2px dashed #059669;"></div>
+          </div>
+
+          <!-- STAGE 3: TRANSMIT & REASON -->
+          <div class="flow-stage" style="border-color:#A7F3D0; background:linear-gradient(180deg,#F0FDF4 0%,#FFFFFF 100%);">
+            <div class="flow-stage-header">
+              <div class="stage-title-wrap">
+                <div class="stage-num-badge" style="background:#059669;">03-04</div>
+                <div class="stage-name">TRANSMIT &amp; REASON &middot; Sovereign Enterprise VLM</div>
+              </div>
+              <div class="stage-latency" style="color:#065F46; background:#D1FAE5; border-color:#6EE7B7;">ISRO Intranet Node</div>
+            </div>
+            <div class="pill-cluster">
+              <a href="./04_hld.html#s4" class="flow-pill pill-green">
+                <div class="pill-icon">&#x1F4E1;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Sanitized Frame &amp; Scene Graph</div>
+                  <div class="pill-desc">Inpainted pixels + token identifiers</div>
+                </div>
+                <span class="pill-tag">WSS Protocol</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./01_master_plan.html#s4" class="flow-pill pill-green">
+                <div class="pill-icon">&#x1F9E0;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Qwen2.5-VL-7B-Instruct</div>
+                  <div class="pill-desc">Open-weights reasoning, 100% self-hosted</div>
+                </div>
+                <span class="pill-tag">vLLM Server</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./02_browser_agent.html#s5" class="flow-pill pill-green">
+                <div class="pill-icon">&#x1F4CB;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Structured Action JSON</div>
+                  <div class="pill-desc">Targets tokens: click, type, submit</div>
+                </div>
+                <span class="pill-tag">Action Plan</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- CONNECTOR BACK TO CLIENT -->
+          <div class="flow-connector">
+            <div class="connector-line" style="height:20px;"></div>
+            <div class="connector-arrow" style="color:#0D9488;">&#x2193;</div>
+            <div class="connector-label" style="background:#F0FDFA; border-color:#99F6E4; color:#0F766E;">
+              &#x1F4AC; RETURN: Structured Command Received by Extension Agent
+            </div>
+          </div>
+
+          <!-- STAGE 5: REHYDRATE & EXECUTE -->
+          <div class="flow-stage" style="border-color:#99F6E4; background:linear-gradient(180deg,#F0FDFA 0%,#FFFFFF 100%);">
+            <div class="flow-stage-header">
+              <div class="stage-title-wrap">
+                <div class="stage-num-badge" style="background:#0D9488;">05</div>
+                <div class="stage-name">REHYDRATE &amp; EXECUTE &middot; Local Action Dispatcher</div>
+              </div>
+              <div class="stage-latency" style="color:#0F766E; background:#CCFBF1; border-color:#5EEAD4;">&lt;5ms Injection</div>
+            </div>
+            <div class="pill-cluster">
+              <a href="./02_browser_agent.html#s3" class="flow-pill pill-teal">
+                <div class="pill-icon">&#x1F504;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Local Vault Rehydration</div>
+                  <div class="pill-desc">Swaps &lang;AADHAAR_01&rang; &rarr; Real ID in memory</div>
+                </div>
+                <span class="pill-tag">In-Memory</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./02_browser_agent.html#s2" class="flow-pill pill-teal">
+                <div class="pill-icon">&#x26A1;</div>
+                <div class="pill-text">
+                  <div class="pill-title">DOM Event Dispatcher</div>
+                  <div class="pill-desc">KeyboardEvent, MouseEvent, Click injection</div>
+                </div>
+                <span class="pill-tag">Trusted Events</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./05_browser_extension.html#s4" class="flow-pill pill-teal">
+                <div class="pill-icon">&#x1F441;&#xFE0F;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Side Panel HUD Live Diff</div>
+                  <div class="pill-desc">Human-in-the-loop audit &amp; confirmation</div>
+                </div>
+                <span class="pill-tag">Audit UI</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── SECTION 3: DOCUMENTATION SUITE INDEX ── -->
       <section class="doc-section" id="index-suite">
         <div class="section-header">
           <div class="section-icon-badge">&#x1F4DA;</div>
@@ -768,7 +1420,7 @@
         </div>
 
         <p class="section-lead">
-          Explore the exhaustive technical documentation created for this problem statement. Every module contains architectural diagrams, production-grade source code, and design specifications.
+          Explore the technical blueprints created for this problem statement. Every module includes deep-dive architecture diagrams, production TypeScript/Python source code, and design specifications:
         </p>
 
         <div class="modules-grid">
@@ -846,7 +1498,7 @@
         </div>
       </section>
 
-      <!-- ── SECTION 3: PROBLEM STATEMENT ── -->
+      <!-- ── SECTION 4: PROBLEM STATEMENT ── -->
       <section class="doc-section" id="problem-statement">
         <div class="section-header">
           <div class="section-icon-badge">&#x1F3AF;</div>
@@ -865,23 +1517,23 @@
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin:20px 0;">
           <div style="background:#fff; border:1px solid var(--border-warm); border-radius:var(--radius-md); padding:20px;">
-            <h4 style="color:#DC2626; margin-bottom:8px; font-size:15px;">&#x274C; Traditional Agent Failure</h4>
-            <p style="font-size:13.5px; color:var(--text-body); line-height:1.6;">
-              Takes raw screenshots &amp; transmits to OpenAI / Anthropic / Google cloud endpoints. Immediate violation of DPDP Act 2023, ISRO Security Manual, and CERT-In national cyber guidelines.
+            <h4 style="color:#DC2626; margin-bottom:8px; font-size:15px;">&#x274C; Traditional Commercial Agent Failure</h4>
+            <p style="font-size:13px; color:var(--text-body); line-height:1.6;">
+              Takes raw screenshots &amp; transmits to cloud LLM endpoints. Immediate violation of the <a href="https://www.meity.gov.in/content/digital-personal-data-protection-act-2023" target="_blank" style="color:#EA580C; font-weight:600; text-decoration:none;">DPDP Act 2023</a>, ISRO Security Manual, and CERT-In national cyber directives.
             </p>
           </div>
           <div style="background:#fff; border:1px solid var(--border-warm); border-radius:var(--radius-md); padding:20px;">
-            <h4 style="color:#059669; margin-bottom:8px; font-size:15px;">&#x2705; PRATYAKSHA Solution</h4>
-            <p style="font-size:13.5px; color:var(--text-body); line-height:1.6;">
-              Sanitizes both DOM trees and pixel buffers inside WebGPU Offscreen worker. Swaps sensitive data with structured semantic tokens. Zero plaintext sensitive data ever crosses the network boundary.
+            <h4 style="color:#059669; margin-bottom:8px; font-size:15px;">&#x2705; PRATYAKSHA Sovereign Solution</h4>
+            <p style="font-size:13px; color:var(--text-body); line-height:1.6;">
+              Sanitizes both DOM trees and pixel buffers inside the client WebGPU sandbox. Swaps sensitive credentials with reversible semantic tokens. Zero plaintext sensitive data ever leaves the device.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- ── SECTION 4: RUBRIC AT A GLANCE ── -->
+      <!-- ── SECTION 5: RUBRIC AT A GLANCE ── -->
       <section class="doc-section" id="rubric">
         <div class="section-header">
           <div class="section-icon-badge">&#x2696;&#xFE0F;</div>
@@ -889,39 +1541,39 @@
         </div>
 
         <p class="section-lead">
-          Hackathon scoring explicitly emphasizes privacy and precision over blind speed. Notice that <strong>40% of all marks are allocated solely to PII detection and redaction precision</strong>.
+          Hackathon scoring explicitly prioritizes privacy and precision over raw agent speed. <strong>40% of all marks are allocated solely to PII detection accuracy and redaction precision</strong>:
         </p>
 
         <div class="rubric-grid">
-          <div class="rubric-card highlight">
+          <a href="./01_master_plan.html#rubric" class="rubric-card highlight">
             <div class="rubric-pct orange">20%</div>
             <div class="rubric-title">PII Detection (F1)</div>
             <div class="rubric-subtitle">High recall on Indian identity cards, names, &amp; numbers</div>
-          </div>
+          </a>
 
-          <div class="rubric-card highlight">
+          <a href="./01_master_plan.html#rubric" class="rubric-card highlight">
             <div class="rubric-pct orange">20%</div>
             <div class="rubric-title">Redaction Precision</div>
             <div class="rubric-subtitle">Pixel-perfect bounding boxes without page corruption</div>
-          </div>
+          </a>
 
-          <div class="rubric-card">
+          <a href="./01_master_plan.html#rubric" class="rubric-card">
             <div class="rubric-pct blue">25%</div>
             <div class="rubric-title">Visual Context</div>
             <div class="rubric-subtitle">Server VLM comprehension of sanitized scene graph</div>
-          </div>
+          </a>
 
-          <div class="rubric-card">
+          <a href="./01_master_plan.html#rubric" class="rubric-card">
             <div class="rubric-pct blue">20%</div>
             <div class="rubric-title">Client Resource</div>
-            <div class="rubric-subtitle">&lt;85MB VRAM, low CPU on standard laptops</div>
-          </div>
+            <div class="rubric-subtitle">&lt;85MB VRAM, &lt;8% CPU on standard government laptops</div>
+          </a>
 
-          <div class="rubric-card">
+          <a href="./01_master_plan.html#rubric" class="rubric-card">
             <div class="rubric-pct gray">15%</div>
             <div class="rubric-title">Task Latency</div>
-            <div class="rubric-subtitle">End-to-end responsiveness for automation</div>
-          </div>
+            <div class="rubric-subtitle">Sub-second loop responsiveness for seamless automation</div>
+          </a>
         </div>
 
         <div class="callout green">
@@ -933,43 +1585,6 @@
         </div>
       </section>
 
-      <!-- ── SECTION 5: ARCHITECTURE ── -->
-      <section class="doc-section" id="architecture">
-        <div class="section-header">
-          <div class="section-icon-badge">&#x1F3DB;&#xFE0F;</div>
-          <h2 class="section-title">System Architecture at a Glance</h2>
-        </div>
-
-        <p class="section-lead">
-          The 5-step perception-action pipeline decouples local perception and sanitization from central multi-modal reasoning.
-        </p>
-
-        <div class="code-box">
-          <div class="code-header">
-            <span>PRATYAKSHA END-TO-END PIPELINE TOPOLOGY</span>
-            <span>MV3 + WebGPU + Private VLM</span>
-          </div>
-          <pre class="code-pre">
-Browser Extension (Chrome MV3 / Firefox WebExtension)
-&#x2502;
-&#x251C;&#x2500;&#x2500; 1. PERCEIVE    &rarr; chrome.tabs.captureVisibleTab() + DOM Scene Tree Extractor
-&#x251C;&#x2500;&#x2500; 2. SANITIZE    &rarr; Offscreen WebGPU Pipeline (Ultra-Light-Face + DBNet + CRNN)
-&#x2502;                     &boxdr;&boxh; Verhoeff (Aadhaar), Modulo-36 (GSTIN), IFSC Dictionary
-&#x2502;                     &boxur;&boxh; Reversible Pseudonym Vault (Local In-Memory Map)
-&#x251C;&#x2500;&#x2500; 3. TRANSMIT    &rarr; Only Sanitized Canvas + Tokenized Scene Graph &rarr; HTTPS/WSS
-&#x2502;
-&#x2514;&#x2500;&#x2500;&rarr; SERVER (ISRO Intranet / Self-Hosted Enterprise GPU Node)
-         Qwen2.5-VL-7B-Instruct (Open-Weights, 100% Offline Deployable)
-         Receives: Sanitized pixels + semantic tokens (&lang;AADHAAR_01&rang;, &lang;PAN_01&rang;)
-         Returns:  Structured JSON Action Plan with token targets
-&#x250C;&#x2500;&#x2500;&larr; CLIENT RETURN
-&#x2502;
-&#x251C;&#x2500;&#x2500; 4. REHYDRATE   &rarr; Client Rehydration Vault swaps tokens back to real values LOCALLY
-&#x2514;&#x2500;&#x2500; 5. EXECUTE     &rarr; Content Script synthesizes events (click, type, scroll) in DOM
-          </pre>
-        </div>
-      </section>
-
       <!-- ── SECTION 6: INNOVATIONS ── -->
       <section class="doc-section" id="innovations">
         <div class="section-header">
@@ -978,7 +1593,7 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
         </div>
 
         <div class="innovations-grid">
-          <div class="inno-card">
+          <a href="./02_browser_agent.html#s3" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#EFF6FF; color:#2563EB;">&#x1F510;</div>
               <div class="inno-title">Reversible Pseudonym Vault</div>
@@ -986,9 +1601,9 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
             <div class="inno-body">
               Instead of destructive black-box redaction, PRATYAKSHA generates typed tokens like <code>&lang;AADHAAR_01&rang;</code> and preserves their bounding box geometry. The server VLM can reference these tokens in actions, and the client securely rehydrates the real value into form fields right before dispatching keyboard events.
             </div>
-          </div>
+          </a>
 
-          <div class="inno-card">
+          <a href="./03_perception_problem.html#s2" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#FFF7ED; color:#EA580C;">&#x1F6E1;&#xFE0F;</div>
               <div class="inno-title">Fail-Closed Dual-Channel Fusion</div>
@@ -996,9 +1611,9 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
             <div class="inno-body">
               Combines structural DOM priors with neural pixel-level DBNet text detection. If DOM analysis misses a canvas signature, scanned PDF, or shadow DOM field, the WebGPU vision channel catches it. If either channel flags sensitive data, redaction is triggered immediately.
             </div>
-          </div>
+          </a>
 
-          <div class="inno-card">
+          <a href="./03_perception_problem.html#s5" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#ECFDF5; color:#059669;">&#x1F1EE;&#x1F1F3;</div>
               <div class="inno-title">Sovereign Indian PII Stack</div>
@@ -1006,9 +1621,9 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
             <div class="inno-body">
               Hardened against Indian governmental formats: Verhoeff algorithm for 12-digit Aadhaar validation (eliminates false positives from serial numbers), PAN structure validator, GSTIN modulo-36 checksum, RBI IFSC routing table, and multilingual Devanagari OCR models.
             </div>
-          </div>
+          </a>
 
-          <div class="inno-card">
+          <a href="./04_hld.html#s5" class="inno-card">
             <div class="inno-header">
               <div class="inno-icon" style="background:#F5F3FF; color:#7C3AED;">&#x1F9FE;</div>
               <div class="inno-title">Cryptographic Egress Ledger</div>
@@ -1016,7 +1631,7 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
             <div class="inno-body">
               Every single frame and JSON payload transmitted to the server is hashed with SHA-256 and appended to a tamper-proof in-memory Merkle chain. Users and security auditors can open the Side Panel HUD to verify the exact split-screen diff of what left the browser.
             </div>
-          </div>
+          </a>
         </div>
       </section>
 
@@ -1034,6 +1649,7 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
                 <th>Tier / Layer</th>
                 <th>Technology Selected</th>
                 <th>Rationale &amp; Capability</th>
+                <th>Reference Module</th>
               </tr>
             </thead>
             <tbody>
@@ -1041,31 +1657,37 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
                 <td class="strong-col">Browser Extension</td>
                 <td>Chrome Manifest V3 (MV3) + TypeScript</td>
                 <td>Non-blocking service worker + offscreen document for heavy ML computation</td>
+                <td><a href="./05_browser_extension.html" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 05 Spec &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">On-Device ML Runtime</td>
                 <td>ONNX Runtime Web (<code>@webgpu</code> + <code>@wasm</code>)</td>
                 <td>Near-native GPU acceleration in browser sandbox without native binary drivers</td>
+                <td><a href="./03_perception_problem.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 03 ML &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Client Vision Models</td>
                 <td>DBNet-Tiny + Ultra-Light-Face + CRNN (~20MB)</td>
                 <td>Sub-50ms text &amp; face localization; quantized int8 execution</td>
+                <td><a href="./03_perception_problem.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">Model Specs &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Server Reasoning VLM</td>
                 <td>Qwen2.5-VL-7B-Instruct on vLLM</td>
                 <td>Open-weights, state-of-the-art vision-language reasoning, 100% self-hosted</td>
+                <td><a href="./01_master_plan.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 01 VLM &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">PII Validation Logic</td>
                 <td>Pure TypeScript (Verhoeff, Modulo-36, Regex)</td>
                 <td>Zero external network calls; mathematically deterministic validation</td>
+                <td><a href="./03_perception_problem.html#s5" style="color:#EA580C; font-weight:600; text-decoration:none;">PII Code &rarr;</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Egress Audit Ledger</td>
                 <td>Web Crypto API (SubtleCrypto SHA-256)</td>
                 <td>Tamper-evident cryptographically chained audit log</td>
+                <td><a href="./04_hld.html#s5" style="color:#EA580C; font-weight:600; text-decoration:none;">HLD Security &rarr;</a></td>
               </tr>
             </tbody>
           </table>
@@ -1086,6 +1708,7 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
                 <th>Role</th>
                 <th>Primary Focus &amp; Responsibilities</th>
                 <th>Key Deliverables</th>
+                <th>Related Blueprints</th>
               </tr>
             </thead>
             <tbody>
@@ -1093,26 +1716,31 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
                 <td class="strong-col">Extension &amp; UI Lead</td>
                 <td>MV3 scaffold, Content Scripts, Action Dispatcher, Side Panel HUD</td>
                 <td><code>manifest.json</code>, event injector, live audit visualizer</td>
+                <td><a href="./05_browser_extension.html" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 05</a> &amp; <a href="./02_browser_agent.html" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 02</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Edge ML Lead</td>
                 <td>ONNX WebGPU pipeline, dirty-tile dHash optimizer, model quantization</td>
                 <td>Offscreen ML worker, DBNet &amp; Face ONNX models, canvas masker</td>
+                <td><a href="./03_perception_problem.html" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 03</a></td>
               </tr>
               <tr>
                 <td class="strong-col">PII &amp; Security Lead</td>
                 <td>Verhoeff/PAN/GSTIN rules, Pseudonym Vault, SHA-256 egress ledger</td>
                 <td>Rehydration vault, rule validator suite, Merkle audit trail</td>
+                <td><a href="./02_browser_agent.html#s3" style="color:#EA580C; font-weight:600; text-decoration:none;">Vault Spec</a> &amp; <a href="./04_hld.html#s5" style="color:#EA580C; font-weight:600; text-decoration:none;">HLD Sec</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Server &amp; VLM Lead</td>
                 <td>vLLM orchestration, prompt engineering, structured JSON action protocol</td>
                 <td>Qwen2.5-VL server container, WebSocket duplex protocol handler</td>
+                <td><a href="./04_hld.html#s4" style="color:#EA580C; font-weight:600; text-decoration:none;">API Spec</a> &amp; <a href="./01_master_plan.html" style="color:#EA580C; font-weight:600; text-decoration:none;">Module 01</a></td>
               </tr>
               <tr>
                 <td class="strong-col">Benchmark &amp; Demo Lead</td>
                 <td>Mock ISRO e-procurement portal, IndoGov-PII dataset, demo pitch video</td>
                 <td>Evaluation test suite, sample PDF forms, live judging presentation</td>
+                <td><a href="./02_browser_agent.html#s6" style="color:#EA580C; font-weight:600; text-decoration:none;">Demo Script</a></td>
               </tr>
             </tbody>
           </table>
@@ -1122,27 +1750,27 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
       <!-- ── SECTION 9: VERCEL DEPLOYMENT ── -->
       <section class="doc-section" id="vercel">
         <div class="section-header">
-          <div class="section-icon-badge">&#x26A1;</div>
+          <div class="section-icon-badge">&#x1F680;</div>
           <h2 class="section-title">Deployment on Vercel for Teammates</h2>
         </div>
 
         <div class="deploy-box">
-          <h3>&#x1F680; Instant One-Click Sharing for Your Team</h3>
+          <h3>&#x26A1; Instant One-Click Sharing for Your Team</h3>
           <p>
-            This entire documentation bundle is packaged as pure HTML5/CSS3 with zero build dependencies, so it deploys in 3 seconds to Vercel and looks pristine on desktops, tablets, and phones.
+            This entire documentation bundle is packaged as pure HTML5/CSS3 with zero build dependencies, so it deploys in 3 seconds to Vercel and looks pristine on phones, tablets, and desktops.
           </p>
 
           <div style="background:#171412; border:1px solid #332E2A; border-radius:8px; padding:16px; margin-bottom:16px;">
-            <div style="color:#A8A29E; font-size:11.5px; font-family:'JetBrains Mono',monospace; margin-bottom:8px;">OPTION 1: VERCEL CLI (FASTEST)</div>
-            <code style="font-family:'JetBrains Mono',monospace; color:#38BDF8; font-size:13.5px;">
+            <div style="color:#A8A29E; font-size:11px; font-family:'JetBrains Mono',monospace; margin-bottom:6px;">OPTION 1: VERCEL CLI (FASTEST)</div>
+            <code style="font-family:'JetBrains Mono',monospace; color:#38BDF8; font-size:13px;">
               npx vercel deploy --prod
             </code>
           </div>
 
           <div style="background:#171412; border:1px solid #332E2A; border-radius:8px; padding:16px;">
-            <div style="color:#A8A29E; font-size:11.5px; font-family:'JetBrains Mono',monospace; margin-bottom:8px;">OPTION 2: GITHUB / VERCEL DASHBOARD</div>
-            <ol style="margin-left:20px; font-size:13.5px; color:#E2E8F0; line-height:1.7;">
-              <li>Push your repo to GitHub.</li>
+            <div style="color:#A8A29E; font-size:11px; font-family:'JetBrains Mono',monospace; margin-bottom:6px;">OPTION 2: GITHUB / VERCEL DASHBOARD</div>
+            <ol style="margin-left:20px; font-size:13px; color:#E2E8F0; line-height:1.7;">
+              <li>Push your repo to GitHub: <code>git push origin main</code></li>
               <li>Import the project into your Vercel Dashboard (<a href="https://vercel.com/new" target="_blank" style="color:#FB923C; text-decoration:none;">vercel.com/new</a>).</li>
               <li>The repository contains a configured <code>vercel.json</code> that automatically routes root requests to <code>/Docs/index.html</code> with clean URLs!</li>
             </ol>
@@ -1154,6 +1782,38 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
   </main>
 
   <script>
+    // Mobile Drawer Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Auto-close sidebar when clicking a TOC or Doc link on mobile
+    const navLinksAll = document.querySelectorAll('.sidebar a');
+    navLinksAll.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          closeSidebar();
+        }
+      });
+    });
+
     // Highlight TOC on scroll
     const sections = document.querySelectorAll('.doc-section');
     const navLinks = document.querySelectorAll('.toc-link');
@@ -1161,7 +1821,7 @@ Browser Extension (Chrome MV3 / Firefox WebExtension)
     window.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(section => {
-        const sectionTop = section.offsetTop - 80;
+        const sectionTop = section.offsetTop - 90;
         if (pageYOffset >= sectionTop) {
           current = section.getAttribute('id');
         }

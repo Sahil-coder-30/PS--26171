@@ -425,31 +425,90 @@
     }
     .footer-nav-links a { color: #EA580C; text-decoration: none; font-weight: 600; }
 
-    /* MOBILE TOGGLE */
-    .menu-toggle {
-      display: none; position: fixed; bottom: 20px; right: 20px;
-      background: var(--sidebar-bg); color: #FFFFFF; border: 1px solid var(--sidebar-border);
-      padding: 12px 18px; border-radius: 30px; font-size: 14px; font-weight: 600;
-      box-shadow: var(--shadow-lg); z-index: 200; cursor: pointer;
+    /* ── MOBILE TOPBAR (Visible only <= 900px) ── */
+    .mobile-topbar {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; height: 60px;
+      background: var(--sidebar-bg); border-bottom: 1px solid var(--sidebar-border);
+      color: var(--sidebar-text); align-items: center; justify-content: space-between;
+      padding: 0 16px; z-index: 150; box-shadow: var(--shadow-md);
+    }
+    .mobile-menu-btn {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--sidebar-border);
+      color: #FFFFFF; width: 40px; height: 40px; border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 5px; cursor: pointer; padding: 8px;
+    }
+    .mobile-menu-btn span {
+      display: block; width: 20px; height: 2px;
+      background: #FFFFFF; border-radius: 2px;
+    }
+    .mobile-brand {
+      font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800;
+      color: #FFFFFF; display: flex; align-items: center; gap: 6px;
+    }
+    .mobile-brand .brand-devanagari { color: #FB923C; font-size: 15px; }
+    .mobile-hub-badge {
+      font-size: 11px; font-weight: 700;
+      background: rgba(234, 88, 12, 0.2); border: 1px solid rgba(234, 88, 12, 0.4);
+      color: #FB923C; padding: 4px 10px; border-radius: 20px; text-decoration: none;
+    }
+    .sidebar-backdrop {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(3px);
+      z-index: 180; opacity: 0; transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active { display: block; opacity: 1; }
+    .sidebar-close-btn {
+      display: none; position: absolute;
+      top: 20px; right: 18px;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--sidebar-border);
+      color: #D6D3D1; width: 32px; height: 32px; border-radius: 8px;
+      cursor: pointer; font-size: 16px; line-height: 1;
+      align-items: center; justify-content: center;
     }
     @media (max-width: 900px) {
-      .sidebar { position: fixed; left: -320px; transition: left 0.3s ease; }
-      .sidebar.open { left: 0; }
-      .menu-toggle { display: block; }
-      .content-container { padding: 24px 20px 60px; }
+      body { flex-direction: column; }
+      .mobile-topbar { display: flex; }
+      .sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0;
+        width: 290px; transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.6); z-index: 200;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-close-btn { display: flex; }
+      .main-wrap { padding-top: 60px; }
+      .content-container { padding: 26px 18px 60px; }
+      .menu-toggle { display: none !important; }
     }
   </style>
 </head>
 <body>
 
   <!-- MOBILE TOGGLE BUTTON -->
-  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
-    ☰ Menu &amp; Topics
-  </button>
+  
 
   <!-- ── CONTRASTING SIDEBAR ── -->
-  <aside class="sidebar">
+  <!-- ── MOBILE TOPBAR ── -->
+  <div class="mobile-topbar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
+    </div>
+    <a href="./index.html" class="mobile-hub-badge">&#x1F5FA;&#xFE0F; HUB</a>
+  </div>
+
+  <!-- ── SIDEBAR BACKDROP ── -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">&#x2715;</button>
       <div class="brand-badge">SIH 2026 · ISRO PS-26171</div>
       <div class="brand-title">PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span></div>
       <div class="brand-subtitle">Autonomous Browser Agent Execution Engine</div>
@@ -1228,6 +1287,35 @@ Vault Lookup: <span class="str">"⟨AADHAAR_e8f1⟩"</span> → <span class="fn"
         }
       });
     });
+
+  // Mobile Drawer Toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add('open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+  if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+  if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+  document.querySelectorAll('.sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 900) closeSidebar();
+    });
+  });
+
   </script>
 </body>
 </html>

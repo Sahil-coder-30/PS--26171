@@ -1004,13 +1004,27 @@
 <body>
 
   <!-- MOBILE TOGGLE BUTTON -->
-  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
-    ☰ Menu &amp; Topics
-  </button>
+  
 
   <!-- ── CONTRASTING SIDEBAR ── -->
-  <aside class="sidebar">
+  <!-- ── MOBILE TOPBAR ── -->
+  <div class="mobile-topbar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
+    </div>
+    <a href="./index.html" class="mobile-hub-badge">&#x1F5FA;&#xFE0F; HUB</a>
+  </div>
+
+  <!-- ── SIDEBAR BACKDROP ── -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">&#x2715;</button>
       <div class="brand-badge">SIH 2026 · ISRO PS-26171</div>
       <div class="brand-title">PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span></div>
       <div class="brand-subtitle">Privacy-Preserving On-Device Visual Agent</div>
@@ -1874,6 +1888,35 @@
         }
       });
     });
+
+  // Mobile Drawer Toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add('open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+  if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+  if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+  document.querySelectorAll('.sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 900) closeSidebar();
+    });
+  });
+
   </script>
 </body>
 </html>

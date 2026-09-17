@@ -388,31 +388,407 @@
     }
     .footer-nav-links a { color: #EA580C; text-decoration: none; font-weight: 600; }
 
-    /* MOBILE TOGGLE */
-    .menu-toggle {
-      display: none; position: fixed; bottom: 20px; right: 20px;
-      background: var(--sidebar-bg); color: #FFFFFF; border: 1px solid var(--sidebar-border);
-      padding: 12px 18px; border-radius: 30px; font-size: 14px; font-weight: 600;
-      box-shadow: var(--shadow-lg); z-index: 200; cursor: pointer;
+    /* ── MOBILE TOPBAR (Visible only <= 900px) ── */
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--sidebar-border);
+      color: var(--sidebar-text);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 150;
+      box-shadow: var(--shadow-md);
     }
+    .mobile-menu-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .mobile-menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #FFFFFF;
+      border-radius: 2px;
+    }
+    .mobile-brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mobile-brand .brand-devanagari {
+      color: #FB923C;
+      font-size: 15px;
+    }
+    .mobile-hub-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(234, 88, 12, 0.2);
+      border: 1px solid rgba(234, 88, 12, 0.4);
+      color: #FB923C;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    /* ── SIDEBAR BACKDROP (Mobile) ── */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(3px);
+      z-index: 180;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      position: absolute;
+      top: 20px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #D6D3D1;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── INTERACTIVE PILL FLOW CHART DIAGRAM ── */
+    .flow-canvas {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      margin: 24px 0 32px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .flow-canvas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-warm);
+    }
+    .flow-canvas-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .flow-canvas-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .flow-meta-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .fmt-orange { background: #FFF7ED; border-color: #FDBA74; color: #C2410C; }
+    .fmt-green { background: #ECFDF5; border-color: #A7F3D0; color: #047857; }
+    .fmt-purple { background: #F5F3FF; border-color: #DDD6FE; color: #6D28D9; }
+
+    .perimeter-box {
+      border: 2px dashed #EA580C;
+      background: linear-gradient(180deg, rgba(255, 247, 237, 0.4) 0%, rgba(255, 255, 255, 0.8) 100%);
+      border-radius: var(--radius-lg);
+      padding: 24px 18px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .perimeter-badge {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #EA580C;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 6px rgba(234, 88, 12, 0.3);
+    }
+
+    .flow-stages {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .flow-stage {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .flow-stage:hover {
+      border-color: #CBD5E1;
+      box-shadow: var(--shadow-md);
+    }
+    .flow-stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .stage-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stage-num-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: #1C1917;
+      color: #FFFFFF;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stage-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .stage-latency {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #A7F3D0;
+    }
+
+    .pill-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .flow-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      border: 1.5px solid;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      flex: 1 1 calc(33.333% - 10px);
+      min-width: 190px;
+    }
+    .flow-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .flow-pill .pill-icon {
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .flow-pill .pill-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .flow-pill .pill-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .flow-pill .pill-desc {
+      font-size: 11px;
+      opacity: 0.85;
+      line-height: 1.3;
+      margin-top: 1px;
+    }
+    .flow-pill .pill-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      flex-shrink: 0;
+    }
+    .flow-pill .pill-jump {
+      font-size: 11.5px;
+      font-weight: 700;
+      opacity: 0.6;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .flow-pill:hover .pill-jump {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    .pill-blue { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+    .pill-blue .pill-tag { background: #DBEAFE; color: #1D4ED8; }
+    .pill-blue:hover { border-color: #60A5FA; }
+
+    .pill-orange { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
+    .pill-orange .pill-tag { background: #FFEDD5; color: #C2410C; }
+    .pill-orange:hover { border-color: #FB923C; }
+
+    .pill-purple { background: #F5F3FF; border-color: #DDD6FE; color: #5B21B6; }
+    .pill-purple .pill-tag { background: #EDE9FE; color: #6D28D9; }
+    .pill-purple:hover { border-color: #A78BFA; }
+
+    .pill-green { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+    .pill-green .pill-tag { background: #D1FAE5; color: #047857; }
+    .pill-green:hover { border-color: #34D399; }
+
+    .pill-teal { background: #F0FDFA; border-color: #99F6E4; color: #0F766E; }
+    .pill-teal .pill-tag { background: #CCFBF1; color: #0D9488; }
+    .pill-teal:hover { border-color: #2DD4BF; }
+
+    .flow-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 6px 0;
+      color: var(--text-muted);
+      gap: 2px;
+    }
+    .connector-line {
+      width: 2px;
+      height: 14px;
+      background: var(--border-warm);
+    }
+    .connector-arrow {
+      font-size: 15px;
+      line-height: 1;
+      color: var(--isro-orange);
+    }
+    .connector-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 2px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-warm);
+    }
+
     @media (max-width: 900px) {
-      .sidebar { position: fixed; left: -320px; transition: left 0.3s ease; }
-      .sidebar.open { left: 0; }
-      .menu-toggle { display: block; }
-      .content-container { padding: 24px 20px 60px; }
+      body { flex-direction: column; }
+      .mobile-topbar { display: flex; }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 290px;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.6);
+        z-index: 200;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-close-btn { display: flex; }
+      .main-wrap { padding-top: 60px; }
+      .content-container { padding: 26px 18px 60px; }
+      .flow-canvas { padding: 20px 14px; }
+      .flow-pill { flex: 1 1 100%; min-width: 100%; }
+      .menu-toggle { display: none !important; }
     }
   </style>
 </head>
 <body>
 
   <!-- MOBILE TOGGLE BUTTON -->
-  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
-    ☰ Menu &amp; Modules
-  </button>
+  
 
   <!-- ── CONTRASTING SIDEBAR ── -->
-  <aside class="sidebar">
+  <!-- ── MOBILE TOPBAR ── -->
+  <div class="mobile-topbar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
+    </div>
+    <a href="./readme.html" class="mobile-hub-badge">&#x1F4DA; DOC</a>
+  </div>
+
+  <!-- ── SIDEBAR BACKDROP (Mobile) ── -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ── CONTRASTING SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">&#x2715;</button>
       <div class="brand-badge">SIH 2026 · ISRO PS-26171</div>
       <div class="brand-title">PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span></div>
       <div class="brand-subtitle">Master Documentation Hub &amp; Visual Portal</div>
@@ -684,6 +1060,256 @@
           <h2 class="section-title">System Architecture at a Glance</h2>
         </div>
 
+        <p class="section-lead">
+          Interactive pill flow diagram representing PRATYAKSHA's 5-step perception-action execution loop. <strong>Click any pill node</strong> to jump directly to its detailed code and implementation blueprint:
+        </p>
+
+        <!-- PILL FLOW DIAGRAM -->
+        <div class="flow-canvas">
+          <div class="flow-canvas-header">
+            <div class="flow-canvas-title">
+              <span>&#x1F6E1;&#xFE0F; PRATYAKSHA End-to-End Perception-Action Loop</span>
+            </div>
+            <div class="flow-canvas-meta">
+              <span class="flow-meta-tag fmt-orange">&#x26A1; Sub-50ms On-Device</span>
+              <span class="flow-meta-tag fmt-green">&#x1F510; Zero-Raw-PII Egress</span>
+              <span class="flow-meta-tag fmt-purple">&#x1F5FA;&#xFE0F; Click Pills to Inspect</span>
+            </div>
+          </div>
+
+          <!-- CLIENT SECURITY PERIMETER -->
+          <div class="perimeter-box">
+            <div class="perimeter-badge">&#x1F512; CLIENT DEVICE SECURITY PERIMETER &middot; ZERO SENSITIVE DATA LEAVES HERE</div>
+
+            <div class="flow-stages">
+              <!-- STAGE 1: PERCEIVE -->
+              <div class="flow-stage">
+                <div class="flow-stage-header">
+                  <div class="stage-title-wrap">
+                    <div class="stage-num-badge">01</div>
+                    <div class="stage-name">PERCEIVE &middot; Dual-Channel Page Ingestion</div>
+                  </div>
+                  <div class="stage-latency">~15ms Total Latency</div>
+                </div>
+                <div class="pill-cluster">
+                  <a href="./05_browser_extension.html#s6" class="flow-pill pill-blue">
+                    <div class="pill-icon">&#x1F4F8;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Screen Capture Stream</div>
+                      <div class="pill-desc">chrome.tabs.captureVisibleTab()</div>
+                    </div>
+                    <span class="pill-tag">MV3 API</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./05_browser_extension.html#s7" class="flow-pill pill-blue">
+                    <div class="pill-icon">&#x1F333;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">DOM Scene Tree Walker</div>
+                      <div class="pill-desc">Semantic text &amp; input bounding boxes</div>
+                    </div>
+                    <span class="pill-tag">Content Script</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s3" class="flow-pill pill-blue">
+                    <div class="pill-icon">&#x26A1;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">8&times;8 Dirty-Tile dHash</div>
+                      <div class="pill-desc">Skips 85%+ static redundant tiles</div>
+                    </div>
+                    <span class="pill-tag">Optimizer</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- CONNECTOR -->
+              <div class="flow-connector">
+                <div class="connector-line"></div>
+                <div class="connector-arrow">&#x2193;</div>
+                <div class="connector-label">Dual-Channel Raw Pixels + DOM Priors (Inside Sandbox)</div>
+              </div>
+
+              <!-- STAGE 2: SANITIZE -->
+              <div class="flow-stage">
+                <div class="flow-stage-header">
+                  <div class="stage-title-wrap">
+                    <div class="stage-num-badge">02</div>
+                    <div class="stage-name">SANITIZE &middot; On-Device WebGPU Privacy Shield</div>
+                  </div>
+                  <div class="stage-latency">~32ms WebGPU Execution</div>
+                </div>
+                <div class="pill-cluster">
+                  <a href="./03_perception_problem.html#s4" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F464;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Ultra-Light-Face ONNX</div>
+                      <div class="pill-desc">Biometric face detection (2.5MB int8)</div>
+                    </div>
+                    <span class="pill-tag">WebGPU</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s4" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F524;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">DBNet-Tiny + CRNN OCR</div>
+                      <div class="pill-desc">Multilingual Indic &amp; English text (14MB)</div>
+                    </div>
+                    <span class="pill-tag">ONNX Runtime</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s5" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F1EE;&#x1F1F3;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Verhoeff &amp; Modulo-36</div>
+                      <div class="pill-desc">Deterministic Aadhaar &amp; GSTIN rules</div>
+                    </div>
+                    <span class="pill-tag">Pure TS</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./02_browser_agent.html#s3" class="flow-pill pill-purple">
+                    <div class="pill-icon">&#x1F510;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Reversible Pseudonym Vault</div>
+                      <div class="pill-desc">Maps raw PII &harr; &lang;AADHAAR_01&rang;</div>
+                    </div>
+                    <span class="pill-tag">AES-GCM Memory</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./03_perception_problem.html#s6" class="flow-pill pill-orange">
+                    <div class="pill-icon">&#x1F3A8;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">Safety Halo Inpainter</div>
+                      <div class="pill-desc">4px dilated canvas pixel redaction</div>
+                    </div>
+                    <span class="pill-tag">Canvas2D</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+
+                  <a href="./04_hld.html#s5" class="flow-pill pill-purple">
+                    <div class="pill-icon">&#x1F9FE;</div>
+                    <div class="pill-text">
+                      <div class="pill-title">SHA-256 Merkle Ledger</div>
+                      <div class="pill-desc">Tamper-proof cryptographic egress proof</div>
+                    </div>
+                    <span class="pill-tag">WebCrypto</span>
+                    <span class="pill-jump">&rarr;</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR ACROSS NETWORK BOUNDARY -->
+          <div class="flow-connector">
+            <div class="connector-line" style="height:24px; border-left:2px dashed #059669;"></div>
+            <div class="connector-arrow" style="color:#059669;">&#x2193;</div>
+            <div class="connector-label" style="background:#ECFDF5; border-color:#A7F3D0; color:#065F46;">
+              &#x1F6E1;&#xFE0F; ONLY SANITIZED PIXELS + SYNTHETIC TOKENS TRANSMITTED OVER HTTPS/WSS
+            </div>
+            <div class="connector-line" style="height:20px; border-left:2px dashed #059669;"></div>
+          </div>
+
+          <!-- STAGE 3: TRANSMIT & REASON -->
+          <div class="flow-stage" style="border-color:#A7F3D0; background:linear-gradient(180deg,#F0FDF4 0%,#FFFFFF 100%);">
+            <div class="flow-stage-header">
+              <div class="stage-title-wrap">
+                <div class="stage-num-badge" style="background:#059669;">03-04</div>
+                <div class="stage-name">TRANSMIT &amp; REASON &middot; Sovereign Enterprise VLM</div>
+              </div>
+              <div class="stage-latency" style="color:#065F46; background:#D1FAE5; border-color:#6EE7B7;">ISRO Intranet Node</div>
+            </div>
+            <div class="pill-cluster">
+              <a href="./04_hld.html#s4" class="flow-pill pill-green">
+                <div class="pill-icon">&#x1F4E1;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Sanitized Frame &amp; Scene Graph</div>
+                  <div class="pill-desc">Inpainted pixels + token identifiers</div>
+                </div>
+                <span class="pill-tag">WSS Protocol</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./01_master_plan.html#s4" class="flow-pill pill-green">
+                <div class="pill-icon">&#x1F9E0;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Qwen2.5-VL-7B-Instruct</div>
+                  <div class="pill-desc">Open-weights reasoning, 100% self-hosted</div>
+                </div>
+                <span class="pill-tag">vLLM Server</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./02_browser_agent.html#s5" class="flow-pill pill-green">
+                <div class="pill-icon">&#x1F4CB;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Structured Action JSON</div>
+                  <div class="pill-desc">Targets tokens: click, type, submit</div>
+                </div>
+                <span class="pill-tag">Action Plan</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- CONNECTOR BACK TO CLIENT -->
+          <div class="flow-connector">
+            <div class="connector-line" style="height:20px;"></div>
+            <div class="connector-arrow" style="color:#0D9488;">&#x2193;</div>
+            <div class="connector-label" style="background:#F0FDFA; border-color:#99F6E4; color:#0F766E;">
+              &#x1F4AC; RETURN: Structured Command Received by Extension Agent
+            </div>
+          </div>
+
+          <!-- STAGE 5: REHYDRATE & EXECUTE -->
+          <div class="flow-stage" style="border-color:#99F6E4; background:linear-gradient(180deg,#F0FDFA 0%,#FFFFFF 100%);">
+            <div class="flow-stage-header">
+              <div class="stage-title-wrap">
+                <div class="stage-num-badge" style="background:#0D9488;">05</div>
+                <div class="stage-name">REHYDRATE &amp; EXECUTE &middot; Local Action Dispatcher</div>
+              </div>
+              <div class="stage-latency" style="color:#0F766E; background:#CCFBF1; border-color:#5EEAD4;">&lt;5ms Injection</div>
+            </div>
+            <div class="pill-cluster">
+              <a href="./02_browser_agent.html#s3" class="flow-pill pill-teal">
+                <div class="pill-icon">&#x1F504;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Local Vault Rehydration</div>
+                  <div class="pill-desc">Swaps &lang;AADHAAR_01&rang; &rarr; Real ID in memory</div>
+                </div>
+                <span class="pill-tag">In-Memory</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./02_browser_agent.html#s2" class="flow-pill pill-teal">
+                <div class="pill-icon">&#x26A1;</div>
+                <div class="pill-text">
+                  <div class="pill-title">DOM Event Dispatcher</div>
+                  <div class="pill-desc">KeyboardEvent, MouseEvent, Click injection</div>
+                </div>
+                <span class="pill-tag">Trusted Events</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+
+              <a href="./05_browser_extension.html#s4" class="flow-pill pill-teal">
+                <div class="pill-icon">&#x1F441;&#xFE0F;</div>
+                <div class="pill-text">
+                  <div class="pill-title">Side Panel HUD Live Diff</div>
+                  <div class="pill-desc">Human-in-the-loop audit &amp; confirmation</div>
+                </div>
+                <span class="pill-tag">Audit UI</span>
+                <span class="pill-jump">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
         <div class="table-container">
           <table>
             <thead>
@@ -824,6 +1450,38 @@
         link.classList.remove('active');
         if (link.getAttribute('href') === '#' + current) {
           link.classList.add('active');
+        }
+      });
+    });
+
+    // Mobile Drawer Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+    function openSidebar() {
+      if (sidebar) sidebar.classList.add('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      if (sidebar) sidebar.classList.remove('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Auto-close sidebar when clicking any link on mobile
+    const navLinksAll = document.querySelectorAll('.sidebar a');
+    navLinksAll.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          closeSidebar();
         }
       });
     });
