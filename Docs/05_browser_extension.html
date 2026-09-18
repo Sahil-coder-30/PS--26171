@@ -172,6 +172,7 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 5px; cursor: pointer; padding: 8px;
+      touch-action: manipulation;
     }
     .mobile-menu-btn span {
       display: block; width: 20px; height: 2px;
@@ -183,6 +184,31 @@
       color: #FFFFFF; display: flex; align-items: center; gap: 6px;
     }
     .mobile-brand .brand-devanagari { color: #FB923C; font-size: 15px; }
+    .mobile-nav-select-wrap {
+      display: flex;
+      align-items: center;
+      position: relative;
+      max-width: 140px;
+    }
+    .mobile-doc-selector {
+      background: #282420;
+      color: #FAF7F2;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 11.5px;
+      font-weight: 600;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 6px 24px 6px 8px;
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23FB923C'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 6px center;
+      background-size: 14px;
+      touch-action: manipulation;
+    }
     .mobile-hub-badge {
       font-size: 11px; font-weight: 700;
       background: rgba(234, 88, 12, 0.2);
@@ -208,6 +234,7 @@
       border-radius: 8px; cursor: pointer;
       font-size: 16px; line-height: 1;
       align-items: center; justify-content: center;
+      touch-action: manipulation;
     }
     @media (max-width: 900px) {
       body { flex-direction: column; }
@@ -243,7 +270,17 @@
   <div class="mobile-brand">
     PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
   </div>
-  <a href="index.html" class="mobile-hub-badge">&#x1F5FA;&#xFE0F; HUB</a>
+  <div class="mobile-nav-select-wrap">
+    <select class="mobile-doc-selector" id="mobileDocSelector" aria-label="Quick jump to document">
+      <option value="./index.html">Master Hub</option>
+      <option value="./01_master_plan.html">01 Master Plan</option>
+      <option value="./02_browser_agent.html">02 Browser Agent</option>
+      <option value="./03_perception_problem.html">03 Perception Deep-Dive</option>
+      <option value="./04_hld.html">04 HLD Design</option>
+      <option value="./05_browser_extension.html" selected>05 Browser Extension</option>
+      <option value="./readme.html">Readme DOC</option>
+    </select>
+  </div>
 </div>
 
 <!-- ── SIDEBAR BACKDROP ── -->
@@ -936,6 +973,16 @@
     });
   });
 
+  const mobileDocSelector = document.getElementById('mobileDocSelector');
+  if (mobileDocSelector) {
+    mobileDocSelector.addEventListener('change', (e) => {
+      if (e.target.value) window.location.href = e.target.value;
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSidebar();
+  });
 </script>
 </body>
 </html>

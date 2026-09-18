@@ -89,9 +89,10 @@
       color: var(--sidebar-text);
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 0 14px;
       z-index: 150;
       box-shadow: var(--shadow-md);
+      gap: 8px;
     }
     .mobile-menu-btn {
       background: rgba(255, 255, 255, 0.08);
@@ -108,6 +109,8 @@
       cursor: pointer;
       padding: 8px;
       transition: background 0.15s;
+      touch-action: manipulation;
+      flex-shrink: 0;
     }
     .mobile-menu-btn span {
       display: block;
@@ -119,27 +122,65 @@
     }
     .mobile-brand {
       font-family: 'Outfit', sans-serif;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: -0.01em;
       color: #FFFFFF;
       display: flex;
       align-items: center;
       gap: 6px;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .mobile-brand .brand-devanagari {
       color: #FB923C;
-      font-size: 15px;
+      font-size: 14px;
     }
-    .mobile-hub-badge {
+    .mobile-nav-select-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .mobile-doc-selector {
+      background: #27221E;
+      color: #FB923C;
+      border: 1px solid rgba(251, 146, 60, 0.45);
+      padding: 6px 26px 6px 10px;
+      border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
-      background: rgba(234, 88, 12, 0.2);
-      border: 1px solid rgba(234, 88, 12, 0.4);
+      font-family: inherit;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      outline: none;
+      max-width: 135px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      touch-action: manipulation;
+    }
+    .mobile-nav-select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 9px;
+      font-size: 11px;
       color: #FB923C;
-      padding: 4px 10px;
-      border-radius: 20px;
-      text-decoration: none;
+      pointer-events: none;
+    }
+    .mobile-doc-selector:focus {
+      border-color: #EA580C;
+      box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.3);
+    }
+    .mobile-doc-selector option {
+      background: #1C1917;
+      color: #FFFFFF;
+      padding: 8px 10px;
     }
 
     /* ── SIDEBAR BACKDROP (Mobile) ── */
@@ -1005,7 +1046,7 @@
     }
     .mermaid-box {
       background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
+      border: 1.5px solid var(--border-warm);
       border-radius: var(--radius-lg);
       padding: 0;
       overflow: hidden;
@@ -1018,6 +1059,9 @@
       min-height: 540px;
       height: 580px;
       display: block;
+    }
+    .mermaid-box, .mermaid-box * {
+      touch-action: none !important;
     }
     .mermaid-box.is-panning {
       cursor: grabbing !important;
@@ -1036,7 +1080,7 @@
       position: absolute;
       bottom: 12px;
       right: 14px;
-      background: rgba(28, 25, 23, 0.82);
+      background: rgba(28, 25, 23, 0.85);
       color: #F5F5F4;
       font-size: 11px;
       font-weight: 600;
@@ -1047,7 +1091,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      opacity: 0.9;
+      opacity: 0.92;
       z-index: 10;
       box-shadow: 0 2px 8px rgba(0,0,0,0.18);
     }
@@ -1070,12 +1114,26 @@
       align-items: center;
       gap: 5px;
       box-shadow: var(--shadow-sm);
+      touch-action: manipulation;
     }
     .mermaid-btn:hover {
       background: var(--bg-cream);
       border-color: #D6CBBC;
       color: var(--text-main);
       transform: translateY(-1px);
+    }
+    .zoom-level-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--sidebar-bg);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-warm);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      min-width: 48px;
+      text-align: center;
+      display: inline-block;
     }
     @media (max-width: 600px) {
       .mermaid-box {
@@ -1097,13 +1155,23 @@
 
   <!-- ── MOBILE TOPBAR ── -->
   <div class="mobile-topbar">
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu" title="Toggle Navigation Menu">
       <span></span><span></span><span></span>
     </button>
     <div class="mobile-brand">
       PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
     </div>
-    <a href="./index.html" class="mobile-hub-badge">&#x1F5FA;&#xFE0F; HUB</a>
+    <div class="mobile-nav-select-wrap">
+      <select class="mobile-doc-selector" id="mobileDocSelector" aria-label="Jump to Documentation Module">
+        <option value="./index.html">🗺️ Master Hub</option>
+        <option value="./01_master_plan.html">01 Master Plan</option>
+        <option value="./02_browser_agent.html">02 Browser Agent</option>
+        <option value="./03_perception_problem.html">03 Perception</option>
+        <option value="./04_hld.html">04 HLD Design</option>
+        <option value="./05_browser_extension.html">05 Extension</option>
+        <option value="./readme.html" selected>📚 Readme DOC</option>
+      </select>
+    </div>
   </div>
 
   <!-- ── SIDEBAR BACKDROP (Mobile) ── -->
@@ -1274,6 +1342,7 @@
               <button class="mermaid-btn" id="readmeZoomInBtn" title="Zoom In">🔍 +</button>
               <button class="mermaid-btn" id="readmeZoomOutBtn" title="Zoom Out">🔍 &minus;</button>
               <button class="mermaid-btn" id="readmeZoomResetBtn" title="Reset View">&#x23FA; Reset</button>
+              <span class="zoom-level-badge" id="readmeZoomLevel">100%</span>
             </div>
             <div class="flow-canvas-meta">
               <span class="flow-meta-tag fmt-orange">Mermaid 10.x Vector</span>
@@ -1285,6 +1354,7 @@
             Complete architectural relationships between the 4 on-device local services, edge ingress gateway, and air-gapped intranet reasoning services:
           </p>
           <div class="mermaid-box" id="readmeMermaidBox">
+            <div class="mermaid-canvas-hint">👆 Drag to Pan · 🤏 Pinch/Wheel to Zoom · ↺ Double-tap Fit</div>
             <pre class="mermaid">
 flowchart TD
     %% Custom Semantic Styling Classes
@@ -2017,11 +2087,12 @@ flowchart TD
   </main>
 
   <script>
-    // Mobile Drawer Toggle
+    // ── MOBILE NAVIGATION & DRAWER ──
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const sidebar = document.getElementById('sidebar');
     const sidebarBackdrop = document.getElementById('sidebarBackdrop');
     const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const mobileDocSelector = document.getElementById('mobileDocSelector');
 
     function openSidebar() {
       sidebar.classList.add('open');
@@ -2039,6 +2110,11 @@ flowchart TD
     if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
     if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
 
+    // Escape key closes mobile sidebar
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSidebar();
+    });
+
     // Auto-close sidebar when clicking a TOC or Doc link on mobile
     const navLinksAll = document.querySelectorAll('.sidebar a');
     navLinksAll.forEach(link => {
@@ -2048,6 +2124,15 @@ flowchart TD
         }
       });
     });
+
+    // Mobile Topbar Dropdown Switcher
+    if (mobileDocSelector) {
+      mobileDocSelector.addEventListener('change', function() {
+        if (this.value) {
+          window.location.href = this.value;
+        }
+      });
+    }
 
     // Highlight TOC on scroll
     const sections = document.querySelectorAll('.doc-section');
@@ -2091,8 +2176,10 @@ flowchart TD
         htmlLabels: true
       }
     });
+  }
+
   // ── TOUCH, FINGER, TRACKPAD & MOUSE PAN-ZOOM CONTROLLER ──
-  function setupPanZoom(containerId, zoomInId, zoomOutId, zoomResetId) {
+  function setupPanZoom(containerId, zoomInId, zoomOutId, zoomResetId, zoomLevelId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -2100,48 +2187,105 @@ flowchart TD
     let scale = 1;
     let panX = 0;
     let panY = 0;
-    let isPanning = false;
-    let isPinching = false;
-    
+    let isDragging = false;
     let startX = 0;
     let startY = 0;
 
-    let touchStartX = 0;
-    let touchStartY = 0;
+    // Multi-touch / Pinch State
     let initialPinchDist = 0;
     let initialPinchScale = 1;
-    let initialPinchMidX = 0;
-    let initialPinchMidY = 0;
-    let initialPanX = 0;
-    let initialPanY = 0;
+    let pinchMidX = 0;
+    let pinchMidY = 0;
+    let pinchStartPanX = 0;
+    let pinchStartPanY = 0;
+    let isPinching = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const minScale = 0.15;
+    const maxScale = 5.0;
+
+    function parseViewBox(svg) {
+      if (!svg) return null;
+      const vb = svg.getAttribute('viewBox');
+      if (vb) {
+        const p = vb.trim().split(/[\s,]+/).map(Number);
+        if (p.length === 4 && p[2] > 0 && p[3] > 0) {
+          return { x: p[0], y: p[1], w: p[2], h: p[3] };
+        }
+      }
+      if (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+        return {
+          x: svg.viewBox.baseVal.x,
+          y: svg.viewBox.baseVal.y,
+          w: svg.viewBox.baseVal.width,
+          h: svg.viewBox.baseVal.height
+        };
+      }
+      try {
+        const b = svg.getBBox();
+        if (b && b.width > 0 && b.height > 0) {
+          return { x: b.x, y: b.y, w: b.width, h: b.height };
+        }
+      } catch (err) {}
+      return null;
+    }
 
     function getSvgDimensions() {
-      if (!targetSvg) return { w: 1000, h: 600 };
-      let w = 0, h = 0;
-      if (targetSvg.viewBox && targetSvg.viewBox.baseVal && targetSvg.viewBox.baseVal.width > 0) {
-        w = targetSvg.viewBox.baseVal.width;
-        h = targetSvg.viewBox.baseVal.height;
-      } else {
-        try {
-          const b = targetSvg.getBBox();
-          if (b && b.width > 0) {
-            w = b.width;
-            h = b.height;
-          }
-        } catch (err) {}
+      const vb = parseViewBox(targetSvg);
+      if (vb) return { w: vb.w, h: vb.h };
+      if (targetSvg) {
+        const w = targetSvg.clientWidth || targetSvg.scrollWidth || 1100;
+        const h = targetSvg.clientHeight || targetSvg.scrollHeight || 700;
+        return { w, h };
       }
-      if (!w || !h) {
-        w = targetSvg.clientWidth || targetSvg.scrollWidth || 1000;
-        h = targetSvg.clientHeight || targetSvg.scrollHeight || 600;
+      return { w: 1100, h: 700 };
+    }
+
+    function updateTransform(smooth) {
+      if (!targetSvg) return;
+      targetSvg.style.transition = smooth ? 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+      targetSvg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+      if (zoomLevelId) {
+        const el = document.getElementById(zoomLevelId);
+        if (el) el.textContent = `${Math.round(scale * 100)}%`;
       }
-      return { w, h };
+    }
+
+    function centerInitial() {
+      if (!targetSvg) return;
+      const cRect = container.getBoundingClientRect();
+      const dims = getSvgDimensions();
+      if (dims.w <= 0 || dims.h <= 0) return;
+
+      const padX = 20;
+      const padY = 20;
+      const availW = Math.max(100, cRect.width - padX * 2);
+      const availH = Math.max(100, cRect.height - padY * 2);
+
+      const fitScale = Math.min(availW / dims.w, availH / dims.h);
+      scale = Math.max(minScale, Math.min(1.05, fitScale));
+
+      panX = Math.round((cRect.width - dims.w * scale) / 2);
+      panY = Math.round((cRect.height - dims.h * scale) / 2);
+      if (panY < 12) panY = 12;
+
+      updateTransform(false);
     }
 
     function bindSvg() {
-      targetSvg = container.querySelector('svg');
-      if (!targetSvg) return false;
+      const svg = container.querySelector('svg');
+      if (!svg) return false;
+
+      targetSvg = svg;
+      targetSvg.style.position = 'absolute';
+      targetSvg.style.top = '0';
+      targetSvg.style.left = '0';
       targetSvg.style.transformOrigin = '0 0';
-      targetSvg.style.transition = 'none';
+      targetSvg.style.maxWidth = 'none';
+      targetSvg.style.maxHeight = 'none';
+      targetSvg.style.willChange = 'transform';
+      targetSvg.style.pointerEvents = 'auto';
 
       const dims = getSvgDimensions();
       targetSvg.style.width = dims.w + 'px';
@@ -2151,45 +2295,32 @@ flowchart TD
       return true;
     }
 
-    function centerInitial() {
-      if (!targetSvg) return;
-      const cRect = container.getBoundingClientRect();
-      const dims = getSvgDimensions();
-      const svgW = dims.w;
-      const svgH = dims.h;
-
-      const padX = 24;
-      const padY = 24;
-      const availW = Math.max(100, cRect.width - padX * 2);
-      const availH = Math.max(100, cRect.height - padY * 2);
-
-      let fitScale = Math.min(availW / svgW, availH / svgH);
-      scale = Math.max(0.25, Math.min(1.05, fitScale));
-
-      panX = Math.round((cRect.width - svgW * scale) / 2);
-      panY = Math.round((cRect.height - svgH * scale) / 2);
-      if (panY < 12) panY = 12;
-
-      updateTransform(false);
-    }
-
-    function updateTransform(smooth) {
-      if (!targetSvg) return;
-      targetSvg.style.transition = smooth ? 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
-      targetSvg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-    }
-
     if (!bindSvg()) {
       const observer = new MutationObserver(() => {
-        if (bindSvg()) observer.disconnect();
+        if (bindSvg()) {
+          observer.disconnect();
+        }
       });
       observer.observe(container, { childList: true, subtree: true });
+      setTimeout(bindSvg, 300);
+      setTimeout(bindSvg, 800);
+      setTimeout(bindSvg, 1600);
+    } else {
+      setTimeout(() => {
+        if (targetSvg) {
+          const dims = getSvgDimensions();
+          targetSvg.style.width = dims.w + 'px';
+          targetSvg.style.height = dims.h + 'px';
+          centerInitial();
+        }
+      }, 400);
     }
 
+    // ── 1. MOUSE DRAGGING ──
     container.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
       if (!targetSvg) bindSvg();
-      isPanning = true;
+      isDragging = true;
       startX = e.clientX - panX;
       startY = e.clientY - panY;
       container.classList.add('is-panning');
@@ -2197,19 +2328,20 @@ flowchart TD
     });
 
     window.addEventListener('mousemove', (e) => {
-      if (!isPanning) return;
+      if (!isDragging) return;
       panX = e.clientX - startX;
       panY = e.clientY - startY;
       updateTransform(false);
     });
 
     window.addEventListener('mouseup', () => {
-      if (isPanning) {
-        isPanning = false;
+      if (isDragging) {
+        isDragging = false;
         container.classList.remove('is-panning');
       }
     });
 
+    // ── 2. WHEEL & TRACKPAD ZOOM ──
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
       if (!targetSvg) bindSvg();
@@ -2220,14 +2352,14 @@ flowchart TD
 
       let zoomDelta;
       if (e.ctrlKey) {
-        zoomDelta = -e.deltaY * 0.012;
+        zoomDelta = -e.deltaY * 0.015;
       } else {
-        const clampedDelta = Math.max(-100, Math.min(100, e.deltaY));
-        zoomDelta = -clampedDelta * 0.0022;
+        const clamped = Math.max(-80, Math.min(80, e.deltaY));
+        zoomDelta = -clamped * 0.0025;
       }
 
       const factor = Math.exp(zoomDelta);
-      const newScale = Math.max(0.2, Math.min(4.5, scale * factor));
+      const newScale = Math.max(minScale, Math.min(maxScale, scale * factor));
 
       panX = cursorX - (cursorX - panX) * (newScale / scale);
       panY = cursorY - (cursorY - panY) * (newScale / scale);
@@ -2236,32 +2368,36 @@ flowchart TD
       updateTransform(false);
     }, { passive: false });
 
+    // ── 3. TOUCH GESTURES (FINGERS ON MOBILE / TABLET) ──
     container.addEventListener('touchstart', (e) => {
       if (!targetSvg) bindSvg();
+      e.preventDefault();
+
       if (e.touches.length === 1) {
-        isPanning = true;
+        isDragging = true;
         isPinching = false;
         touchStartX = e.touches[0].clientX - panX;
         touchStartY = e.touches[0].clientY - panY;
         container.classList.add('is-panning');
       } else if (e.touches.length >= 2) {
-        isPanning = false;
+        isDragging = false;
         isPinching = true;
         const t1 = e.touches[0];
         const t2 = e.touches[1];
         initialPinchDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
         initialPinchScale = scale;
-        initialPanX = panX;
-        initialPanY = panY;
+        pinchStartPanX = panX;
+        pinchStartPanY = panY;
         const rect = container.getBoundingClientRect();
-        initialPinchMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
-        initialPinchMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
+        pinchMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
+        pinchMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
+        container.classList.add('is-panning');
       }
     }, { passive: false });
 
     container.addEventListener('touchmove', (e) => {
       e.preventDefault();
-      if (isPanning && e.touches.length === 1) {
+      if (isDragging && e.touches.length === 1) {
         panX = e.touches[0].clientX - touchStartX;
         panY = e.touches[0].clientY - touchStartY;
         updateTransform(false);
@@ -2271,14 +2407,14 @@ flowchart TD
         const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
         if (initialPinchDist > 5) {
           const pinchRatio = currentDist / initialPinchDist;
-          const newScale = Math.max(0.2, Math.min(4.5, initialPinchScale * pinchRatio));
+          const newScale = Math.max(minScale, Math.min(maxScale, initialPinchScale * pinchRatio));
 
           const rect = container.getBoundingClientRect();
           const currentMidX = ((t1.clientX + t2.clientX) / 2) - rect.left;
           const currentMidY = ((t1.clientY + t2.clientY) / 2) - rect.top;
 
-          panX = currentMidX - (initialPinchMidX - initialPanX) * (newScale / initialPinchScale);
-          panY = currentMidY - (initialPinchMidY - initialPanY) * (newScale / initialPinchScale);
+          panX = currentMidX - (pinchMidX - pinchStartPanX) * (newScale / initialPinchScale);
+          panY = currentMidY - (pinchMidY - pinchStartPanY) * (newScale / initialPinchScale);
           scale = newScale;
 
           updateTransform(false);
@@ -2289,66 +2425,94 @@ flowchart TD
     container.addEventListener('touchend', (e) => {
       if (e.touches.length === 1) {
         isPinching = false;
-        isPanning = true;
+        isDragging = true;
         touchStartX = e.touches[0].clientX - panX;
         touchStartY = e.touches[0].clientY - panY;
       } else if (e.touches.length === 0) {
-        isPanning = false;
+        isDragging = false;
         isPinching = false;
         container.classList.remove('is-panning');
       }
     });
 
     container.addEventListener('touchcancel', () => {
-      isPanning = false;
+      isDragging = false;
       isPinching = false;
       container.classList.remove('is-panning');
     });
 
+    // ── 4. DOUBLE TAP / DOUBLE CLICK ──
+    let lastTapTime = 0;
+    container.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTapTime < 300 && e.changedTouches.length === 1) {
+        e.preventDefault();
+        handleDoubleAction(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      }
+      lastTapTime = now;
+    });
+
     container.addEventListener('dblclick', (e) => {
       e.preventDefault();
+      handleDoubleAction(e.clientX, e.clientY);
+    });
+
+    function handleDoubleAction(clientX, clientY) {
       if (!targetSvg) bindSvg();
-      if (scale > 1.3) {
+      if (scale > 1.2) {
         centerInitial();
         updateTransform(true);
       } else {
         const rect = container.getBoundingClientRect();
-        const cursorX = e.clientX - rect.left;
-        const cursorY = e.clientY - rect.top;
-        const newScale = Math.min(3.5, scale * 1.8);
+        const cursorX = clientX - rect.left;
+        const cursorY = clientY - rect.top;
+        const newScale = Math.min(maxScale, scale * 1.8);
         panX = cursorX - (cursorX - panX) * (newScale / scale);
         panY = cursorY - (cursorY - panY) * (newScale / scale);
         scale = newScale;
         updateTransform(true);
       }
-    });
+    }
 
-    const zoomInBtn = document.getElementById(zoomInId);
-    const zoomOutBtn = document.getElementById(zoomOutId);
-    const zoomResetBtn = document.getElementById(zoomResetId);
-
+    // ── 5. BUTTON CONTROLS ──
     function buttonZoom(factor) {
       if (!targetSvg) bindSvg();
       const rect = container.getBoundingClientRect();
       const midX = rect.width / 2;
       const midY = rect.height / 2;
-      const newScale = Math.max(0.2, Math.min(4.5, scale * factor));
+      const newScale = Math.max(minScale, Math.min(maxScale, scale * factor));
       panX = midX - (midX - panX) * (newScale / scale);
       panY = midY - (midY - panY) * (newScale / scale);
       scale = newScale;
       updateTransform(true);
     }
 
-    if (zoomInBtn) zoomInBtn.addEventListener('click', () => buttonZoom(1.3));
-    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => buttonZoom(0.77));
-    if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {
+    const zoomInBtn = document.getElementById(zoomInId);
+    const zoomOutBtn = document.getElementById(zoomOutId);
+    const zoomResetBtn = document.getElementById(zoomResetId);
+
+    if (zoomInBtn) zoomInBtn.addEventListener('click', (e) => { e.stopPropagation(); buttonZoom(1.3); });
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', (e) => { e.stopPropagation(); buttonZoom(0.77); });
+    if (zoomResetBtn) zoomResetBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       centerInitial();
       updateTransform(true);
+    });
+
+    // ── 6. RESIZE LISTENER ──
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (targetSvg) {
+          centerInitial();
+        }
+      }, 150);
     });
   }
 
   // Initialize Pan-Zoom on README Mermaid Architecture Box
-  setupPanZoom('readmeMermaidBox', 'readmeZoomInBtn', 'readmeZoomOutBtn', 'readmeZoomResetBtn');
+  setupPanZoom('readmeMermaidBox', 'readmeZoomInBtn', 'readmeZoomOutBtn', 'readmeZoomResetBtn', 'readmeZoomLevel');
 
 </script>
 </body>
