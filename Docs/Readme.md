@@ -9,20 +9,29 @@
 
 ---
 
-## 📂 Documentation Index
+## 📂 Documentation Suite (Organized by Architectural Track)
 
-| File | Description |
-|------|-------------|
-| [`index.html`](./index.html) | **Master Hub**: Unified executive dashboard, visual comparison diagrams, and module navigator for all 5 modules |
-| [`readme.html`](./readme.html) | **Project Readme (HTML)**: Interactive, beautifully formatted web version of this README with rubric gauges, architecture diagrams, and quick module links |
-| [`01_master_plan.html`](./01_master_plan.html) | **Module 01**: Full research, PS analysis, competitive landscape, architecture, evaluation strategy, and team sprint plan |
-| [`02_browser_agent.html`](./02_browser_agent.html) | **Module 02**: Browser extension agent — perception-action loop, DOM interaction engine, rehydration vault, wire protocol, and demo script |
-| [`03_perception_problem.html`](./03_perception_problem.html) | **Module 03**: The perception problem — 7 DOM blindspots (PDF, canvas, video, shadow DOM), dual-channel WebGPU vision pipeline, and model specs |
-| [`04_hld.html`](./04_hld.html) | **Module 04**: High-Level Design (HLD) — 8 microservices inventory, 7-step data-flow architecture, API contract spec, security matrix, database schema, deployment topology, scalability targets, and Architecture Decision Records (ADRs) |
-| [`05_browser_extension.html`](./05_browser_extension.html) | **Module 05**: Browser Extension deep dive — Manifest V3 architecture, full file structure, component deep-dive for all 6 contexts (Service Worker, Offscreen Document, Content Script, Side Panel, Vault, Agent Runner), message passing protocol, WebGPU ONNX code, Vault implementation, permissions justification, and distribution plan |
-| [`06_team_presentation.html`](./06_team_presentation.html) | **Module 06**: Presentation & Team Alignment — Pitch deck, Gemini comparison matrix, core concepts in simple language, and role-by-role execution guide |
-| [`07_reality_check_and_innovations.html`](./07_reality_check_and_innovations.html) | **Module 07**: Reality Audit & 6 Genuine Innovations — Stripped marketing claims, true latency benchmarks, sustainable ML stack, and defensible architectural differentiators |
-| [`08_ml_privacy_module.html`](./08_ml_privacy_module.html) | **Module 08 (Official ML Blueprint)**: ML & Privacy Module — Local privacy firewall, complete 17-feature set, DOM Analyzer, PaddleOCR.js / PP-OCRv5, YOLO26n ONNX, BERT-base NER, Layered PII detection, Entity Resolver (IoU fusion), Session Manager, Semantic Anonymizer, Visual Redactor, Sanitized Context Builder, Fail-Closed Privacy Gate, 16-layer tech stack, and 17-step implementation roadmap |
+### Track 1 · Strategy &amp; Executive Alignment
+| Module | Document | Scope &amp; Focus | Target Audience |
+|:---:|:---|:---|:---|
+| **HUB** | [`index.html`](./index.html) | **Master Documentation Hub**: Unified executive dashboard, visual comparison diagrams, interactive system topology, and centralized module switcher | Jury, Evaluators &amp; Leads |
+| **DOC** | [`readme.html`](./readme.html) | **Interactive Project Brief**: Live web version of this README with rubric gauges, architecture flows, and 5-step pill diagram | All Stakeholders |
+| **06** | [`06_team_presentation.html`](./06_team_presentation.html) | **Pitch Deck &amp; Gemini Comparison**: Pitch deck, Gemini in Chrome showdown matrix, user journey, and 4-track engineering role breakdown | Jury, Team &amp; Evaluators |
+| **01** | [`01_master_plan.html`](./01_master_plan.html) | **Master Strategic Blueprint**: Full research, PS analysis, 12-competitor showdown, decoded 40% rubric, and sprint roadmap | Strategy &amp; Tech Leads |
+
+### Track 2 · System Architecture &amp; Reality Audits
+| Module | Document | Scope &amp; Focus | Target Audience |
+|:---:|:---|:---|:---|
+| **04** | [`04_hld.html`](./04_hld.html) | **High-Level Design (HLD)**: 8 microservices inventory (4 local + 4 cloud), API contract spec, WebSocket protocol, security matrix, and ADRs | System Architects &amp; Backend |
+| **07** | [`07_reality_check_and_innovations.html`](./07_reality_check_and_innovations.html) | **Reality Audit &amp; 6 Innovations**: Stripped marketing claims, realistic latency benchmarks, sustainable ML stack, and 6 defensible jury moats | ISRO Jury &amp; Reviewers |
+
+### Track 3 · Deep-Dive Engineering Modules
+| Module | Document | Scope &amp; Focus | Target Audience |
+|:---:|:---|:---|:---|
+| **08** | [`08_ml_privacy_module.html`](./08_ml_privacy_module.html) | **⭐ ML &amp; Privacy Module (Official Spec)**: Local privacy firewall, 17-feature set, PaddleOCR.js, YOLO26n ONNX, BERT NER, Layered PII, Entity Resolver (IoU fusion), Session Token Vault, Visual Redactor, and 17-step build plan | ML Engineers &amp; Privacy Leads |
+| **03** | [`03_perception_problem.html`](./03_perception_problem.html) | **Neural Vision &amp; Perception Blindspots**: 7 DOM blindspots (PDFs, canvas, scans), 8×8 dirty-tile dHash filter, 4 quantized ONNX models (~20MB), and Verhoeff engine | ML &amp; Vision Engineers |
+| **05** | [`05_browser_extension.html`](./05_browser_extension.html) | **Chrome MV3 Extension Deep Dive**: Service Worker, Offscreen Document, Content Script, Side Panel HUD, WebGPU ONNX execution, and Web Store distribution | Extension &amp; Frontend Leads |
+| **02** | [`02_browser_agent.html`](./02_browser_agent.html) | **Browser Agent &amp; Action Dispatcher**: Perception-action loop, 10 synthetic DOM actions, local rehydration vault, prompt injection defense, and e-procurement demo script | Agent &amp; Automation Leads |
 
 ---
 

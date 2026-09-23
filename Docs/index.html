@@ -114,48 +114,83 @@
     .brand-devanagari { color: #FB923C; font-size: 18px; font-weight: 600; }
     .brand-subtitle { font-size: 12.5px; color: var(--sidebar-muted); margin-top: 6px; }
 
-    /* Module list */
-    .doc-tabs {
+    /* COMPACT MODULE SWITCHER */
+    .module-switcher-box {
       padding: 14px 16px;
       border-bottom: 1px solid var(--sidebar-border);
-      background: #171412;
+      background: #1B1715;
     }
-    .doc-tabs-label {
-      font-size: 10.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #8C827A;
-      margin-bottom: 8px;
-      padding-left: 4px;
+    .module-switcher-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: #7D746C; margin-bottom: 6px;
     }
-    .doc-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 10px;
-      border-radius: 8px;
-      color: var(--sidebar-muted);
+    .module-select-trigger {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; background: #26201D;
+      border: 1px solid #3D352F;
+      border-radius: var(--radius-sm);
+      padding: 7px 11px; color: #FFFFFF;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s ease;
       text-decoration: none;
-      font-size: 12.5px;
-      font-weight: 500;
-      transition: all 0.15s ease;
-      margin-bottom: 3px;
     }
-    .doc-link:hover { background: rgba(255, 255, 255, 0.06); color: #FFFFFF; }
-    .doc-link.active {
-      background: rgba(234, 88, 12, 0.15);
-      color: #FB923C;
-      font-weight: 600;
-      border-left: 3px solid var(--sidebar-accent);
+    .module-select-trigger:hover {
+      background: #2E2623; border-color: var(--isro-orange);
     }
-    .doc-link .doc-num {
+    .module-select-left {
+      display: flex; align-items: center; gap: 8px;
+      overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    }
+    .module-select-pill {
+      background: rgba(234, 88, 12, 0.2);
+      color: #FB923C; font-size: 10px; font-weight: 800;
+      padding: 2px 5px; border-radius: 4px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      opacity: 0.8;
+    }
+    .module-select-title {
+      font-weight: 600; color: #F5F5F4;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .module-chevron {
+      color: #9C948D; font-size: 11px;
+    }
+
+    /* QUICK POPUP MODULE MENU */
+    .module-nav-drawer {
+      display: none;
+      background: #1F1A17;
+      border: 1px solid #38302A;
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin-top: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .module-nav-drawer.open { display: block; }
+    .drawer-track-title {
+      font-size: 9.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: #736961; padding: 6px 8px 3px;
+      margin-top: 4px;
+    }
+    .drawer-track-title:first-child { margin-top: 0; }
+    .drawer-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 8px; border-radius: 6px;
+      color: #D6D0CA; text-decoration: none;
+      font-size: 11.5px; font-weight: 500;
+      transition: background 0.15s;
+    }
+    .drawer-item:hover { background: rgba(255, 255, 255, 0.07); color: #FFFFFF; }
+    .drawer-item.active {
+      background: rgba(234, 88, 12, 0.18);
+      color: #FB923C; font-weight: 600;
+    }
+    .drawer-item .item-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px; opacity: 0.8;
       background: rgba(255, 255, 255, 0.08);
-      padding: 2px 5px;
-      border-radius: 4px;
+      padding: 1px 4px; border-radius: 3px;
     }
 
     /* TOC */
@@ -244,78 +279,160 @@
       color: var(--text-body); box-shadow: var(--shadow-sm);
     }
 
-    /* HUB MODULE CARDS */
-    .module-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 20px;
-      margin: 28px 0 44px;
+    /* READING PROGRESS BAR */
+    .reading-progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #EA580C 0%, #F59E0B 50%, #059669 100%);
+      z-index: 999;
+      transition: width 0.1s ease-out;
+      pointer-events: none;
     }
-    .module-card {
+
+    /* ── 3-TRACK ARCHITECTURE PORTAL ── */
+    .track-section {
+      margin-bottom: 36px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .track-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .track-badge-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .track-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 9px;
+      border-radius: 6px;
+    }
+    .track-1 .track-badge { background: #FFF7ED; color: #C2410C; border: 1px solid #FDBA74; }
+    .track-2 .track-badge { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+    .track-3 .track-badge { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
+    .track-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .track-caption {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .track-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+    }
+
+    /* TRACK CARDS */
+    .track-card {
       background: #FFFFFF;
       border: 1px solid var(--border-warm);
       border-radius: var(--radius-lg);
-      padding: 26px;
+      padding: 22px 20px;
       box-shadow: var(--shadow-sm);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: all 0.25s ease;
-      position: relative;
       text-decoration: none;
       color: inherit;
+      transition: all 0.22s ease;
+      position: relative;
     }
-    .module-card:hover {
-      transform: translateY(-5px);
+    .track-card:hover {
+      transform: translateY(-4px);
       box-shadow: var(--shadow-md);
-      border-color: #D6CBBC;
+      border-color: #D4C9BA;
     }
-    .module-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    .track-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
     }
-    .module-card.m1::before { background: #EA580C; }
-    .module-card.m2::before { background: #2563EB; }
-    .module-card.m3::before { background: #059669; }
-
-    .module-num {
+    .track-card-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 800;
       letter-spacing: 0.06em;
-      margin-bottom: 8px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 5px;
     }
-    .module-card.m1 .module-num { color: #EA580C; }
-    .module-card.m2 .module-num { color: #2563EB; }
-    .module-card.m3 .module-num { color: #059669; }
-
-    .module-title {
+    .t1-badge { background: #FFF7ED; color: #EA580C; border: 1px solid #FDBA74; }
+    .t2-badge { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+    .t3-badge { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    .track-card-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-light);
+      background: #F4EFE6;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .track-card-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--text-main);
       margin-bottom: 8px;
       line-height: 1.3;
     }
-    .module-desc {
-      font-size: 13.5px;
+    .track-card-desc {
+      font-size: 13px;
       color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 16px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+      flex-grow: 1;
     }
-    .module-action {
+    .track-card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .tc-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      background: #F5EFE6;
+      color: #635A52;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .track-card-action {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
+      color: var(--isro-orange);
+      transition: gap 0.15s ease;
     }
-    .module-card.m1 .module-action { color: #EA580C; }
-    .module-card.m2 .module-action { color: #2563EB; }
-    .module-card.m3 .module-action { color: #059669; }
+    .track-card:hover .track-card-action {
+      gap: 9px;
+    }
 
     /* SECTIONS */
     .doc-section { margin-bottom: 56px; scroll-margin-top: 36px; }
@@ -923,6 +1040,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
+  <div class="reading-progress-bar" id="readingProgressBar"></div>
 
   <!-- ── MOBILE TOPBAR ── -->
   <div class="mobile-topbar">
@@ -963,42 +1081,57 @@
       </div>
     </div>
 
-    <!-- DOCUMENT SWITCHER TABS -->
-    <div class="doc-tabs">
-      <div class="doc-tabs-label">Documentation Modules</div>
-      <a href="./index.html" class="doc-link active">
-        <span class="doc-num">HUB</span> Master Portal
-      </a>
-      <a href="./01_master_plan.html" class="doc-link">
-        <span class="doc-num">01</span> Master Plan &amp; Strategy
-      </a>
-      <a href="./02_browser_agent.html" class="doc-link">
-        <span class="doc-num">02</span> Browser Agent Engine
-      </a>
-      <a href="./03_perception_problem.html" class="doc-link">
-        <span class="doc-num">03</span> Perception &amp; Blindspots
-      </a>
-      <a href="./04_hld.html" class="doc-link">
-        <span class="doc-num">04</span> High-Level Design (HLD)
-      </a>
-      <a href="./05_browser_extension.html" class="doc-link">
-        <span class="doc-num">05</span> Browser Extension Plan
-      </a>
-      <a href="./06_team_presentation.html" class="doc-link">
-        <span class="doc-num">06</span> Team Pitch &amp; Deck
-      </a>
-      <a href="./07_reality_check_and_innovations.html" class="doc-link" style="border-left:3px solid #DC2626;">
-        <span class="doc-num" style="background:rgba(220,38,38,0.15);color:#F87171;">07</span> Reality Audit &amp; Innovations &#9734;
-      </a>
-      <a href="./08_ml_privacy_module.html" class="doc-link" style="border-left:3px solid #059669;">
-        <span class="doc-num" style="background:rgba(5,150,105,0.15);color:#34D399;">08</span> ML &amp; Privacy Module &#9733;
-      </a>
-      <a href="./readme.html" class="doc-link">
-        <span class="doc-num">DOC</span> Project Readme
-      </a>
+    <!-- COMPACT QUICK MODULE SWITCHER (3-TRACK DRAWER) -->
+    <div class="module-switcher-box">
+      <div class="module-switcher-label">Navigation · 10 Modules</div>
+      <div class="module-select-trigger" id="moduleSelectTrigger" role="button" tabindex="0" aria-label="Toggle Document Navigator">
+        <div class="module-select-left">
+          <span class="module-select-pill">HUB</span>
+          <span class="module-select-title">Master Documentation Hub</span>
+        </div>
+        <span class="module-chevron">▾</span>
+      </div>
+
+      <div class="module-nav-drawer" id="moduleNavDrawer">
+        <div class="drawer-track-title">Track 1 · Strategy &amp; Executive</div>
+        <a href="./index.html" class="drawer-item active">
+          <span class="item-code" style="color:#FB923C;">HUB</span> Master Portal
+        </a>
+        <a href="./readme.html" class="drawer-item">
+          <span class="item-code">DOC</span> Project Readme
+        </a>
+        <a href="./06_team_presentation.html" class="drawer-item">
+          <span class="item-code">06</span> Team Pitch &amp; Deck
+        </a>
+        <a href="./01_master_plan.html" class="drawer-item">
+          <span class="item-code">01</span> Master Plan &amp; Strategy
+        </a>
+
+        <div class="drawer-track-title">Track 2 · Architecture &amp; System</div>
+        <a href="./04_hld.html" class="drawer-item">
+          <span class="item-code">04</span> High-Level Design (HLD)
+        </a>
+        <a href="./07_reality_check_and_innovations.html" class="drawer-item">
+          <span class="item-code" style="color:#F87171;">07</span> Reality Audit &amp; Innovations
+        </a>
+
+        <div class="drawer-track-title">Track 3 · Engineering Deep Dives</div>
+        <a href="./08_ml_privacy_module.html" class="drawer-item">
+          <span class="item-code" style="color:#34D399;">08</span> ML &amp; Privacy Module ★
+        </a>
+        <a href="./03_perception_problem.html" class="drawer-item">
+          <span class="item-code">03</span> Perception &amp; Blindspots
+        </a>
+        <a href="./05_browser_extension.html" class="drawer-item">
+          <span class="item-code">05</span> Browser Extension Plan
+        </a>
+        <a href="./02_browser_agent.html" class="drawer-item">
+          <span class="item-code">02</span> Browser Agent Engine
+        </a>
+      </div>
     </div>
 
-    <!-- TOC -->
+    <!-- TOC (FOCUSED & CLEAN) -->
     <nav class="sidebar-toc">
       <div class="toc-heading">Hub Index</div>
       <ul class="toc-list">
@@ -1009,7 +1142,7 @@
         </li>
         <li class="toc-item">
           <a href="#modules" class="toc-link">
-            <span class="toc-icon">📚</span> 5 Technical Modules
+            <span class="toc-icon">📚</span> 3 Strategic Tracks
           </a>
         </li>
         <li class="toc-item">
@@ -1096,115 +1229,188 @@
         </div>
       </section>
 
-      <!-- ── SECTION 2: THE TECHNICAL MODULES ── -->
+      <!-- ── SECTION 2: THE 3 TECHNICAL TRACKS ── -->
       <section class="doc-section" id="modules">
         <div class="section-header">
           <div class="section-icon-badge">📚</div>
           <h2 class="section-title">Comprehensive Technical Documentation Suite</h2>
         </div>
         <p class="section-lead">
-          Explore the exhaustive technical blueprints, microservices architectures, and implementation deep-dives across our documentation suite:
+          The PRATYAKSHA documentation suite is structured into <strong>three distinct tracks</strong> covering executive strategy, microservices architecture, and deep-dive engineering implementations:
         </p>
 
-        <div class="module-card-grid">
-          <a href="./06_team_presentation.html" class="module-card m1" style="border-top:4px solid #EA580C; background: linear-gradient(135deg, #FFFFFF 0%, #FFF8F0 100%);">
-            <div>
-              <div class="module-num" style="color:#EA580C; font-weight:800;">🎯 PRESENTATION · TEAM PITCH DECK</div>
-              <div class="module-title">Team Alignment Deck &amp; Gemini Comparison</div>
-              <div class="module-desc">
-                Designed for team meetings: core problem in simple language, Google Gemini in Chrome showdown matrix, step-by-step application flow, and 4-track engineering role breakdown.
-              </div>
+        <!-- TRACK 1 -->
+        <div class="track-section track-1">
+          <div class="track-header">
+            <div class="track-badge-title">
+              <span class="track-badge">Track 1 · Strategy &amp; Executive</span>
+              <h3 class="track-heading">Strategic Positioning &amp; Executive Briefings</h3>
             </div>
-            <div class="module-action" style="color:#EA580C; font-weight:700;">Open Team Pitch Deck →</div>
-          </a>
+            <span class="track-caption">Problem analysis, competitive showdown, and jury pitch materials</span>
+          </div>
+          <div class="track-grid">
+            <a href="./readme.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t1-badge">DOC · PROJECT BRIEF</span>
+                <span class="track-card-code">README</span>
+              </div>
+              <h4 class="track-card-title">Project Readme &amp; Executive Summary</h4>
+              <p class="track-card-desc">High-level briefing: PRATYAKSHA codename breakdown, ISRO challenge parameters, 40% privacy rubric, system topology, 5 core innovations, tech stack table, and team sprint allocations.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">ISRO SAC</span>
+                <span class="tc-tag">40% Rubric</span>
+                <span class="tc-tag">5 Innovations</span>
+              </div>
+              <div class="track-card-action">Open Project Readme →</div>
+            </a>
 
-          <a href="./readme.html" class="module-card m1" style="border-top:3px solid #EA580C;">
-            <div>
-              <div class="module-num" style="color:#EA580C;">PROJECT OVERVIEW · README</div>
-              <div class="module-title">Project Readme &amp; Executive Summary</div>
-              <div class="module-desc">
-                High-level briefing: PRATYAKSHA codename breakdown, ISRO challenge parameters, 40% privacy evaluation rubric, system topology, 5 core innovations, tech stack table, and team sprint allocations.
+            <a href="./06_team_presentation.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t1-badge">06 · PITCH DECK</span>
+                <span class="track-card-code">SLIDES</span>
               </div>
-            </div>
-            <div class="module-action">Open Project Readme →</div>
-          </a>
+              <h4 class="track-card-title">Team Alignment Deck &amp; Gemini Comparison</h4>
+              <p class="track-card-desc">Designed for team meetings and jury presentations: core problem in simple language, Google Gemini in Chrome showdown matrix, step-by-step user journey, and 4-track engineering role breakdown.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">Gemini Showdown</span>
+                <span class="tc-tag">Jury Deck</span>
+                <span class="tc-tag">Role Matrix</span>
+              </div>
+              <div class="track-card-action">Open Team Pitch Deck →</div>
+            </a>
 
-          <a href="./01_master_plan.html" class="module-card m1">
-            <div>
-              <div class="module-num">MODULE 01 · STRATEGIC BLUEPRINT</div>
-              <div class="module-title">Master Plan &amp; Competitive Analysis</div>
-              <div class="module-desc">
-                In-depth PS breakdown, why all 12 commercial competitors fail, the decoded 40% privacy rubric, 6 market moats, IndoGov-PII Bench target metrics, and 4-phase team sprint plan.
+            <a href="./01_master_plan.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t1-badge">01 · MASTER PLAN</span>
+                <span class="track-card-code">STRATEGY</span>
               </div>
-            </div>
-            <div class="module-action">Open Module 01 Blueprint →</div>
-          </a>
+              <h4 class="track-card-title">Master Plan &amp; Competitive Analysis</h4>
+              <p class="track-card-desc">In-depth PS breakdown, why all 12 commercial competitors fail, the decoded 40% privacy rubric, 6 market moats, IndoGov-PII Bench target metrics, and 4-phase team sprint plan.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">12 Competitors</span>
+                <span class="tc-tag">IndoGov-PII</span>
+                <span class="tc-tag">Sprint Plan</span>
+              </div>
+              <div class="track-card-action">Open Module 01 Blueprint →</div>
+            </a>
+          </div>
+        </div>
 
-          <a href="./02_browser_agent.html" class="module-card m2">
-            <div>
-              <div class="module-num">MODULE 02 · EXECUTION ENGINE</div>
-              <div class="module-title">Browser Agent &amp; Action Dispatcher</div>
-              <div class="module-desc">
-                Chrome MV3 component interconnect, 10 supported synthetic actions, reversible pseudonym vault, prompt injection defense, wire JSON schema, and step-by-step ISRO e-procurement stage demo script.
-              </div>
+        <!-- TRACK 2 -->
+        <div class="track-section track-2">
+          <div class="track-header">
+            <div class="track-badge-title">
+              <span class="track-badge">Track 2 · Architecture &amp; System</span>
+              <h3 class="track-heading">System Topology, Microservices &amp; Audits</h3>
             </div>
-            <div class="module-action">Open Module 02 Engine →</div>
-          </a>
+            <span class="track-caption">8 discrete services, air-gapped intranet contracts, and reality audits</span>
+          </div>
+          <div class="track-grid">
+            <a href="./04_hld.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t2-badge">04 · ARCHITECTURE</span>
+                <span class="track-card-code">HLD SPEC</span>
+              </div>
+              <h4 class="track-card-title">High-Level Design &amp; Microservices</h4>
+              <p class="track-card-desc">Full production architecture: 8 microservices (4 local + 4 cloud), layered deployment topology, API contract spec, WebSocket action plan protocol, security matrix, database schemas, and ADRs.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">8 Microservices</span>
+                <span class="tc-tag">WSS Protocol</span>
+                <span class="tc-tag">ADR Log</span>
+              </div>
+              <div class="track-card-action">Open Module 04 HLD →</div>
+            </a>
 
-          <a href="./03_perception_problem.html" class="module-card m3">
-            <div>
-              <div class="module-num">MODULE 03 · NEURAL VISION MODELS</div>
-              <div class="module-title">The Perception Problem &amp; Blindspots</div>
-              <div class="module-desc">
-                Why DOM-alone fails for PDFs, canvas signatures, and photo scans. 7 DOM blindspots, 8×8 dirty-tile hash filter, 4 quantized ONNX models (~20MB), Verhoeff PII engine, and corrected PERCEIVE code.
+            <a href="./07_reality_check_and_innovations.html" class="track-card" style="border-top:3px solid #DC2626;">
+              <div class="track-card-top">
+                <span class="track-card-badge t2-badge" style="background:#FEF2F2; color:#DC2626; border-color:#FECACA;">07 · REALITY AUDIT</span>
+                <span class="track-card-code" style="color:#DC2626;">AUDIT</span>
               </div>
-            </div>
-            <div class="module-action">Open Module 03 Perception →</div>
-          </a>
+              <h4 class="track-card-title">Reality Audit &amp; 6 Genuine Innovations</h4>
+              <p class="track-card-desc">Honest architectural review: stripped fake marketing claims, realistic latency benchmarks, sustainable ML engine stack, why competing approaches fail, and 6 defensible innovations for the ISRO jury.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">Zero-BS Audit</span>
+                <span class="tc-tag">Real Latency</span>
+                <span class="tc-tag">6 Innovations</span>
+              </div>
+              <div class="track-card-action" style="color:#DC2626;">Open Module 07 Reality Audit →</div>
+            </a>
+          </div>
+        </div>
 
-          <a href="./04_hld.html" class="module-card m2">
-            <div>
-              <div class="module-num">MODULE 04 · SYSTEM ARCHITECTURE</div>
-              <div class="module-title">High-Level Design &amp; Microservices</div>
-              <div class="module-desc">
-                Full production architecture: 8 microservices (4 local + 4 cloud), layered deployment topology, API contract spec, WebSocket action plan protocol, security matrix, data storage design, ADRs, and 12-week build roadmap.
-              </div>
+        <!-- TRACK 3 -->
+        <div class="track-section track-3">
+          <div class="track-header">
+            <div class="track-badge-title">
+              <span class="track-badge">Track 3 · Engineering Deep Dives</span>
+              <h3 class="track-heading">On-Device ML, Vision Models &amp; Browser Extensions</h3>
             </div>
-            <div class="module-action">Open Module 04 HLD →</div>
-          </a>
+            <span class="track-caption">WebGPU neural pipelines, 17 ML features, Chrome MV3 internals, and action dispatching</span>
+          </div>
+          <div class="track-grid">
+            <a href="./08_ml_privacy_module.html" class="track-card featured-ml" style="border: 2px solid #059669; background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);">
+              <div class="track-card-top">
+                <span class="track-card-badge t3-badge" style="background:#059669; color:#FFFFFF;">⭐ 08 · OFFICIAL ML BLUEPRINT</span>
+                <span class="track-card-code" style="color:#059669; font-weight:800;">PS-26171</span>
+              </div>
+              <h4 class="track-card-title" style="color:#065F46;">ML &amp; Privacy Module: System Design &amp; Specs</h4>
+              <p class="track-card-desc">Definitive ML specification from the ML module owner: local privacy firewall, complete 17-feature set, DOM Analyzer, PaddleOCR.js / PP-OCRv5, YOLO26n ONNX, BERT-base NER, Layered PII detection, Entity Resolver (IoU fusion), Session Manager, Semantic Anonymizer, Visual Redactor, Sanitized Context Builder, Fail-Closed Privacy Gate, 16-layer tech stack, and 17-step implementation roadmap.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag" style="background:#D1FAE5; color:#065F46;">17 Features</span>
+                <span class="tc-tag" style="background:#D1FAE5; color:#065F46;">PaddleOCR.js</span>
+                <span class="tc-tag" style="background:#D1FAE5; color:#065F46;">YOLO26n</span>
+                <span class="tc-tag" style="background:#D1FAE5; color:#065F46;">BERT NER</span>
+                <span class="tc-tag" style="background:#D1FAE5; color:#065F46;">IoU Fusion</span>
+              </div>
+              <div class="track-card-action" style="color:#059669; font-weight:800;">Open Module 08 ML Specs →</div>
+            </a>
 
-          <a href="./05_browser_extension.html" class="module-card m3">
-            <div>
-              <div class="module-num">MODULE 05 · CHROME EXTENSION</div>
-              <div class="module-title">Browser Extension Deep Dive</div>
-              <div class="module-desc">
-                Complete Manifest V3 extension build plan: file structure, component deep-dive, message passing protocol, screen capture pipeline, DOM extraction strategy, WebGPU ONNX integration, Vault implementation, permissions justification, and Web Store distribution.
+            <a href="./03_perception_problem.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t3-badge">03 · NEURAL VISION</span>
+                <span class="track-card-code">MODELS</span>
               </div>
-            </div>
-            <div class="module-action">Open Module 05 Extension →</div>
-          </a>
+              <h4 class="track-card-title">The Perception Problem &amp; 7 DOM Blindspots</h4>
+              <p class="track-card-desc">Why DOM-alone fails for PDFs, canvas signatures, and photo scans. 7 DOM blindspots, 8×8 dirty-tile hash filter, 4 quantized ONNX models (~20MB), Verhoeff PII engine, and corrected PERCEIVE code.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">7 Blindspots</span>
+                <span class="tc-tag">8x8 dHash</span>
+                <span class="tc-tag">Verhoeff</span>
+                <span class="tc-tag">~20MB Models</span>
+              </div>
+              <div class="track-card-action">Open Module 03 Perception →</div>
+            </a>
 
-          <a href="./07_reality_check_and_innovations.html" class="module-card m1" style="border-top:3px solid #DC2626;">
-            <div>
-              <div class="module-num" style="color:#DC2626;">MODULE 07 · REALITY AUDIT</div>
-              <div class="module-title">Reality Audit &amp; 6 Genuine Innovations</div>
-              <div class="module-desc">
-                Honest architecture review: stripped fake slide claims, realistic latency benchmarks, sustainable ML engine stack, why competing approaches fail, and 6 defensible innovations for the ISRO jury.
+            <a href="./05_browser_extension.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t3-badge">05 · EXTENSION</span>
+                <span class="track-card-code">MV3</span>
               </div>
-            </div>
-            <div class="module-action" style="color:#DC2626;">Open Module 07 Reality Audit →</div>
-          </a>
+              <h4 class="track-card-title">Browser Extension Deep Dive (MV3)</h4>
+              <p class="track-card-desc">Complete Manifest V3 build plan: file structure, component deep-dive (Service Worker, Offscreen Document, Content Script, Side Panel), message passing protocol, screen capture pipeline, WebGPU ONNX, and store distribution.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">Manifest V3</span>
+                <span class="tc-tag">Offscreen Canvas</span>
+                <span class="tc-tag">Side Panel HUD</span>
+              </div>
+              <div class="track-card-action">Open Module 05 Extension →</div>
+            </a>
 
-          <a href="./08_ml_privacy_module.html" class="module-card m3" style="border-top:4px solid #059669; background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);">
-            <div>
-              <div class="module-num" style="color:#059669; font-weight:800;">⭐ MODULE 08 · ML ENGINEER SPEC (PS-26171)</div>
-              <div class="module-title">ML &amp; Privacy Module: System Design &amp; Specs</div>
-              <div class="module-desc">
-                Definitive ML specification from the ML module owner: local privacy firewall, complete 17-feature set, DOM Analyzer, PaddleOCR.js / PP-OCRv5, YOLO26n ONNX, BERT-base NER, Layered PII detection, Entity Resolver (IoU fusion), Session Manager, Semantic Anonymizer, Visual Redactor, Sanitized Context Builder, Fail-Closed Privacy Gate, 16-layer tech stack, and 17-step implementation roadmap.
+            <a href="./02_browser_agent.html" class="track-card">
+              <div class="track-card-top">
+                <span class="track-card-badge t3-badge">02 · AGENT ENGINE</span>
+                <span class="track-card-code">DISPATCHER</span>
               </div>
-            </div>
-            <div class="module-action" style="color:#059669; font-weight:700;">Open Module 08 ML Specs →</div>
-          </a>
+              <h4 class="track-card-title">Browser Agent &amp; Action Dispatcher</h4>
+              <p class="track-card-desc">Chrome MV3 component interconnect, 10 supported synthetic actions, reversible pseudonym vault, prompt injection defense, wire JSON schema, and step-by-step ISRO e-procurement stage demo script.</p>
+              <div class="track-card-tags">
+                <span class="tc-tag">10 Actions</span>
+                <span class="tc-tag">Reversible Vault</span>
+                <span class="tc-tag">Wire Protocol</span>
+              </div>
+              <div class="track-card-action">Open Module 02 Engine →</div>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -1780,6 +1986,34 @@ flowchart TD
   </main>
 
   <script>
+    // Reading Progress Bar
+    const progressBar = document.getElementById('readingProgressBar');
+    window.addEventListener('scroll', () => {
+      if (progressBar) {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + '%';
+      }
+    });
+
+    // Quick Module Switcher Drawer Toggle
+    const moduleSelectTrigger = document.getElementById('moduleSelectTrigger');
+    const moduleNavDrawer = document.getElementById('moduleNavDrawer');
+
+    if (moduleSelectTrigger && moduleNavDrawer) {
+      moduleSelectTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        moduleNavDrawer.classList.toggle('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!moduleNavDrawer.contains(e.target) && e.target !== moduleSelectTrigger) {
+          moduleNavDrawer.classList.remove('open');
+        }
+      });
+    }
+
     // Scroll Spy for TOC
     const sections = document.querySelectorAll('.doc-section');
     const navLinks = document.querySelectorAll('.toc-link');
