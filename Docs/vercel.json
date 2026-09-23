@@ -7,7 +7,10 @@
     { "source": "/02", "destination": "/02_browser_agent.html" },
     { "source": "/03", "destination": "/03_perception_problem.html" },
     { "source": "/04", "destination": "/04_hld.html" },
-    { "source": "/05", "destination": "/05_browser_extension.html" }
+    { "source": "/05", "destination": "/05_browser_extension.html" },
+    { "source": "/06", "destination": "/06_team_presentation.html" },
+    { "source": "/07", "destination": "/07_reality_check_and_innovations.html" },
+    { "source": "/08", "destination": "/08_ml_privacy_module.html" }
   ],
   "headers": [
     {

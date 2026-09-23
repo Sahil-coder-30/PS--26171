@@ -20,6 +20,9 @@
 | [`03_perception_problem.html`](./03_perception_problem.html) | **Module 03**: The perception problem — 7 DOM blindspots (PDF, canvas, video, shadow DOM), dual-channel WebGPU vision pipeline, and model specs |
 | [`04_hld.html`](./04_hld.html) | **Module 04**: High-Level Design (HLD) — 8 microservices inventory, 7-step data-flow architecture, API contract spec, security matrix, database schema, deployment topology, scalability targets, and Architecture Decision Records (ADRs) |
 | [`05_browser_extension.html`](./05_browser_extension.html) | **Module 05**: Browser Extension deep dive — Manifest V3 architecture, full file structure, component deep-dive for all 6 contexts (Service Worker, Offscreen Document, Content Script, Side Panel, Vault, Agent Runner), message passing protocol, WebGPU ONNX code, Vault implementation, permissions justification, and distribution plan |
+| [`06_team_presentation.html`](./06_team_presentation.html) | **Module 06**: Presentation & Team Alignment — Pitch deck, Gemini comparison matrix, core concepts in simple language, and role-by-role execution guide |
+| [`07_reality_check_and_innovations.html`](./07_reality_check_and_innovations.html) | **Module 07**: Reality Audit & 6 Genuine Innovations — Stripped marketing claims, true latency benchmarks, sustainable ML stack, and defensible architectural differentiators |
+| [`08_ml_privacy_module.html`](./08_ml_privacy_module.html) | **Module 08 (Official ML Blueprint)**: ML & Privacy Module — Local privacy firewall, complete 17-feature set, DOM Analyzer, PaddleOCR.js / PP-OCRv5, YOLO26n ONNX, BERT-base NER, Layered PII detection, Entity Resolver (IoU fusion), Session Manager, Semantic Anonymizer, Visual Redactor, Sanitized Context Builder, Fail-Closed Privacy Gate, 16-layer tech stack, and 17-step implementation roadmap |
 
 ---
 
@@ -47,49 +50,67 @@ The server VLM then processes the sanitized context and returns **actionable com
 
 ---
 
-## 🏗️ System Architecture at a Glance
+## 🏗️ System Architecture at a Glance (Local Privacy Firewall)
 
 ```
-Browser Extension (Chrome MV3 / Firefox)
+RAW WEBPAGE (Live DOM Tree + Screen Pixels)
 │
-├── CONTENT SCRIPT            DOM extraction, screen capture, action injection
-├── OFFSCREEN WORKER          Privacy Shield (Local Vision Models on WebGPU)
-│   ├── Face Detector         Ultra-Light-Fast-Face (~2.5MB ONNX)
-│   ├── Text Region Detector  DBNet-Tiny (~6MB ONNX)
-│   ├── OCR Engine            CRNN + Indic fine-tune (~8MB ONNX)
-│   ├── PII Rule Engine       Verhoeff/PAN/GSTIN/IFSC validators (pure JS)
-│   └── Pseudonym Vault       In-memory token ↔ real-value map
-├── SERVICE WORKER            Session, egress ledger (SHA-256 chain), routing
-└── SIDE PANEL / POPUP        Audit HUD, paranoid mode toggle, ledger viewer
+▼
+LOCAL PRIVACY FIREWALL (Client-Side Extension / Web Worker Sandbox)
+├── DOM Analyzer              Semantic HTML signals, labels, input types, autocomplete, ARIA, bboxes
+├── PaddleOCR.js / PP-OCRv5   Sub-millisecond character extraction, word polygons, confidence
+├── YOLO26n ONNX (WebGPU)     Visual detection: FACE, ID_CARD, PASSPORT, CREDIT_CARD, SIGNATURE, QR/BARCODE
+├── BERT-base NER (ONNX)      Contextual named entities: PERSON, LOCATION, ORGANIZATION
+├── Structured PII Rules      Verhoeff/Luhn checksums, PAN/GSTIN modulo, Email/Phone regex
+├── Entity Resolver           Spatial IoU fusion & multi-source confidence weighting
+├── Session Manager           Stable anonymous identities ([PERSON_A71C], crypto.getRandomValues)
+├── Semantic Anonymizer       Surgical text span rewriting preserving page reasoning layout
+├── Visual Redactor           Irreversible canvas pixel masking with 15% safety padding
+└── Sanitized Context Builder Compact JSON schema wire payload (elements + pseudonyms)
 │
-└──► SERVER (ISRO Intranet / localhost)
-         Qwen2.5-VL-7B / InternVL2.5 (open-weights, offline-deployable)
-         Receives: Sanitized canvas + scene graph with placeholder tokens
-         Returns:  Structured JSON action plan referencing placeholder tokens
+▼
+FINAL PRIVACY GATE (Fail-Closed Outbound Audit Barrier)
+├── Blocks: Raw DOM [X], Raw OCR [X], Raw PII [X], Session Mapping Vault [X]
+└── Allows: Redacted Screenshot WebP + Sanitized Semantic JSON Payload
+│
+▼
+SERVER AI AGENT (ISRO Intranet / Cloud VLM)
+└── Reasons over [PERSON_A71C], element roles, and masked screenshot → returns action JSON (CLICK, TYPE, SCROLL)
 ```
 
 ---
 
-## 🚀 Our Core Innovations
+## 🚀 Core Innovations & Capabilities
 
-1. **Reversible Pseudonymization Vault** — Replaces PII with semantic tokens (`⟨AADHAAR_01⟩`). Server plans using tokens; client rehydrates locally. Real values never leave the device.
-2. **Fail-Closed Dual-Channel Fusion** — DOM structural analysis + WebGPU vision model fusion. If either detects PII, it masks. High-risk pages default to paranoid redaction.
+1. **Reversible Pseudonymization Vault** — Replaces PII with semantic tokens (`[PERSON_A71C]`, `[AADHAAR_9F12]`). Server plans using tokens; client rehydrates locally. Real values never leave the device.
+2. **Fail-Closed Multi-Modal Fusion** — DOM structural analysis + PaddleOCR + YOLO26n visual detection + BERT-base NER fused via geometric IoU overlap.
 3. **Indian Sovereign PII Stack** — Verhoeff checksum (Aadhaar), PAN/GSTIN modulo validators, IFSC registry, Devanagari OCR. Zero false positives through algorithmic certainty.
-4. **Cryptographic Egress Ledger** — SHA-256 Merkle-chained audit log of every byte that leaves the device. Live split-screen diff HUD for real-time verification.
-5. **Browser Agent Execution Engine** — Structured JSON action protocol; the extension executes `click`, `type`, `scroll`, `navigate`, `extract` from server commands, with mandatory human confirmation for destructive actions.
+4. **Final Privacy Gate & Egress Audit** — Fail-closed verification barrier: regex scan of serialized JSON + canvas pixel confirmation + post-redaction OCR verification.
+5. **Non-Blocking Web Worker Isolation** — Offloads all heavy ML inference (YOLO26n, PaddleOCR, BERT) to dedicated Web Workers with WebGPU/WASM to keep host DOM at 60 FPS.
+6. **10-Step Operational Execution Loop** — `OBSERVE` → `DETECT` → `FUSE` → `IDENTIFY` → `PROTECT` → `VERIFY` → `SEND` → `REASON` → `ACT` → `OBSERVE AGAIN`.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Complete Tech Stack (16 Layers)
 
-| Layer | Technology |
-|-------|-----------|
-| Browser Extension | Chrome Manifest V3 (MV3), Firefox WebExtension |
-| On-Device ML | ONNX Runtime Web (`@webgpu` + `@wasm` fallback) |
-| Vision Models | Ultra-Light-Face, DBNet-Tiny, CRNN (ONNX, ~20MB total) |
-| Server VLM | Qwen2.5-VL-7B-Instruct via vLLM / Ollama |
-| PII Rules | Custom JS: Verhoeff, PAN regex, GSTIN modulo-36 |
-| Security | SHA-256 hash chain, CSP, action allowlist, injection guards |
+| Layer | Technology | Role |
+|-------|-----------|------|
+| Browser Extension | Chrome Manifest V3 (MV3), Firefox WebExtension | Page lifecycle integration, tab control, screenshot access, sandboxed messaging |
+| Frontend Language | JavaScript (ES2022) / TypeScript | Extension logic, privacy engine, deterministic validation rules |
+| DOM Inspection | DOM APIs + `MutationObserver` | Zero-inference semantic extraction, bounding coordinate queries, SPA tracking |
+| OCR Engine | `PaddleOCR.js` / `PP-OCRv5` | Local browser character recognition, word polygons, confidence metrics |
+| Computer Vision | `YOLO26n` (ONNX Runtime Web) | Visual privacy-object detection (faces, cards, IDs, signatures, QR codes) |
+| Model Format | `ONNX` | Standardized portable model serialization optimized for web runtime execution |
+| Contextual NER | `BERT-base NER` (Transformers.js) | Unstructured text token entity recognition (PERSON, LOCATION, ORG) |
+| Inference Runtime | `ONNX Runtime Web` | High-performance client-side execution of ONNX models |
+| NLP Runtime | `Transformers.js` | Browser-friendly pipeline for tokenization, embeddings, and NER classification |
+| Acceleration | `WebGPU` | Direct GPU compute shader execution for low-latency neural model passes |
+| CPU Fallback | `WASM` (SIMD + Multi-Threading) | Cross-browser CPU execution when WebGPU is unavailable or disabled |
+| Concurrency | `Web Workers` | Non-blocking multi-threaded processing isolating inference from host page DOM |
+| Image Processing | `Canvas API` / `ImageBitmap` | Zero-copy image slicing, pixel masking, blurring, and WebP compression |
+| Storage / State | In-Memory Session State (JS `Map`) | Transient pseudonym mapping vault; strictly ephemeral; no disk logging |
+| Communication | `postMessage` + HTTPS / WSS | Worker-to-background messaging and encrypted server agent wire protocol |
+| Server Handoff | Sanitized JSON + Masked Image | Compact semantic context payload delivered to remote AI agent |
 
 ---
 
@@ -97,12 +118,13 @@ Browser Extension (Chrome MV3 / Firefox)
 
 | Role | Focus |
 |------|-------|
-| Extension & UI Lead | MV3 scaffold, content scripts, action dispatcher, HUD |
-| Edge ML Lead | ONNX model pipeline, WebGPU worker, dirty-tile optimizer |
-| PII & Security Lead | Verhoeff/PAN validators, pseudonym vault, egress ledger |
-| Server & VLM Lead | Qwen2.5-VL server, structured action JSON protocol |
-| Benchmark & Demo Lead | IndoGov-PII Bench, mock e-Office portal, pitch deck |
+| ML Engineer / Privacy Lead | Browser-side Privacy Firewall, YOLO26n, PaddleOCR.js, BERT-base NER, Entity Resolver, Privacy Gate |
+| Extension & UI Lead | MV3 scaffold, content scripts, action dispatcher, Side Panel HUD, Web Worker messaging |
+| Security & Vault Lead | Verhoeff/PAN validators, session pseudonym vault, egress ledger, fail-closed audit |
+| Server & VLM Lead | Qwen2.5-VL / InternVL2.5 server, structured action JSON protocol, local intranet deployment |
+| Benchmark & Demo Lead | IndoGov-PII Bench, mock e-Office portal, end-to-end evaluation suite, pitch deck |
 
 ---
 
-*All work is documented in the HTML files in this Docs folder. Start with `01_master_plan.html` for the full picture.*
+*All work is documented in the HTML files in this Docs folder. Start with `index.html` for the Master Hub, or jump directly to `08_ml_privacy_module.html` for the complete ML & Privacy Module specification.*
+

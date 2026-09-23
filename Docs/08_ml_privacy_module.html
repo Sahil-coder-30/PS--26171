@@ -1,0 +1,2593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PRATYAKSHA — ML &amp; Privacy Module: Features, Tech Stack &amp; System Design | SIH 2026 PS-26171</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F4EFE6;
+      --bg-card: #FFFFFF;
+      --border-warm: #E7E0D6;
+      --border-subtle: #EFEAE1;
+      
+      --text-main: #1C1917;
+      --text-body: #332F2B;
+      --text-muted: #736B63;
+      --text-light: #948B80;
+
+      --sidebar-bg: #1C1917;
+      --sidebar-surface: #262220;
+      --sidebar-border: #332E2A;
+      --sidebar-text: #F5F5F4;
+      --sidebar-muted: #A8A29E;
+      --sidebar-accent: #EA580C;
+
+      --isro-orange: #EA580C;
+      --isro-orange-light: #FFF7ED;
+      --isro-orange-border: #FDBA74;
+
+      --color-danger: #DC2626;
+      --color-danger-bg: #FEF2F2;
+      --color-danger-border: #FECACA;
+
+      --color-success: #059669;
+      --color-success-bg: #ECFDF5;
+      --color-success-border: #A7F3D0;
+
+      --color-warn: #D97706;
+      --color-warn-bg: #FFFBEB;
+      --color-warn-border: #FDE68A;
+
+      --color-info: #2563EB;
+      --color-info-bg: #EFF6FF;
+      --color-info-border: #BFDBFE;
+
+      --color-purple: #7C3AED;
+      --color-purple-bg: #F5F3FF;
+      --color-purple-border: #DDD6FE;
+
+      --color-teal: #0D9488;
+      --color-teal-bg: #F0FDFA;
+      --color-teal-border: #99F6E4;
+
+      --shadow-sm: 0 1px 3px rgba(44, 38, 33, 0.05);
+      --shadow-md: 0 4px 14px rgba(44, 38, 33, 0.06), 0 2px 6px rgba(44, 38, 33, 0.03);
+      --shadow-lg: 0 10px 30px rgba(44, 38, 33, 0.08), 0 4px 10px rgba(44, 38, 33, 0.04);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-body);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── MOBILE TOPBAR (Visible only <= 900px) ── */
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--sidebar-border);
+      color: var(--sidebar-text);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      z-index: 150;
+      box-shadow: var(--shadow-md);
+      gap: 8px;
+    }
+    .mobile-menu-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      transition: background 0.15s;
+      touch-action: manipulation;
+      flex-shrink: 0;
+    }
+    .mobile-menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #FFFFFF;
+      border-radius: 2px;
+      transition: all 0.2s ease;
+    }
+    .mobile-brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-brand .brand-devanagari {
+      color: #FB923C;
+      font-size: 14px;
+    }
+    .mobile-nav-select-wrap {
+      flex-shrink: 0;
+    }
+    .mobile-doc-selector {
+      background: #27221E;
+      color: #F5F5F4;
+      border: 1px solid #38332E;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+      max-width: 145px;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(3px);
+      z-index: 199;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 320px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar::-webkit-scrollbar { width: 5px; }
+    .sidebar::-webkit-scrollbar-thumb { background: #3E3834; border-radius: 4px; }
+
+    .sidebar-header {
+      padding: 24px 20px 18px;
+      border-bottom: 1px solid var(--sidebar-border);
+      position: relative;
+    }
+    .sidebar-close-btn {
+      display: none;
+      position: absolute;
+      top: 20px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--sidebar-border);
+      color: #FFFFFF;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(234, 88, 12, 0.2);
+      border: 1px solid rgba(234, 88, 12, 0.4);
+      color: #FB923C;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 21px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+    .brand-devanagari {
+      color: #FB923C;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--sidebar-muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .org-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #E2E8F0;
+      background: #27221E;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid #38332E;
+    }
+
+    /* Doc switcher tabs */
+    .doc-tabs {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--sidebar-border);
+      background: #171412;
+    }
+    .doc-tabs-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8C827A;
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+    .doc-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      color: var(--sidebar-muted);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      margin-bottom: 2px;
+    }
+    .doc-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+    }
+    .doc-link.active {
+      background: rgba(234, 88, 12, 0.15);
+      color: #FB923C;
+      font-weight: 600;
+      border-left: 3px solid var(--sidebar-accent);
+    }
+    .doc-link .doc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      opacity: 0.85;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    /* TOC */
+    .sidebar-toc {
+      padding: 16px 14px;
+      flex-grow: 1;
+    }
+    .toc-heading {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8C827A;
+      margin-bottom: 10px;
+      padding-left: 6px;
+    }
+    .toc-list { list-style: none; }
+    .toc-item { margin-bottom: 2px; }
+    .toc-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      color: #D6D3D1;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      line-height: 1.35;
+    }
+    .toc-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+    }
+    .toc-link.active {
+      background: linear-gradient(90deg, rgba(234, 88, 12, 0.22) 0%, rgba(234, 88, 12, 0.05) 100%);
+      color: #FFFFFF;
+      font-weight: 600;
+      border-left: 3px solid var(--sidebar-accent);
+    }
+    .toc-icon {
+      font-size: 13px;
+      width: 18px;
+      display: inline-flex;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 14px 18px;
+      border-top: 1px solid var(--sidebar-border);
+      font-size: 11px;
+      color: var(--sidebar-muted);
+      background: #171412;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-wrap {
+      flex: 1;
+      overflow-y: auto;
+      min-width: 0;
+    }
+    .content-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 48px 48px 80px;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #FFFFFF 0%, #FAF4EB 100%);
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-xl);
+      padding: 44px 40px 38px;
+      margin-bottom: 40px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #EA580C 0%, #D97706 35%, #059669 70%, #2563EB 100%);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--isro-orange-light);
+      border: 1px solid var(--isro-orange-border);
+      color: var(--isro-orange);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .hero-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .hero-tagline {
+      font-size: 16px;
+      color: var(--text-body);
+      margin-bottom: 24px;
+      line-height: 1.65;
+    }
+    .hero-chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-body);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* SECURITY INVARIANT BANNER */
+    .security-banner {
+      background: linear-gradient(135deg, #1C1917 0%, #2B2623 100%);
+      border: 2px solid #EA580C;
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      color: #F5F5F4;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .security-banner::after {
+      content: '🛡️';
+      position: absolute;
+      right: 24px;
+      bottom: 10px;
+      font-size: 64px;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    .security-banner-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: #FB923C;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .security-banner-text {
+      font-size: 14.5px;
+      color: #E7E5E4;
+      line-height: 1.6;
+    }
+
+    /* SECTIONS */
+    .doc-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 40px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+    .section-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #FAF2E8 0%, #F5E6D3 100%);
+      border: 1px solid var(--border-warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+    .section-lead {
+      font-size: 15px;
+      color: var(--text-body);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin: 22px 0;
+      font-size: 14px;
+      line-height: 1.65;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      border: 1px solid;
+    }
+    .callout-icon { font-size: 20px; line-height: 1; margin-top: 2px; flex-shrink: 0; }
+    .callout-body { flex: 1; }
+    .callout-body strong { display: block; margin-bottom: 4px; font-weight: 700; font-size: 14.5px; }
+    .callout.danger { background: var(--color-danger-bg); border-color: var(--color-danger-border); color: #991B1B; }
+    .callout.warn { background: var(--color-warn-bg); border-color: var(--color-warn-border); color: #92400E; }
+    .callout.success { background: var(--color-success-bg); border-color: var(--color-success-border); color: #065F46; }
+    .callout.info { background: var(--color-info-bg); border-color: var(--color-info-border); color: #1E40AF; }
+    .callout.orange { background: var(--isro-orange-light); border-color: var(--isro-orange-border); color: #9A3412; }
+
+    /* ARCHITECTURE DIAGRAM CONTAINERS */
+    .diagram-box {
+      background: #171412;
+      border: 1px solid #38332E;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 24px 0;
+      color: #E7E5E4;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-x: auto;
+      box-shadow: var(--shadow-md);
+    }
+    .diagram-box pre {
+      margin: 0;
+      font-family: inherit;
+    }
+
+    /* SVG ARCHITECTURE WORKFLOW */
+    .flow-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .flow-step-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .flow-step-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      background: var(--isro-orange);
+    }
+    .flow-step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--isro-orange);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .flow-step-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+    .flow-step-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* TABLES */
+    .table-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+      margin: 22px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      text-align: left;
+    }
+    thead th {
+      background: #F5EFE6;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-warm);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FAF7F2; }
+    tbody td {
+      padding: 12px 16px;
+      color: var(--text-body);
+      vertical-align: middle;
+      line-height: 1.6;
+    }
+    tbody td.strong-col {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-orange { background: var(--isro-orange-light); color: var(--isro-orange); border: 1px solid var(--isro-orange-border); }
+    .badge-blue { background: var(--color-info-bg); color: var(--color-info); border: 1px solid var(--color-info-border); }
+    .badge-green { background: var(--color-success-bg); color: var(--color-success); border: 1px solid var(--color-success-border); }
+    .badge-red { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid var(--color-danger-border); }
+    .badge-purple { background: var(--color-purple-bg); color: var(--color-purple); border: 1px solid var(--color-purple-border); }
+    .badge-gray { background: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: #171412;
+      border: 1px solid #38332E;
+      border-radius: var(--radius-md);
+      margin: 16px 0 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .code-header {
+      background: #241F1C;
+      padding: 8px 16px;
+      border-bottom: 1px solid #38332E;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #A8A29E;
+    }
+    .code-lang {
+      color: #FB923C;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .code-body {
+      padding: 16px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #F5F5F4;
+    }
+    .code-body pre { margin: 0; }
+    .code-highlight { color: #38BDF8; }
+    .code-keyword { color: #F472B6; }
+    .code-str { color: #4ADE80; }
+    .code-comment { color: #78716C; font-style: italic; }
+
+    /* FEATURE DEEP-DIVE CARDS */
+    .deep-dive-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .deep-dive-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .deep-dive-subtitle {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .deep-dive-bullets {
+      list-style: none;
+      margin: 16px 0;
+    }
+    .deep-dive-bullets li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .deep-dive-bullets li::before {
+      content: '▸';
+      position: absolute;
+      left: 6px;
+      color: var(--isro-orange);
+      font-weight: 700;
+    }
+
+    /* STEP CAROUSEL / TIMELINE */
+    .timeline {
+      position: relative;
+      margin: 28px 0;
+      padding-left: 32px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0; left: 11px;
+      width: 2px;
+      background: var(--border-warm);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -32px;
+      top: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 2px solid var(--isro-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--isro-orange);
+      box-shadow: 0 0 0 3px var(--isro-orange-light);
+    }
+    .timeline-content {
+      background: #FFFFFF;
+      border: 1px solid var(--border-warm);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .timeline-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .timeline-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* FOOTER */
+    .doc-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-warm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .footer-nav-links a {
+      color: #EA580C;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* MEDIA QUERIES */
+    @media (max-width: 900px) {
+      .mobile-topbar { display: flex; }
+      .sidebar-close-btn { display: flex; }
+      .sidebar {
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .content-container { padding: 80px 20px 60px; }
+      .hero { padding: 30px 20px 24px; }
+      .deep-dive-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── MOBILE TOPBAR ── -->
+  <div class="mobile-topbar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span>
+    </div>
+    <div class="mobile-nav-select-wrap">
+      <select class="mobile-doc-selector" id="mobileDocSelector" aria-label="Jump to Documentation Module">
+        <option value="./index.html">🗺️ Master Hub</option>
+        <option value="./01_master_plan.html">01 Master Plan</option>
+        <option value="./02_browser_agent.html">02 Browser Agent</option>
+        <option value="./03_perception_problem.html">03 Perception</option>
+        <option value="./04_hld.html">04 HLD Design</option>
+        <option value="./05_browser_extension.html">05 Extension</option>
+        <option value="./06_team_presentation.html">06 Team Pitch Deck</option>
+        <option value="./07_reality_check_and_innovations.html">07 Reality Audit</option>
+        <option value="./08_ml_privacy_module.html" selected>08 ML Privacy</option>
+        <option value="./readme.html">📚 Readme DOC</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── SIDEBAR BACKDROP ── -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">&#x2715;</button>
+      <div class="brand-badge">SIH 2026 · PS ID 26171</div>
+      <div class="brand-title">PRATYAKSHA <span class="brand-devanagari">प्रत्यक्ष</span></div>
+      <div class="brand-subtitle">ML &amp; Privacy Module: System Design &amp; Specs</div>
+      <div class="org-tag">Organization: ISRO / Dept. of Space</div>
+    </div>
+
+    <!-- DOCUMENT SWITCHER TABS -->
+    <div class="doc-tabs">
+      <div class="doc-tabs-label">Documentation Suite</div>
+      <a href="./index.html" class="doc-link">
+        <span class="doc-num">HUB</span> Master Portal
+      </a>
+      <a href="./01_master_plan.html" class="doc-link">
+        <span class="doc-num">01</span> Master Plan &amp; Strategy
+      </a>
+      <a href="./02_browser_agent.html" class="doc-link">
+        <span class="doc-num">02</span> Browser Agent Engine
+      </a>
+      <a href="./03_perception_problem.html" class="doc-link">
+        <span class="doc-num">03</span> Perception &amp; Blindspots
+      </a>
+      <a href="./04_hld.html" class="doc-link">
+        <span class="doc-num">04</span> High-Level Design (HLD)
+      </a>
+      <a href="./05_browser_extension.html" class="doc-link">
+        <span class="doc-num">05</span> Browser Extension Plan
+      </a>
+      <a href="./06_team_presentation.html" class="doc-link">
+        <span class="doc-num">06</span> Team Pitch &amp; Deck
+      </a>
+      <a href="./07_reality_check_and_innovations.html" class="doc-link">
+        <span class="doc-num">07</span> Reality Audit &amp; Innovations
+      </a>
+      <a href="./08_ml_privacy_module.html" class="doc-link active">
+        <span class="doc-num">08</span> ML &amp; Privacy Module
+      </a>
+      <a href="./readme.html" class="doc-link">
+        <span class="doc-num">DOC</span> Project Readme
+      </a>
+    </div>
+
+    <!-- TOC -->
+    <nav class="sidebar-toc">
+      <div class="toc-heading">Module 08 Contents</div>
+      <ul class="toc-list">
+        <li class="toc-item">
+          <a href="#scope" class="toc-link active">
+            <span class="toc-icon">🛡️</span> 1. Scope of Privacy Firewall
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#features-matrix" class="toc-link">
+            <span class="toc-icon">📋</span> 2. Complete 17-Feature Set
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-dom" class="toc-link">
+            <span class="toc-icon">🌐</span> 3. Feature 1: DOM Analyzer
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-ocr" class="toc-link">
+            <span class="toc-icon">🔍</span> 4. Feature 2: PaddleOCR
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-yolo" class="toc-link">
+            <span class="toc-icon">👁️</span> 5. Feature 3: YOLO26n Detector
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-ner" class="toc-link">
+            <span class="toc-icon">🧠</span> 6. Feature 4: BERT-base NER
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-layered-pii" class="toc-link">
+            <span class="toc-icon">📑</span> 7. Feature 5: Layered PII
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-fusion" class="toc-link">
+            <span class="toc-icon">🔀</span> 8. Feature 6: Entity Resolver
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-session" class="toc-link">
+            <span class="toc-icon">🔐</span> 9. Feature 7: Session Manager
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-anonymizer" class="toc-link">
+            <span class="toc-icon">🎭</span> 10. Feature 8: Semantic Anonymizer
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-visual-redactor" class="toc-link">
+            <span class="toc-icon">🖌️</span> 11. Feature 9: Visual Redactor
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-context-builder" class="toc-link">
+            <span class="toc-icon">📦</span> 12. Feature 10: Context Builder
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-privacy-gate" class="toc-link">
+            <span class="toc-icon">🚧</span> 13. Feature 11: Final Privacy Gate
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#feature-worker" class="toc-link">
+            <span class="toc-icon">⚡</span> 14. Feature 12: Web Worker Isolation
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#tech-stack" class="toc-link">
+            <span class="toc-icon">🛠️</span> 15. Complete Technology Stack
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#system-design" class="toc-link">
+            <span class="toc-icon">🏗️</span> 16. Complete System Design
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#component-design" class="toc-link">
+            <span class="toc-icon">🧩</span> 17. Internal Component Design
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#data-flow" class="toc-link">
+            <span class="toc-icon">🔄</span> 18. 10-Step Operational Data Flow
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#evaluation-mapping" class="toc-link">
+            <span class="toc-icon">⚖️</span> 19. SIH Evaluation Mapping
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#implementation-order" class="toc-link">
+            <span class="toc-icon">🗺️</span> 20. 17-Step Implementation Order
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#final-deliverable" class="toc-link">
+            <span class="toc-icon">🏆</span> 21. Final Deliverable Guarantee
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div>Module 08 &middot; ML Engineer Spec</div>
+      <div style="margin-top:4px; opacity:0.75;">SIH 2026 PS ID 26171</div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT AREA ── -->
+  <main class="main-wrap">
+    <div class="content-container">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-top">
+          <div class="hero-pill">Module 08 &middot; ML &amp; Privacy Module</div>
+          <div class="hero-meta">Role: ML Engineer / Browser-side Privacy &amp; Perception</div>
+        </div>
+        <h1>ML &amp; Privacy Module: Features, Technology Stack &amp; System Design</h1>
+        <div class="hero-tagline">
+          The definitive technical blueprint for the on-device privacy firewall. Transforms raw DOM and screenshot data into a privacy-safe, semantically useful context for the server-side AI agent. Raw PII and session anonymization mappings strictly remain local to the browser.
+        </div>
+        <div class="hero-chips">
+          <span class="hero-chip">🛡️ Local Privacy Firewall</span>
+          <span class="hero-chip">🔍 PaddleOCR.js / PP-OCRv5</span>
+          <span class="hero-chip">👁️ YOLO26n ONNX</span>
+          <span class="hero-chip">🧠 BERT-base NER</span>
+          <span class="hero-chip">⚡ Web Worker &amp; WebGPU</span>
+          <span class="hero-chip">🔒 Zero Server PII Leakage</span>
+        </div>
+      </section>
+
+      <!-- NON-NEGOTIABLE SECURITY PROPERTY BANNER -->
+      <div class="security-banner">
+        <div class="security-banner-title">
+          <span>⚠️</span> Non-Negotiable Security Property
+        </div>
+        <div class="security-banner-text">
+          The remote server agent receives enough semantic information to perform autonomous browser reasoning (roles, visible non-sensitive labels, normalized bounding boxes, anonymous session tags), <strong>but it must NEVER receive the actual sensitive value or the browser-local mapping that could recover it.</strong> All sanitization, OCR, visual masking, and token generation execute 100% locally in the client environment.
+        </div>
+      </div>
+
+      <!-- SECTION 1: SCOPE OF MY PART -->
+      <section class="doc-section" id="scope">
+        <div class="section-header">
+          <div class="section-icon-badge">🛡️</div>
+          <h2 class="section-title">1. Scope of the ML &amp; Privacy Module</h2>
+        </div>
+        <p class="section-lead">
+          The ML &amp; Privacy module acts as a <strong>local client-side privacy firewall</strong>. It sits directly between the webpage execution environment and the remote AI agent. It completely owns perception, PII detection, privacy fusion, anonymization, visual/text redaction, session identity management, and sanitized-context delivery.
+        </p>
+
+        <div class="diagram-box">
+          <pre>
+┌────────────────────────────────────────────────────────────────────────┐
+│                              RAW WEBPAGE                               │
+│                      (Live DOM Tree + Screen Pixels)                   │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                        LOCAL PRIVACY FIREWALL                          │
+│                                                                        │
+│   ┌───────────────────┐    ┌───────────────────┐    ┌──────────────┐   │
+│   │   DOM Analyzer    │    │   PaddleOCR.js    │    │   YOLO26n    │   │
+│   └─────────┬─────────┘    └─────────┬─────────┘    └──────┬───────┘   │
+│             │                        │                     │           │
+│             ▼                        ▼                     ▼           │
+│   ┌───────────────────┐    ┌───────────────────┐    ┌──────────────┐   │
+│   │Structured PII Rule│    │   BERT-base NER   │    │Visual Region │   │
+│   └─────────┬─────────┘    └─────────┬─────────┘    └──────┬───────┘   │
+│             │                        │                     │           │
+│             └────────────────┬───────┴─────────────────────┘           │
+│                              ▼                                         │
+│                    ┌───────────────────┐                               │
+│                    │  Entity Resolver  │                               │
+│                    └─────────┬─────────┘                               │
+│                              ▼                                         │
+│                    ┌───────────────────┐                               │
+│                    │  Session Manager  │                               │
+│                    └─────────┬─────────┘                               │
+│                              ▼                                         │
+│             ┌────────────────┴────────────────┐                        │
+│             ▼                                 ▼                        │
+│   ┌───────────────────┐             ┌───────────────────┐              │
+│   │Semantic Anonymizer│             │  Visual Redactor  │              │
+│   └─────────┬─────────┘             └─────────┬─────────┘              │
+│             └────────────────┬────────────────┘                        │
+│                              ▼                                         │
+│                    ┌───────────────────┐                               │
+│                    │  Context Builder  │                               │
+│                    └─────────┬─────────┘                               │
+└──────────────────────────────┼─────────────────────────────────────────┘
+                               │
+                               ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                          FINAL PRIVACY GATE                            │
+│           (Fail-Closed Verification: Zero Raw PII / No Mapping)        │
+└──────────────────────────────┬─────────────────────────────────────────┘
+                               │
+                               ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                    SANITIZED CONTEXT (Wire Payload)                    │
+│          Structured JSON (Elements + Pseudonyms) + Masked Canvas       │
+└──────────────────────────────┬─────────────────────────────────────────┘
+                               │
+                               ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                       REMOTE SERVER AI AGENT                           │
+│                (VLM / LLM Planner on Isolated Host)                    │
+└────────────────────────────────────────────────────────────────────────┘</pre>
+        </div>
+
+        <div class="callout orange">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <strong>Firewall Operating Principle: Fail-Closed</strong>
+            If any detection step errors out, if resource limits are exceeded, or if the privacy gate flags a questionable span, transmission halts immediately. The system defaults to masking rather than risking un-anonymized data egress.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: COMPLETE FEATURE SET MATRIX -->
+      <section class="doc-section" id="features-matrix">
+        <div class="section-header">
+          <div class="section-icon-badge">📋</div>
+          <h2 class="section-title">2. Complete Feature Set</h2>
+        </div>
+        <p class="section-lead">
+          The module encompasses 17 distinct, tightly integrated capabilities delivering bulletproof perception, anonymization, and performance isolation.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Feature Name</th>
+                <th>What It Does</th>
+                <th>Primary Technology</th>
+                <th>Execution Context</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="strong-col">1</td>
+                <td class="strong-col">DOM Analysis</td>
+                <td>Reads semantic HTML signals, labels, input types, autocomplete attributes, ARIA attributes, and node bounding coordinates.</td>
+                <td><code>JavaScript DOM APIs</code>, <code>MutationObserver</code></td>
+                <td><span class="badge badge-blue">Content Script</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">2</td>
+                <td class="strong-col">Screenshot Perception</td>
+                <td>Captures pristine visual page viewport state without network transmission for local CV and OCR processing.</td>
+                <td><code>chrome.tabs.captureVisibleTab</code> / Canvas</td>
+                <td><span class="badge badge-gray">Background / Offscreen</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">3</td>
+                <td class="strong-col">OCR (Text Extraction)</td>
+                <td>Extracts visible text, polygon geometries, bounding boxes, and recognition confidence scores from screenshot tiles.</td>
+                <td><code>PaddleOCR.js</code> / <code>PP-OCRv5</code></td>
+                <td><span class="badge badge-purple">Web Worker (WASM/GPU)</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">4</td>
+                <td class="strong-col">Privacy-Object Detection</td>
+                <td>Visually identifies non-textual sensitive objects: human faces, ID cards, passports, credit cards, physical signatures, QR codes, and barcodes.</td>
+                <td><code>YOLO26n</code> (ONNX Runtime Web)</td>
+                <td><span class="badge badge-purple">Web Worker (WebGPU)</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">5</td>
+                <td class="strong-col">Structured PII Detection</td>
+                <td>Detects and validates formatted PII: Email, Phone numbers, PAN cards, Aadhaar (Verhoeff checksum), Card candidates, IP/URL, OTP tokens, etc.</td>
+                <td>Regex + Modulo/Checksum Validation + DOM rules</td>
+                <td><span class="badge badge-green">Web Worker / JS</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">6</td>
+                <td class="strong-col">Contextual PII Detection</td>
+                <td>Detects semantic named entities in natural prose: <code>PERSON</code>, <code>LOCATION</code>, <code>ORGANIZATION</code> where regex patterns fail.</td>
+                <td><code>BERT-base NER</code> (Transformers.js)</td>
+                <td><span class="badge badge-purple">Web Worker (ONNX)</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">7</td>
+                <td class="strong-col">Entity Fusion</td>
+                <td>Merges overlapping DOM, OCR, CV, and NER detections into unified, deduplicated spatial privacy entities via IoU and confidence weighting.</td>
+                <td>Custom geometry fusion + IoU algorithm</td>
+                <td><span class="badge badge-green">Web Worker</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">8</td>
+                <td class="strong-col">Session Identity</td>
+                <td>Maintains stable anonymous identities across multi-turn agent observations so the agent can reference the same entity over time.</td>
+                <td>JS <code>Map</code> + <code>crypto.getRandomValues()</code></td>
+                <td><span class="badge badge-orange">In-Memory Vault</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">9</td>
+                <td class="strong-col">Semantic Anonymization</td>
+                <td>Replaces sensitive values in textual representations with type-preserving pseudonym tags like <code>[PERSON_A71C]</code>, <code>[EMAIL_92F4]</code>.</td>
+                <td>Custom <code>SemanticAnonymizer</code></td>
+                <td><span class="badge badge-green">Web Worker</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">10</td>
+                <td class="strong-col">Visual Redaction</td>
+                <td>Masks sensitive visual pixels on the captured image (blurring, pixelation, or opaque color boxes) before network egress.</td>
+                <td><code>Canvas API</code> / <code>ImageBitmap</code></td>
+                <td><span class="badge badge-green">Offscreen Canvas</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">11</td>
+                <td class="strong-col">Text Redaction</td>
+                <td>Replaces sensitive OCR/DOM spans in structured text payloads while strictly preserving surrounding UI semantics and layout tags.</td>
+                <td>Custom Span Redactor</td>
+                <td><span class="badge badge-green">Web Worker</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">12</td>
+                <td class="strong-col">Sanitized Context</td>
+                <td>Compiles structured JSON payload containing element roles, coordinates, interactive states, and redacted visual screenshot for the AI agent.</td>
+                <td>JSON Schema / <code>ContextBuilder</code></td>
+                <td><span class="badge badge-blue">Pipeline Output</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">13</td>
+                <td class="strong-col">Privacy Gate</td>
+                <td>Fail-closed audit boundary that inspects payloads for raw sensitive spans or leaks, aborting serialization if anomalies exist.</td>
+                <td>Custom Validation &amp; Audit Layer</td>
+                <td><span class="badge badge-red">Security Boundary</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">14</td>
+                <td class="strong-col">Performance Isolation</td>
+                <td>Executes all heavy ML inference, OCR, and canvas operations off the main thread to ensure zero UI freezing on the host webpage.</td>
+                <td>Dedicated <code>Web Worker</code></td>
+                <td><span class="badge badge-purple">Background Thread</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">15</td>
+                <td class="strong-col">Browser Inference</td>
+                <td>Executes quantized deep learning models locally inside the browser sandbox without server dependencies.</td>
+                <td><code>ONNX Runtime Web</code> / <code>Transformers.js</code></td>
+                <td><span class="badge badge-purple">Client Engine</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">16</td>
+                <td class="strong-col">Hardware Acceleration</td>
+                <td>Leverages client WebGPU compute pipelines for fast parallel inference, falling back seamlessly to SIMD WASM.</td>
+                <td><code>WebGPU</code> + <code>WASM (SIMD)</code> fallback</td>
+                <td><span class="badge badge-orange">Hardware Tier</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">17</td>
+                <td class="strong-col">Evaluation Suite</td>
+                <td>Measures PII detection recall/precision, redaction mask IoU, inference latency, memory consumption, and visual context fidelity.</td>
+                <td>Custom benchmark harness &amp; test suite</td>
+                <td><span class="badge badge-gray">Testing Harness</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 3: FEATURE 1 — DOM ANALYZER -->
+      <section class="doc-section" id="feature-dom">
+        <div class="section-header">
+          <div class="section-icon-badge">🌐</div>
+          <h2 class="section-title">3. Feature 1 — DOM Analyzer</h2>
+        </div>
+        <p class="section-lead">
+          The DOM analyzer serves as the <strong>first-response privacy detector</strong>. HTML source code often provides deterministic, explicit signals identifying sensitive fields even when visual rendering is obfuscated or ambiguous.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Semantic HTML Inspection Pipeline</span>
+            <span class="badge badge-blue">Zero-Inference First Pass</span>
+          </div>
+          <div class="deep-dive-subtitle">
+            Extracts native semantic signals directly from HTML input attributes, ARIA accessibility trees, and surrounding DOM labels before visual models run.
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>HTML Source &rarr; Deterministic Detection Mapping</span>
+              <span class="code-lang">HTML &rarr; JSON</span>
+            </div>
+            <div class="code-body"><pre>&lt;!-- Sample Input Elements on Webpage --&gt;
+&lt;input <span class="code-keyword">type</span>=<span class="code-str">"password"</span> <span class="code-keyword">autocomplete</span>=<span class="code-str">"current-password"</span> <span class="code-keyword">id</span>=<span class="code-str">"pwd"</span>&gt;
+&lt;label <span class="code-keyword">for</span>=<span class="code-str">"u_mail"</span>&gt;Email Address&lt;/label&gt;&lt;input <span class="code-keyword">type</span>=<span class="code-str">"text"</span> <span class="code-keyword">id</span>=<span class="code-str">"u_mail"</span>&gt;
+
+<span class="code-comment">/* Output Normalized Detection Objects */</span>
+[
+  {
+    <span class="code-keyword">"type"</span>: <span class="code-str">"PASSWORD"</span>,
+    <span class="code-keyword">"confidence"</span>: <span class="code-highlight">0.99</span>,
+    <span class="code-keyword">"source"</span>: <span class="code-str">"DOM"</span>,
+    <span class="code-keyword">"bbox"</span>: [120, 240, 380, 276] <span class="code-comment">// [x, y, x2, y2] via getBoundingClientRect()</span>
+  },
+  {
+    <span class="code-keyword">"type"</span>: <span class="code-str">"EMAIL"</span>,
+    <span class="code-keyword">"confidence"</span>: <span class="code-highlight">0.95</span>,
+    <span class="code-keyword">"source"</span>: <span class="code-str">"DOM"</span>,
+    <span class="code-keyword">"bbox"</span>: [120, 180, 380, 216]
+  }
+]</pre></div>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Attribute Heuristics:</strong> Deep inspection of <code>type</code>, <code>name</code>, <code>id</code>, <code>placeholder</code>, <code>aria-label</code>, <code>autocomplete</code> (e.g. <code>cc-number</code>, <code>new-password</code>, <code>email</code>, <code>tel</code>).</li>
+            <li><strong>Coordinate Mapping:</strong> Extracts precise viewport pixel bounding boxes via <code>getBoundingClientRect()</code> with scroll-offset normalization.</li>
+            <li><strong>Visibility Filtering:</strong> Ignores nodes with <code>display: none</code>, <code>visibility: hidden</code>, <code>opacity: 0</code>, or dimensions <code>0x0</code> to eliminate false detections from hidden tracking pixels.</li>
+            <li><strong>Dynamic SPA Support:</strong> Uses a debounced <code>MutationObserver</code> to continuously re-evaluate DOM changes on React/Vue/Angular single-page apps without performance penalties.</li>
+            <li><strong>Normalized Output:</strong> Emits unified <code>Detection</code> objects to the Privacy Engine for subsequent fusion.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 4: FEATURE 2 — PADDLEOCR -->
+      <section class="doc-section" id="feature-ocr">
+        <div class="section-header">
+          <div class="section-icon-badge">🔍</div>
+          <h2 class="section-title">4. Feature 2 — PaddleOCR (PaddleOCR.js / PP-OCRv5)</h2>
+        </div>
+        <p class="section-lead">
+          PaddleOCR provides the <strong>primary optical character recognition engine</strong>. Running locally in WebAssembly/WebGPU, it extracts character geometry, text strings, and confidence metrics to bridge visual pixel coordinates with downstream PII extraction.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>OCR Perception &amp; Redaction Pipeline</span>
+            <span class="badge badge-purple">PP-OCRv5 Engine</span>
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+Screenshot Canvas Tile
+        │
+        ▼
+  PaddleOCR.js (PP-OCRv5 Detection &amp; Recognition)
+        │
+        ├── Text String: "Aadhaar: 4532 9821 3409"
+        ├── Polygon / Bounding Box: [142, 310, 360, 332]
+        └── Recognition Confidence: 0.964
+        │
+        ▼
+  PII Rules &amp; BERT-base NER Matching
+        │
+        ▼
+  Sensitive Text Spans Identified
+        │
+        ▼
+  Visual Pixel Masking + Semantic Token Insertion ([AADHAAR_9F12])</pre>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Sub-Millisecond Bounding:</strong> Outputs 4-point polygon bounding geometry for rotated text and standard axis-aligned bounding boxes for inline text.</li>
+            <li><strong>Cross-Language Support:</strong> High-accuracy recognition for English and Devanagari numerals/scripts found on Indian official documents (Aadhaar, PAN, Voter IDs).</li>
+            <li><strong>Geometric Linking:</strong> Directly aligns text coordinates with screenshot canvas pixels, allowing surgical pixel masking without blurring surrounding UI buttons or non-sensitive text.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 5: FEATURE 3 — YOLO26n PRIVACY DETECTOR -->
+      <section class="doc-section" id="feature-yolo">
+        <div class="section-header">
+          <div class="section-icon-badge">👁️</div>
+          <h2 class="section-title">5. Feature 3 — YOLO26n Privacy Detector</h2>
+        </div>
+        <p class="section-lead">
+          Certain privacy-critical objects are completely opaque to DOM inspection and OCR text parsing (e.g., photo portraits, QR codes, government card emblems, physical signatures). <strong>YOLO26n</strong> provides ultra-fast visual object detection to mask these visual entities.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Visual Object Classes &amp; Inference Pipeline</span>
+            <span class="badge badge-orange">ONNX Runtime Web</span>
+          </div>
+          <div class="deep-dive-subtitle">
+            Trained on privacy-specific datasets with quantized FP16/INT8 execution on WebGPU.
+          </div>
+
+          <div class="flow-card-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">CLASS 01 &middot; BIOMETRIC</div>
+              <div class="flow-step-title">FACE</div>
+              <div class="flow-step-desc">Human portrait photos on user profiles, ID cards, video call previews, and uploaded document thumbnails.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">CLASS 02 &middot; IDENTITY</div>
+              <div class="flow-step-title">ID_CARD / PASSPORT</div>
+              <div class="flow-step-desc">Physical government IDs, Aadhaar cards, passport bio pages, and employee badges displayed on screen.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">CLASS 03 &middot; FINANCIAL</div>
+              <div class="flow-step-title">CREDIT_CARD</div>
+              <div class="flow-step-desc">Payment cards showing card numbers, expiration dates, logos (Visa/Mastercard/RuPay), and security chips.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">CLASS 04 &middot; AUTHENTICATION</div>
+              <div class="flow-step-title">SIGNATURE</div>
+              <div class="flow-step-desc">Handwritten cursive signatures on contracts, official letters, checks, and application forms.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">CLASS 05 &middot; MACHINE CODES</div>
+              <div class="flow-step-title">QR_CODE / BARCODE</div>
+              <div class="flow-step-desc">UPI payment QR codes, 2D Aadhaar secure QRs, document barcodes, and boarding pass strips.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">CLASS 06 &middot; LICENSING</div>
+              <div class="flow-step-title">DRIVER_LICENSE</div>
+              <div class="flow-step-desc">State driving permits displaying license numbers, driver biometric photos, and home addresses.</div>
+            </div>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Quantization Strategy:</strong> Starts with an FP32 browser baseline, benchmarked down to FP16 and INT8 for WebGPU/WASM to achieve &lt;40ms inference latency.</li>
+            <li><strong>Conservative Padding:</strong> Applies automatic 15–20% safety boundary expansion around high-risk bounding boxes to ensure anti-aliased edges and shadows do not leak sensitive pixels.</li>
+            <li><strong>Detection Schema:</strong> Returns class label, normalized bounding coordinates <code>[ymin, xmin, ymax, xmax]</code>, detection confidence, and model source identifier.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 6: FEATURE 4 — BERT-BASE NER -->
+      <section class="doc-section" id="feature-ner">
+        <div class="section-header">
+          <div class="section-icon-badge">🧠</div>
+          <h2 class="section-title">6. Feature 4 — BERT-base NER</h2>
+        </div>
+        <p class="section-lead">
+          While structured regex handles rigid patterns like PAN or phone numbers, unstructured sentences require <strong>contextual named entity recognition</strong>. BERT-base NER identifies sensitive human names, addresses, and organizations embedded in natural prose.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Contextual Entity Resolution Workflow</span>
+            <span class="badge badge-purple">Transformers.js Pipeline</span>
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+Input OCR Text Stream:
+"Dr. Vikram Sarabhai inaugurated the new facility at Thumba Equatorial Station"
+      │
+      ▼
+BERT-base Tokenizer &amp; NER Inference (ONNX)
+      │
+      ├── PERSON:       "Vikram Sarabhai"  [tokens 1:3, confidence 0.982]
+      ├── LOCATION:     "Thumba"           [tokens 7:8, confidence 0.965]
+      └── ORGANIZATION: "Equatorial Station"[tokens 8:10, confidence 0.912]
+      │
+      ▼
+Token-Span to OCR Bounding Box Alignment
+      │
+      ▼
+Emitted Privacy Entities:
+[
+  { type: "PERSON",   text: "Vikram Sarabhai", bbox: [85, 140, 245, 162],  token: "[PERSON_A71C]" },
+  { type: "LOCATION", text: "Thumba",          bbox: [410, 140, 480, 162], token: "[LOCATION_E420]" }
+]</pre>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Contextual Superiority:</strong> Distinguishes common words from proper names (e.g. "Meeting with May at noon" vs "May 15th deadline").</li>
+            <li><strong>Subword Token Alignment:</strong> Accurately maps WordPiece/BPE subword tokens back to character spans and OCR bounding box coordinates.</li>
+            <li><strong>Deterministic Rule Synergy:</strong> Complements deterministic PII rules rather than replacing them; acts as a high-recall safety net for unstructured body text.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 7: FEATURE 5 — LAYERED PII DETECTION -->
+      <section class="doc-section" id="feature-layered-pii">
+        <div class="section-header">
+          <div class="section-icon-badge">📑</div>
+          <h2 class="section-title">7. Feature 5 — Layered PII Detection</h2>
+        </div>
+        <p class="section-lead">
+          A single detection modality always suffers from blindspots. PRATYAKSHA enforces a <strong>3-tier layered defense</strong> that pools evidence from DOM semantics, algorithmic regex validators, and deep learning NER models.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Detection Layer</th>
+                <th>Target Entity Types</th>
+                <th>Validation Mechanism</th>
+                <th>Confidence Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="strong-col">Layer 1: DOM Semantic Rules</td>
+                <td><code>PASSWORD</code>, <code>CREDENTIALS</code>, <code>PAYMENT_FIELDS</code>, <code>EMAIL</code>, <code>PHONE</code>, <code>OTP</code></td>
+                <td>Input types, autocomplete attributes, label association, ARIA roles</td>
+                <td><span class="badge badge-green">0.95 &ndash; 0.99</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">Layer 2: Regex &amp; Algorithmic</td>
+                <td><code>EMAIL</code>, <code>PHONE (+91)</code>, <code>PAN</code>, <code>AADHAAR</code>, <code>CREDIT_CARD</code>, <code>IP/URL</code>, <code>GSTIN</code></td>
+                <td>Verhoeff checksum (Aadhaar), Luhn algorithm (Cards), Modulo-36 (PAN/GSTIN), RFC-5322 (Email)</td>
+                <td><span class="badge badge-green">0.999 (Checksum verified)</span></td>
+              </tr>
+              <tr>
+                <td class="strong-col">Layer 3: BERT-base NER</td>
+                <td><code>PERSON</code>, <code>LOCATION</code>, <code>ORGANIZATION</code>, Contextual titles &amp; roles</td>
+                <td>Contextual subword token embeddings &amp; classification heads</td>
+                <td><span class="badge badge-blue">0.85 &ndash; 0.98</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout success">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <strong>Evidence Combination Rule</strong>
+            If an entity is detected by multiple layers (e.g. DOM marks an input as <code>type="email"</code> AND regex matches <code>user@isro.gov.in</code>), the Entity Resolver merges the detections, assigns maximum confidence (0.999), and flags the entity for immediate sanitization.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 8: FEATURE 6 — ENTITY RESOLVER / PRIVACY FUSION -->
+      <section class="doc-section" id="feature-fusion">
+        <div class="section-header">
+          <div class="section-icon-badge">🔀</div>
+          <h2 class="section-title">8. Feature 6 — Entity Resolver &amp; Privacy Fusion</h2>
+        </div>
+        <p class="section-lead">
+          Because the webpage is analyzed simultaneously by DOM parsers, OCR engines, YOLO visual detectors, and BERT NER models, the same sensitive data point will produce multiple overlapping detections. The <strong>Entity Resolver</strong> fuses these detections into a unified spatial entity.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Spatial &amp; Semantic Fusion Algorithm</span>
+            <span class="badge badge-orange">Intersection-over-Union (IoU)</span>
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+Incoming Detections for the same screen coordinate:
+┌────────────────────────────────────────────────────────────────────────┐
+│ DOM Engine:  type = EMAIL,  bbox = [100, 200, 350, 235], conf = 0.95   │
+│ OCR Engine:  text = "john@isro.gov.in", bbox = [105, 202, 345, 233]   │
+│ NER Engine:  type = NONE                                               │
+└────────────────────────────────────────────────────────────────────────┘
+                                    │
+                         IoU Overlap Calculation:
+                         Area(DOM ∩ OCR) / Area(DOM ∪ OCR) = 0.91 &gt; 0.50
+                                    │
+                                    ▼
+FUSED ENTITY CREATED:
+{
+  "entity_id": "ent_94a2b1",
+  "type": "EMAIL",
+  "text": "john@isro.gov.in",
+  "bbox": [100, 200, 350, 235],
+  "sources": ["DOM", "OCR"],
+  "confidence": 0.995,
+  "action": "SANITIZE_AND_REDACT"
+}</pre>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Geometric Overlap Threshold:</strong> Detections with an Intersection-over-Union (IoU) &ge; 0.45 or text-containment ratio &gt; 0.8 are merged into a single parent entity.</li>
+            <li><strong>Type Compatibility Matrix:</strong> Reconciles conflicting classifications (e.g. if YOLO detects <code>CREDIT_CARD</code> and OCR finds a 16-digit number, the unified entity is set to <code>CREDIT_CARD</code> with card number metadata).</li>
+            <li><strong>Confidence Boosting:</strong> Multi-source agreement increases overall confidence, eliminating false positive alerts while reinforcing true positive masking.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 9: FEATURE 7 — SESSION MANAGER -->
+      <section class="doc-section" id="feature-session">
+        <div class="section-header">
+          <div class="section-icon-badge">🔐</div>
+          <h2 class="section-title">9. Feature 7 — Session Manager (Stable Identity)</h2>
+        </div>
+        <p class="section-lead">
+          Autonomous AI agents require <strong>cross-turn identity stability</strong>. If a user's name is replaced with <code>[PERSON_A71C]</code> on Step 1, the AI agent must see that exact same identifier on Step 5 when confirming an action. The Session Manager guarantees stable, deterministic pseudonymization for the duration of a workflow session.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Cryptographic Pseudonym Mapping</span>
+            <span class="badge badge-green">In-Memory Isolation</span>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>Local Browser Mapping vs. Server Egress View</span>
+              <span class="code-lang">JavaScript In-Memory Store</span>
+            </div>
+            <div class="code-body"><pre><span class="code-comment">/* 🔒 LOCAL BROWSER IN-MEMORY VAULT (NEVER TRANSMITTED) */</span>
+Map(3) {
+  <span class="code-str">"PERSON:John Smith"</span>        &rarr; <span class="code-highlight">"[PERSON_A71C]"</span>,
+  <span class="code-str">"EMAIL:john@isro.gov.in"</span>   &rarr; <span class="code-highlight">"[EMAIL_92F4]"</span>,
+  <span class="code-str">"PHONE:+919876543210"</span>      &rarr; <span class="code-highlight">"[PHONE_C821]"</span>
+}
+
+<span class="code-comment">/* 🌐 WHAT THE REMOTE SERVER AI AGENT SEES: */</span>
+{
+  <span class="code-keyword">"task_context"</span>: <span class="code-str">"Reviewing application for [PERSON_A71C]..."</span>,
+  <span class="code-keyword">"email_target"</span>: <span class="code-str">"[EMAIL_92F4]"</span>,
+  <span class="code-keyword">"contact"</span>: <span class="code-str">"[PHONE_C821]"</span>
+}
+<span class="code-comment">/* The remote agent reasons perfectly, but CANNOT identify the human! */</span></pre></div>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Cryptographic Unpredictability:</strong> Pseudonyms are generated using <code>crypto.getRandomValues()</code> (e.g. <code>[PERSON_&lt;4-hex&gt;]</code>) to prevent statistical re-identification or hash-cracking.</li>
+            <li><strong>Pre-Lookup Normalization:</strong> Values are trimmed, lowercased, and canonicalized (e.g. <code>+91 98765-43210</code> normalized to <code>+919876543210</code>) prior to map lookups to prevent token fragmentation.</li>
+            <li><strong>Strict Non-Reuse:</strong> A generated token is bound exclusively to its corresponding real value during the session. No two values will ever share a token.</li>
+            <li><strong>Ephemeral Lifetime:</strong> Stored purely in transient RAM. Flushed immediately upon session reset, tab navigation, or workflow completion.</li>
+            <li><strong>Zero Logging Rule:</strong> Raw values and mapping dictionaries are strictly prohibited from browser console logs, telemetry payloads, or persistent disk storage.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 10: FEATURE 8 — SEMANTIC ANONYMIZER -->
+      <section class="doc-section" id="feature-anonymizer">
+        <div class="section-header">
+          <div class="section-icon-badge">🎭</div>
+          <h2 class="section-title">10. Feature 8 — Semantic Anonymizer</h2>
+        </div>
+        <p class="section-lead">
+          The Semantic Anonymizer replaces sensitive values while <strong>preserving grammar, layout, and semantic intent</strong>. If all text were blindly redacted or deleted, the AI agent would lose the context needed to navigate the webpage.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Surgical Text Span Rewriting</span>
+            <span class="badge badge-blue">Context Preservation</span>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Original Text (Sensitive Data)</th>
+                  <th>Sanitized Output (Safe for AI Reasoning)</th>
+                  <th>Reasoning Utility Retained</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Welcome <strong>John Smith</strong></td>
+                  <td>Welcome <strong>[PERSON_A71C]</strong></td>
+                  <td>Agent knows user is logged in; identifies user element.</td>
+                </tr>
+                <tr>
+                  <td>Email: <strong>john.smith@isro.gov.in</strong></td>
+                  <td>Email: <strong>[EMAIL_92F4]</strong></td>
+                  <td>Agent knows field contains an email; can verify formatting.</td>
+                </tr>
+                <tr>
+                  <td>Phone: <strong>+91 98765 43210</strong></td>
+                  <td>Phone: <strong>[PHONE_C821]</strong></td>
+                  <td>Agent knows phone is present; can trigger SMS verification.</td>
+                </tr>
+                <tr>
+                  <td>PAN: <strong>ABCDE1234F</strong></td>
+                  <td>PAN: <strong>[PAN_B301]</strong></td>
+                  <td>Agent verifies PAN field is populated and can submit form.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Span-Level Granularity:</strong> Replaces only the exact character offset of the sensitive token, leaving surrounding labels, navigation headers, button titles, and helper text intact.</li>
+            <li><strong>Syntactic Integrity:</strong> Retains punctuation, delimiters, and HTML structure so language model comprehension is unhindered.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 11: FEATURE 9 — VISUAL REDACTOR -->
+      <section class="doc-section" id="feature-visual-redactor">
+        <div class="section-header">
+          <div class="section-icon-badge">🖌️</div>
+          <h2 class="section-title">11. Feature 9 — Visual Redactor</h2>
+        </div>
+        <p class="section-lead">
+          Before the captured viewport screenshot is serialized for transmission to the server VLM, the <strong>Visual Redactor</strong> paints irreversible masks over all sensitive coordinates directly on an offscreen HTML5 canvas.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Masking Strategy by Entity Type</span>
+            <span class="badge badge-red">Pixel-Level Sanitization</span>
+          </div>
+
+          <div class="flow-card-grid">
+            <div class="flow-step-card">
+              <div class="flow-step-num">TECHNIQUE 01</div>
+              <div class="flow-step-title">FACE REDACTION</div>
+              <div class="flow-step-desc">Heavy Gaussian blur (radius &ge; 25px) or pixelated mosaic blocks with a solid charcoal border overlay.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">TECHNIQUE 02</div>
+              <div class="flow-step-title">SECRET / PASSWORD</div>
+              <div class="flow-step-desc">100% opaque solid black/charcoal rectangle wipe completely destroying underlying pixel values.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">TECHNIQUE 03</div>
+              <div class="flow-step-title">ID / CARD / SIGNATURE</div>
+              <div class="flow-step-desc">Opaque charcoal mask with mandatory <strong>15% safety padding</strong> to prevent edge character bleeding.</div>
+            </div>
+            <div class="flow-step-card">
+              <div class="flow-step-num">TECHNIQUE 04</div>
+              <div class="flow-step-title">QR / BARCODE</div>
+              <div class="flow-step-desc">Complete spatial rectangular wipe covering the entire optical code region plus quiet zone margin.</div>
+            </div>
+          </div>
+
+          <div class="callout danger">
+            <div class="callout-icon">🚫</div>
+            <div class="callout-body">
+              <strong>Zero Reversibility Guarantee</strong>
+              Redaction is performed using native Canvas 2D <code>fillRect()</code> and destructive pixel manipulation before creating the final WebP/JPEG blob. There are no client-side "layers" that can be hidden or removed by an attacker—the sensitive pixels are permanently destroyed.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 12: FEATURE 10 — SANITIZED CONTEXT BUILDER -->
+      <section class="doc-section" id="feature-context-builder">
+        <div class="section-header">
+          <div class="section-icon-badge">📦</div>
+          <h2 class="section-title">12. Feature 10 — Sanitized Context Builder</h2>
+        </div>
+        <p class="section-lead">
+          Rather than transmitting an entire bloated raw DOM tree (which wastes bandwidth and risks latent data leaks), the <strong>Context Builder</strong> compiles a lean, compact, highly structured JSON representation of actionable UI semantics.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Wire Protocol JSON Schema Specification</span>
+            <span class="badge badge-blue">Contract Spec</span>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>Sanitized Context Payload Schema</span>
+              <span class="code-lang">JSON Schema</span>
+            </div>
+            <div class="code-body"><pre>{
+  <span class="code-keyword">"session_id"</span>: <span class="code-str">"sess_f891a0c4"</span>,
+  <span class="code-keyword">"timestamp"</span>: <span class="code-highlight">1727136000000</span>,
+  <span class="code-keyword">"screen"</span>: {
+    <span class="code-keyword">"width"</span>: <span class="code-highlight">1440</span>,
+    <span class="code-keyword">"height"</span>: <span class="code-highlight">900</span>,
+    <span class="code-keyword">"device_pixel_ratio"</span>: <span class="code-highlight">1.0</span>
+  },
+  <span class="code-keyword">"elements"</span>: [
+    {
+      <span class="code-keyword">"id"</span>: <span class="code-str">"el_submit_btn"</span>,
+      <span class="code-keyword">"role"</span>: <span class="code-str">"button"</span>,
+      <span class="code-keyword">"label"</span>: <span class="code-str">"Proceed to Verification"</span>,
+      <span class="code-keyword">"bbox"</span>: [<span class="code-highlight">620</span>, <span class="code-highlight">750</span>, <span class="code-highlight">820</span>, <span class="code-highlight">795</span>],
+      <span class="code-keyword">"interactive"</span>: <span class="code-keyword">true</span>,
+      <span class="code-keyword">"disabled"</span>: <span class="code-keyword">false</span>
+    },
+    {
+      <span class="code-keyword">"id"</span>: <span class="code-str">"el_user_card"</span>,
+      <span class="code-keyword">"role"</span>: <span class="code-str">"region"</span>,
+      <span class="code-keyword">"label"</span>: <span class="code-str">"User Profile Card for [PERSON_A71C]"</span>,
+      <span class="code-keyword">"bbox"</span>: [<span class="code-highlight">100</span>, <span class="code-highlight">150</span>, <span class="code-highlight">500</span>, <span class="code-highlight">400</span>],
+      <span class="code-keyword">"interactive"</span>: <span class="code-keyword">false</span>
+    }
+  ],
+  <span class="code-keyword">"entities"</span>: [
+    {
+      <span class="code-keyword">"type"</span>: <span class="code-str">"PERSON"</span>,
+      <span class="code-keyword">"label"</span>: <span class="code-str">"[PERSON_A71C]"</span>,
+      <span class="code-keyword">"bbox"</span>: [<span class="code-highlight">120</span>, <span class="code-highlight">180</span>, <span class="code-highlight">280</span>, <span class="code-highlight">210</span>]
+    },
+    {
+      <span class="code-keyword">"type"</span>: <span class="code-str">"EMAIL"</span>,
+      <span class="code-keyword">"label"</span>: <span class="code-str">"[EMAIL_92F4]"</span>,
+      <span class="code-keyword">"bbox"</span>: [<span class="code-highlight">120</span>, <span class="code-highlight">220</span>, <span class="code-highlight">350</span>, <span class="code-highlight">250</span>]
+    }
+  ],
+  <span class="code-keyword">"screenshot"</span>: <span class="code-str">"data:image/webp;base64,UklGRm4AAABXRUJQVlA4T..."</span>
+}</pre></div>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Actionable Semantics:</strong> Retains element roles (button, link, input, combobox), accessible labels, coordinates, and interactive states.</li>
+            <li><strong>Compact Payload:</strong> Transmits an efficient ~15KB JSON payload instead of a multi-megabyte DOM tree, drastically cutting network latency.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 13: FEATURE 11 — FINAL PRIVACY GATE -->
+      <section class="doc-section" id="feature-privacy-gate">
+        <div class="section-header">
+          <div class="section-icon-badge">🚧</div>
+          <h2 class="section-title">13. Feature 11 — Final Privacy Gate</h2>
+        </div>
+        <p class="section-lead">
+          The <strong>Final Privacy Gate</strong> is the uncompromising security checkpoint through which all outbound traffic must pass. It audits both serialized text and visual image blobs right before network transmission.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Outbound Transmission Audit &amp; Fail-Closed Policy</span>
+            <span class="badge badge-red">Hard Gatekeeper</span>
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+┌────────────────────────────────────────────────────────────────────────┐
+│                      OUTBOUND PAYLOAD AUDIT LIST                       │
+├───────────────────────────────────────────────────┬────────────────────┤
+│ Raw DOM Tree String                               │ ❌ BLOCKED (HARD)   │
+│ Raw OCR Extraction Text with Real PII Spans        │ ❌ BLOCKED (HARD)   │
+│ Raw PII Values (Aadhaar, PAN, Emails, Phones)     │ ❌ BLOCKED (HARD)   │
+│ Local Session Mapping (Real &harr; Pseudonym Dict)       │ ❌ BLOCKED (HARD)   │
+├───────────────────────────────────────────────────┼────────────────────┤
+│ Sanitized Visual Canvas (Irreversibly Masked)     │ ✅ ALLOWED         │
+│ Sanitized Structural JSON (Tokens Only)           │ ✅ ALLOWED         │
+└───────────────────────────────────────────────────┴────────────────────┘
+                                    │
+                                    ▼
+                         PRE-FLIGHT PRIVACY AUDIT:
+   1. Regex scan outgoing JSON for un-anonymized credit cards, PAN, Aadhaar.
+   2. Verify every high-risk entity bounding box has a matching visual mask.
+   3. Ensure Session Manager mapping keys are absent from JSON serializer.
+                                    │
+                  ┌─────────────────┴─────────────────┐
+                  ▼                                   ▼
+             CHECKS PASS                         CHECKS FAIL
+                  │                                   │
+                  ▼                                   ▼
+          ALLOW NETWORK SEND                   FAIL CLOSED (ABORT)
+         (Transmit to Server)               (Log Local Security Event)</pre>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Pre-Serialization Regex Audit:</strong> Rapidly parses the outgoing JSON text stream against high-severity PII regexes (Luhn, Verhoeff, PAN) to verify zero un-anonymized strings remain.</li>
+            <li><strong>Visual Mask Confirmation:</strong> Cross-checks every high-risk visual entity coordinate against the canvas pixel buffer to confirm the mask is 100% opaque.</li>
+            <li><strong>Evaluation OCR Leakage Testing:</strong> In testing/evaluation mode, automatically triggers a secondary OCR pass on the sanitized screenshot to mathematically prove zero textual leakage.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 14: FEATURE 12 — WEB WORKER EXECUTION -->
+      <section class="doc-section" id="feature-worker">
+        <div class="section-header">
+          <div class="section-icon-badge">⚡</div>
+          <h2 class="section-title">14. Feature 12 — Web Worker Performance Isolation</h2>
+        </div>
+        <p class="section-lead">
+          Executing machine learning models, OCR detection, and image masking directly on the webpage's main thread would cause severe frame drops and freeze user interactions. PRATYAKSHA enforces <strong>100% off-thread execution</strong> inside dedicated Web Workers.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Thread Architecture &amp; Message Protocol</span>
+            <span class="badge badge-purple">Zero Main-Thread Jank</span>
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+MAIN BROWSER THREAD (Content Script)
+  │
+  ├── 1. Captures DOM snapshot (15ms)
+  ├── 2. Grabs viewport ImageBitmap (10ms)
+  ├── 3. Sends transferable ImageBitmap &rarr; postMessage()
+  │
+  ▼
+DEDICATED INFERENCE WEB WORKER (Off-Thread)
+  │
+  ├── 4. PaddleOCR.js executes in parallel (WASM/WebGPU)
+  ├── 5. YOLO26n runs visual detection (WebGPU)
+  ├── 6. BERT-base NER extracts contextual entities
+  ├── 7. PrivacyEngine fuses entities &amp; assigns pseudonyms
+  ├── 8. Visual Redactor applies masks to OffscreenCanvas
+  │
+  ▼
+TRANSFER BACK (postMessage)
+  │
+  └── Sanitized Context &rarr; Extension Background Script &rarr; Remote AI Agent</pre>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Zero UI Freezing:</strong> The host webpage maintains a smooth 60 FPS while heavy multi-model ML pipelines execute concurrently.</li>
+            <li><strong>Zero-Copy Transferable Objects:</strong> Uses <code>ImageBitmap</code> and <code>ArrayBuffer</code> transfer semantics to eliminate memory copying overhead between threads.</li>
+            <li><strong>Worker Memory Sandboxing:</strong> Crash isolation—if an ML model experiences an out-of-memory exception, the Web Worker terminates without crashing the user's browser tab.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 15: COMPLETE TECHNOLOGY STACK -->
+      <section class="doc-section" id="tech-stack">
+        <div class="section-header">
+          <div class="section-icon-badge">🛠️</div>
+          <h2 class="section-title">15. Complete Technology Stack</h2>
+        </div>
+        <p class="section-lead">
+          An exhaustive breakdown of the 16 architectural layers powering the browser-side perception, privacy, and inference pipeline.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Architectural Role</th>
+                <th>Fallback / Resilience</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="strong-col">Browser Extension</td>
+                <td>Chrome MV3 / Firefox WebExtensions</td>
+                <td>Page lifecycle integration, tab control, screenshot access, sandboxed messaging</td>
+                <td>Cross-browser standard APIs</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Frontend Language</td>
+                <td>JavaScript (ES2022) / TypeScript</td>
+                <td>Extension core, privacy engine logic, deterministic rules, state management</td>
+                <td>Strict type compilation</td>
+              </tr>
+              <tr>
+                <td class="strong-col">DOM Inspection</td>
+                <td>DOM APIs + <code>MutationObserver</code></td>
+                <td>Zero-inference semantic extraction, bounding coordinate queries, SPA change tracking</td>
+                <td>Debounced polling fallback</td>
+              </tr>
+              <tr>
+                <td class="strong-col">OCR Engine</td>
+                <td><code>PaddleOCR.js</code> / <code>PP-OCRv5</code></td>
+                <td>Local browser character recognition, word polygons, confidence metrics</td>
+                <td>Lightweight CRNN fallback</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Computer Vision</td>
+                <td><code>YOLO26n</code></td>
+                <td>Visual privacy-object detection (faces, cards, IDs, signatures, QR codes)</td>
+                <td>Haar-cascade / heuristic fallback</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Model Format</td>
+                <td><code>ONNX</code> (Open Neural Network Exch.)</td>
+                <td>Standardized portable model serialization optimized for web runtime execution</td>
+                <td>FP16 / INT8 quantizations</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Contextual NER</td>
+                <td><code>BERT-base NER</code></td>
+                <td>Unstructured text token entity recognition (PERSON, LOCATION, ORG)</td>
+                <td>Regex + dictionary fallback</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Inference Runtime</td>
+                <td><code>ONNX Runtime Web</code></td>
+                <td>High-performance client-side execution of ONNX models</td>
+                <td>WASM execution backend</td>
+              </tr>
+              <tr>
+                <td class="strong-col">NLP Runtime</td>
+                <td><code>Transformers.js</code></td>
+                <td>Browser-friendly pipeline for tokenization, embeddings, and NER classification</td>
+                <td>Fast token regex fallback</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Hardware Acceleration</td>
+                <td><code>WebGPU</code></td>
+                <td>Direct GPU compute shader execution for low-latency neural model passes</td>
+                <td>WASM SIMD backend</td>
+              </tr>
+              <tr>
+                <td class="strong-col">CPU Fallback</td>
+                <td><code>WASM</code> (SIMD + Multi-Threading)</td>
+                <td>Cross-browser CPU execution when WebGPU is unavailable or disabled</td>
+                <td>Universal compatibility</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Concurrency</td>
+                <td><code>Web Workers</code></td>
+                <td>Non-blocking multi-threaded processing isolating inference from page DOM</td>
+                <td>Offscreen Document</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Image Processing</td>
+                <td><code>Canvas API</code> / <code>ImageBitmap</code></td>
+                <td>Zero-copy image slicing, pixel masking, blurring, and WebP compression</td>
+                <td>Standard 2D Context</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Storage / State</td>
+                <td>In-Memory Session State (JS Map)</td>
+                <td>Transient pseudonym mapping vault; strictly ephemeral; no disk logging</td>
+                <td>Session-bound life-cycle</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Communication</td>
+                <td><code>postMessage</code> + HTTPS / WSS</td>
+                <td>Worker-to-background messaging and encrypted server agent wire protocol</td>
+                <td>Secure TLS 1.3 channel</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Server Handoff</td>
+                <td>Sanitized JSON + Masked Image</td>
+                <td>Compact semantic context payload delivered to remote AI agent</td>
+                <td>Standard REST / WebSocket</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 16: COMPLETE SYSTEM DESIGN -->
+      <section class="doc-section" id="system-design">
+        <div class="section-header">
+          <div class="section-icon-badge">🏗️</div>
+          <h2 class="section-title">16. Complete System Design</h2>
+        </div>
+        <p class="section-lead">
+          The end-to-end operational architecture connecting the live browser client environment to the remote server AI reasoning engine.
+        </p>
+
+        <div class="diagram-box">
+          <pre>
+BROWSER / CLIENT SANDBOX
+══════════════════════════════════════════════════════════════════════════════════════════
+║                                                                                        ║
+║   ┌───────────────────────────┐                                                        ║
+║   │         WEB PAGE          │                                                        ║
+║   └─────────────┬─────────────┘                                                        ║
+║                 │                                                                      ║
+║         ┌───────┴───────┐                                                              ║
+║         ▼               ▼                                                              ║
+║   DOM Analyzer     Screenshot (Offscreen)                                              ║
+║         │               │                                                              ║
+║         └───────┬───────┘                                                              ║
+║                 │ postMessage(transferable)                                            ║
+║                 ▼                                                                      ║
+║   ┌────────────────────────────────────────────────────────────────────────────────┐   ║
+║   │                           DEDICATED WEB WORKER                                 │   ║
+║   │                                                                                │   ║
+║   │   ┌───────────────┐     ┌───────────────┐     ┌───────────────┐                │   ║
+║   │   │  PaddleOCR    │     │    YOLO26n    │     │ BERT-base NER │                │   ║
+║   │   └───────┬───────┘     └───────┬───────┘     └───────┬───────┘                │   ║
+║   │           │                     │                     │                        │   ║
+║   │           └──────────────┬──────┴─────────────────────┘                        │   ║
+║   │                          ▼                                                     │   ║
+║   │               Regex &amp; Structured PII Rules                                     │   ║
+║   │                          │                                                     │   ║
+║   │                          ▼                                                     │   ║
+║   │                    Entity Resolver (IoU Fusion)                                │   ║
+║   │                          │                                                     │   ║
+║   │                          ▼                                                     │   ║
+║   │                    Session Manager (crypto tokens)                             │   ║
+║   │                          │                                                     │   ║
+║   │                          ▼                                                     │   ║
+║   │                    Semantic Anonymizer                                         │   ║
+║   │                          │                                                     │   ║
+║   │                          ▼                                                     │   ║
+║   │               Text &amp; Visual Redactor (Canvas Wipe)                             │   ║
+║   │                          │                                                     │   ║
+║   │                          ▼                                                     │   ║
+║   │                    Context Builder (Schema JSON)                               │   ║
+║   └──────────────────────────┬─────────────────────────────────────────────────────┘   ║
+║                              │                                                         ║
+║                              ▼                                                         ║
+║   ┌────────────────────────────────────────────────────────────────────────────────┐   ║
+║   │                          FINAL PRIVACY GATE                                    │   ║
+║   │             (Fail-Closed Verification: Zero Leakage Barrier)                   │   ║
+║   └──────────────────────────┬─────────────────────────────────────────────────────┘   ║
+║                              │                                                         ║
+═══════════════════════════════╪═════════════════════════════════════════════════════════
+                               │
+                               ▼  [SANITIZED DATA ONLY &mdash; NO REAL PII]
+                               │
+SERVER AI AGENT (ISRO Host / Cloud)
+══════════════════════════════════════════════════════════════════════════════════════════
+║                                                                                        ║
+║   ┌────────────────────────────────────────────────────────────────────────────────┐   ║
+║   │                          VLM / LLM AGENT PLANNER                               │   ║
+║   │       (Reasons over [PERSON_A71C], element roles, and masked screenshot)       │   ║
+║   └──────────────────────────┬─────────────────────────────────────────────────────┘   ║
+║                              │                                                         ║
+║                              ▼                                                         ║
+║                   BROWSER ACTION COMMANDS                                              ║
+║              { action: "CLICK", target_id: "el_submit_btn" }                           ║
+║              { action: "TYPE",  text: "[PERSON_A71C]" }                                ║
+║                              │                                                         ║
+═══════════════════════════════╪═════════════════════════════════════════════════════════
+                               │
+                               ▼  [Local Client Rehydration if needed for typing]
+BROWSER EXECUTES ACTION ON REAL DOM &rarr; OBSERVE AGAIN</pre>
+        </div>
+      </section>
+
+      <!-- SECTION 17: INTERNAL COMPONENT DESIGN -->
+      <section class="doc-section" id="component-design">
+        <div class="section-header">
+          <div class="section-icon-badge">🧩</div>
+          <h2 class="section-title">17. Internal Component Design</h2>
+        </div>
+        <p class="section-lead">
+          The <code>PrivacyEngine</code> is architected with clean, decoupled interfaces to allow individual models to be upgraded, replaced, or unit-tested in complete isolation.
+        </p>
+
+        <div class="deep-dive-card">
+          <div class="deep-dive-title">
+            <span>Object-Oriented Component Hierarchy</span>
+            <span class="badge badge-green">Modular Architecture</span>
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+PrivacyEngine
+├── DOMDetector          [Inspects HTML elements, attributes, ARIA, and bboxes]
+├── OCRDetector          [Runs PaddleOCR.js, extracts text strings and polygons]
+├── VisionDetector       [Runs YOLO26n ONNX model, detects visual privacy objects]
+├── PIIClassifier        [Orchestrates multi-layer PII rule evaluation]
+│   ├── DOMRules         [Evaluates type="password", autocomplete, name heuristics]
+│   ├── RegexRules       [Runs Verhoeff, Luhn, PAN, Email, and Phone validators]
+│   └── BERTNER          [Runs BERT-base contextual entity recognition]
+├── EntityResolver       [Performs IoU spatial fusion, deduplication, and confidence weighting]
+├── SessionManager       [Manages crypto.getRandomValues token dictionaries and expiry]
+├── TextRedactor         [Rewrites textual character spans with assigned tokens]
+├── VisualRedactor       [Applies destructive blur and opaque fills on Canvas/ImageBitmap]
+└── ContextBuilder       [Serializes sanitized JSON wire schema and encodes final screenshot]</pre>
+          </div>
+
+          <ul class="deep-dive-bullets">
+            <li><strong>Minimal Interface Surface:</strong> Each detector implements a uniform <code>detect(input): Promise&lt;Detection[]&gt;</code> signature.</li>
+            <li><strong>Mock-Ready Unit Testing:</strong> Detectors can be mocked with synthetic inputs to test downstream fusion and redaction logic without loading heavy ONNX runtimes.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 18: DATA FLOW (10-STEP LOOP) -->
+      <section class="doc-section" id="data-flow">
+        <div class="section-header">
+          <div class="section-icon-badge">🔄</div>
+          <h2 class="section-title">18. 10-Step Operational Execution Loop</h2>
+        </div>
+        <p class="section-lead">
+          The autonomous agent executes a cyclic 10-step perception-privacy-action loop for every user interaction.
+        </p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot">1</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">OBSERVE</span>
+                <span class="badge badge-blue">Input Step</span>
+              </div>
+              <p class="timeline-desc">Content script queries live DOM tree and captures the current viewport as an <code>ImageBitmap</code>.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">2</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">DETECT</span>
+                <span class="badge badge-purple">Multi-Model</span>
+              </div>
+              <p class="timeline-desc">Web Worker runs parallel perception: DOM Analyzer + PaddleOCR + YOLO26n + BERT-base NER + Regex Rules.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">3</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">FUSE</span>
+                <span class="badge badge-orange">Spatial Logic</span>
+              </div>
+              <p class="timeline-desc">Entity Resolver reconciles overlapping bounding boxes and classifications via IoU and confidence fusion.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">4</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">IDENTIFY</span>
+                <span class="badge badge-green">Cryptographic Token</span>
+              </div>
+              <p class="timeline-desc">Session Manager normalizes values and maps each unique entity to a stable anonymous session pseudonym.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">5</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">PROTECT</span>
+                <span class="badge badge-red">Redaction</span>
+              </div>
+              <p class="timeline-desc">Semantic Anonymizer rewrites sensitive text spans; Visual Redactor permanently masks canvas pixels.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">6</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">VERIFY</span>
+                <span class="badge badge-red">Privacy Gate</span>
+              </div>
+              <p class="timeline-desc">Final Privacy Gate performs pre-flight audit: fails closed if any unmasked entity or raw PII is detected.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">7</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">SEND</span>
+                <span class="badge badge-blue">Network Egress</span>
+              </div>
+              <p class="timeline-desc">Transmits sanitized context payload (JSON elements + redacted screenshot WebP) to the remote AI agent.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">8</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">REASON</span>
+                <span class="badge badge-purple">Server AI</span>
+              </div>
+              <p class="timeline-desc">Server-side VLM/LLM analyzes the sanitized scene graph and plans the next optimal UI action.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">9</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">ACT</span>
+                <span class="badge badge-orange">Browser Execution</span>
+              </div>
+              <p class="timeline-desc">Browser extension receives structured action (CLICK, TYPE, SCROLL) and executes it on the local DOM.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">10</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">OBSERVE AGAIN</span>
+                <span class="badge badge-gray">Loop Closure</span>
+              </div>
+              <p class="timeline-desc">Page state updates in response to the action; pipeline cycles back to Step 1 for the next turn.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 19: MODULE-TO-SIH EVALUATION MAPPING -->
+      <section class="doc-section" id="evaluation-mapping">
+        <div class="section-header">
+          <div class="section-icon-badge">⚖️</div>
+          <h2 class="section-title">19. Module-to-SIH Evaluation Mapping</h2>
+        </div>
+        <p class="section-lead">
+          Direct alignment between the official Smart India Hackathon evaluation rubric dimensions and our module's technical contributions.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>SIH Dimension</th>
+                <th>Weight</th>
+                <th>Module Technical Contribution</th>
+                <th>Verifiable Evidence Collected</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="strong-col">Visual Context Accuracy</td>
+                <td><span class="badge badge-blue">25%</span></td>
+                <td><code>YOLO26n</code> visual detection + <code>PaddleOCR</code> text geometry + DOM bounding box alignment</td>
+                <td>Object detection mAP, IoU overlap accuracy, OCR character error rate (CER) &lt; 2%</td>
+              </tr>
+              <tr>
+                <td class="strong-col">PII Detection Precision / Recall</td>
+                <td><span class="badge badge-orange">20%</span></td>
+                <td>Layered defense: DOM rules + algorithmic regex (Verhoeff/Luhn) + <code>BERT-base NER</code> + fusion</td>
+                <td>Per-class Precision, Recall, and F1 scores (&ge; 99.2% on standard benchmarks)</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Redaction Precision</td>
+                <td><span class="badge badge-orange">20%</span></td>
+                <td>Semantic text span replacement + surgical visual canvas masking with conservative padding</td>
+                <td>Mask IoU, false-redaction area ratio (&lt; 3%), zero-leakage post-redaction OCR verification</td>
+              </tr>
+              <tr>
+                <td class="strong-col">Client Resource Utilization</td>
+                <td><span class="badge badge-green">20%</span></td>
+                <td>Off-thread Web Worker isolation + ONNX WebGPU acceleration + INT8/FP16 quantization</td>
+                <td>Peak RAM consumption &lt; 450MB, zero main-thread CPU jank, GPU shader efficiency</td>
+              </tr>
+              <tr>
+                <td class="strong-col">End-to-End Latency</td>
+                <td><span class="badge badge-purple">15%</span></td>
+                <td>Concurrent model execution, compact JSON serialization, transferable ImageBitmap buffers</td>
+                <td>Per-stage timing breakdown: &lt; 150ms local perception-to-redaction total latency</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 20: RECOMMENDED IMPLEMENTATION ORDER -->
+      <section class="doc-section" id="implementation-order">
+        <div class="section-header">
+          <div class="section-icon-badge">🗺️</div>
+          <h2 class="section-title">20. Recommended Implementation Order</h2>
+        </div>
+        <p class="section-lead">
+          A progressive, phased 17-step engineering roadmap designed to build, verify, and harden the module incrementally.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Step</th>
+                <th>Milestone Deliverable</th>
+                <th>Validation Criteria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3" class="strong-col">Phase 1: Schemas &amp; Heuristics</td>
+                <td>01</td>
+                <td>Shared Detection, Entity, and Context Schemas</td>
+                <td>TypeScript interfaces compiled and validated.</td>
+              </tr>
+              <tr>
+                <td>02</td>
+                <td>DOM Analyzer Implementation</td>
+                <td>Extracts input attributes, labels, and bounding boxes.</td>
+              </tr>
+              <tr>
+                <td>03</td>
+                <td>Regex &amp; Algorithmic PII Validation Layer</td>
+                <td>Verhoeff, Luhn, PAN, and Email rules verified.</td>
+              </tr>
+              <tr>
+                <td rowspan="4" class="strong-col">Phase 2: Local ML Pipeline</td>
+                <td>04</td>
+                <td>PaddleOCR.js Integration</td>
+                <td>Extracts text and word polygons from canvas tiles.</td>
+              </tr>
+              <tr>
+                <td>05</td>
+                <td>YOLO26n ONNX Model Integration</td>
+                <td>Detects faces, ID cards, and QR codes via WebGPU.</td>
+              </tr>
+              <tr>
+                <td>06</td>
+                <td>BERT-base NER Pipeline (Transformers.js)</td>
+                <td>Extracts PERSON, LOCATION, and ORG entities.</td>
+              </tr>
+              <tr>
+                <td>07</td>
+                <td>Coordinate Normalization &amp; Alignment</td>
+                <td>Aligns DOM viewport pixels with screenshot canvas.</td>
+              </tr>
+              <tr>
+                <td rowspan="4" class="strong-col">Phase 3: Privacy &amp; Anonymization</td>
+                <td>08</td>
+                <td>Entity Resolver (IoU Privacy Fusion)</td>
+                <td>Fuses multi-modal detections into unified entities.</td>
+              </tr>
+              <tr>
+                <td>09</td>
+                <td>Session Manager (Stable Identity)</td>
+                <td>Generates <code>crypto.getRandomValues()</code> pseudonyms.</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>Semantic Anonymizer Engine</td>
+                <td>Rewrites sensitive text spans with token labels.</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>Visual Redactor Canvas Module</td>
+                <td>Applies destructive blur and padded opaque masks.</td>
+              </tr>
+              <tr>
+                <td rowspan="3" class="strong-col">Phase 4: Serialization &amp; Security</td>
+                <td>12</td>
+                <td>Sanitized Context Builder</td>
+                <td>Generates compact JSON schema payload.</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td>Final Privacy Gate (Fail-Closed Barrier)</td>
+                <td>Pre-flight regex and mask audit block leakage.</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td>Web Worker Concurrency Integration</td>
+                <td>Moves entire ML and privacy pipeline off-thread.</td>
+              </tr>
+              <tr>
+                <td rowspan="3" class="strong-col">Phase 5: Agent Loop &amp; Hardening</td>
+                <td>15</td>
+                <td>Server-Agent Handoff Wire Protocol</td>
+                <td>Transmits sanitized payload over encrypted channel.</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td>OBSERVE &rarr; PROTECT &rarr; SEND &rarr; ACT Loop</td>
+                <td>End-to-end autonomous multi-turn cycle operational.</td>
+              </tr>
+              <tr>
+                <td>17</td>
+                <td>Benchmarking &amp; Latency Optimization</td>
+                <td>Fulfills SIH rubric metrics (latency &lt; 150ms).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 21: FINAL DELIVERABLE & GUARANTEE -->
+      <section class="doc-section" id="final-deliverable">
+        <div class="section-header">
+          <div class="section-icon-badge">🏆</div>
+          <h2 class="section-title">21. Final Deliverable &amp; Security Guarantee</h2>
+        </div>
+        <p class="section-lead">
+          The completed module represents a self-contained, demonstrable local privacy firewall that meets the highest security standards for government and enterprise operations.
+        </p>
+
+        <div class="deep-dive-card" style="border-left: 4px solid var(--isro-orange);">
+          <div class="deep-dive-title">
+            <span>Summary of Final Deliverable</span>
+            <span class="badge badge-orange">Self-Contained Firewall</span>
+          </div>
+          <div class="deep-dive-subtitle">
+            A turnkey browser-side system executing:
+          </div>
+
+          <div class="diagram-box">
+            <pre>
+DOM + Screenshot
+      │
+      ▼
+Local Perception (DOM + PaddleOCR + YOLO26n + BERT NER)
+      │
+      ▼
+PII &amp; Spatial Entity Fusion (Entity Resolver)
+      │
+      ▼
+Session-Stable Cryptographic Anonymization (Session Manager)
+      │
+      ▼
+Visual Pixel &amp; Text Span Redaction (Visual &amp; Text Redactors)
+      │
+      ▼
+Pre-Flight Privacy Audit (Final Privacy Gate)
+      │
+      ▼
+Sanitized Context Payload Delivery &rarr; Remote AI Agent</pre>
+          </div>
+
+          <p style="font-size: 14.5px; line-height: 1.7; color: var(--text-body); margin-top: 16px;">
+            By decoupling visual perception and privacy enforcement from server-side decision making, PRATYAKSHA ensures that ISRO operators and government workers can harness state-of-the-art vision-language AI agents with mathematical certainty that classified records, biometrics, credentials, and sensitive personal identifiers never escape the user's local workstation.
+          </p>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="doc-footer">
+        <div>
+          PRATYAKSHA Documentation &middot; SIH 2026 PS ID 26171 (ISRO)
+        </div>
+        <div class="footer-nav-links">
+          <a href="./07_reality_check_and_innovations.html">&larr; Module 07 Reality Audit</a> &nbsp;|&nbsp;
+          <a href="./index.html">Master Hub &rarr;</a>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    // Mobile Drawer Navigation Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const mobileDocSelector = document.getElementById('mobileDocSelector');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    if (mobileDocSelector) {
+      mobileDocSelector.addEventListener('change', (e) => {
+        window.location.href = e.target.value;
+      });
+    }
+
+    // ScrollSpy for TOC Links
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const sections = Array.from(tocLinks).map(link => {
+      const id = link.getAttribute('href').replace('#', '');
+      return document.getElementById(id);
+    }).filter(Boolean);
+
+    window.addEventListener('scroll', () => {
+      let currentSection = sections[0];
+      const scrollPos = window.scrollY + 100;
+
+      for (const section of sections) {
+        if (section.offsetTop <= scrollPos) {
+          currentSection = section;
+        }
+      }
+
+      if (currentSection) {
+        tocLinks.forEach(link => {
+          if (link.getAttribute('href') === '#' + currentSection.id) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
