@@ -1,0 +1,136 @@
+:root {
+  --bg-cream: #FAF7F2;
+  --bg-surface: #FFFFFF;
+  --border-warm: #E7E0D6;
+  --text-main: #1C1917;
+  --text-muted: #736B63;
+  --isro-orange: #EA580C;
+  --isro-orange-light: #FFF7ED;
+  --color-success: #059669;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  width: 290px;
+  background-color: var(--bg-cream);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--text-main);
+  padding: 14px;
+}
+
+.popup-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-emblem {
+  width: 32px;
+  height: 32px;
+  background: var(--isro-orange-light);
+  border: 1px solid #FDBA74;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--isro-orange);
+}
+
+.brand-text .title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.brand-text .hindi {
+  color: var(--isro-orange);
+}
+
+.brand-text .subtitle {
+  font-size: 9.5px;
+  color: var(--text-muted);
+}
+
+.badge-ps {
+  font-size: 9px;
+  font-weight: 700;
+  background: #1C1917;
+  color: #FB923C;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.status-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-warm);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.status-row .label {
+  color: var(--text-muted);
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-row .value {
+  font-family: monospace;
+  font-weight: 600;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-row .value-green {
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.btn-open-panel {
+  background: linear-gradient(135deg, #EA580C, #C2410C);
+  color: white;
+  border: none;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
+  transition: all 0.15s ease;
+}
+
+.btn-open-panel:hover {
+  background: linear-gradient(135deg, #F97316, #EA580C);
+  transform: translateY(-1px);
+}

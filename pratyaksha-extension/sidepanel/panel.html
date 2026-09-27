@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRATYAKSHA — Privacy-First Browser Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Brand Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="isro-logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="12 6 16 14 8 14 12 6"/>
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">
+            <span class="hindi-text">प्रत्यक्ष</span> PRATYAKSHA
+          </div>
+          <div class="brand-subtitle">ISRO PS-26171 · Privacy Shield Agent</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-indicator online" id="statusPill" title="Ready to execute">
+          <span class="status-dot"></span>
+          <span class="status-text">READY</span>
+        </div>
+        <button id="settingsBtn" class="icon-button" title="Configure Gemini API & Preferences">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Active Tab Context Card -->
+    <section class="card context-card">
+      <div class="context-header">
+        <span class="context-label">TARGET WEBPAGE</span>
+        <button id="rescanBtn" class="btn-text-action" title="Re-scan DOM interactive elements">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          Re-scan DOM
+        </button>
+      </div>
+      <div class="tab-info-row">
+        <span class="tab-badge" id="tabDomain">Loading...</span>
+        <span class="elements-badge" id="elementsCount">0 interactive elements</span>
+      </div>
+      <div class="tab-title-text" id="tabTitle">Detecting active Chrome tab...</div>
+    </section>
+
+    <!-- Privacy Shield Status HUD -->
+    <section class="card privacy-shield-card">
+      <div class="privacy-header">
+        <div class="shield-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>ISRO PRIVACY FIREWALL</span>
+        </div>
+        <span class="vault-tag">100% Client-Side</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <div class="metric-val" id="metricBlocked">0</div>
+          <div class="metric-desc">PII Shielded</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-val" id="metricTokens">0</div>
+          <div class="metric-desc">Active Tokens</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-val" id="metricEngine">WASM/Rule</div>
+          <div class="metric-desc">Verhoeff / PAN</div>
+        </div>
+      </div>
+      <div class="vault-drawer-toggle" id="toggleVaultDetails">
+        <span>Inspect Session Token Vault</span>
+        <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="vault-drawer-content" id="vaultDrawer">
+        <div class="vault-empty" id="vaultEmpty">No sensitive data detected in current session. Enter Aadhaar, PAN, phone or email to test live anonymization.</div>
+        <table class="vault-table" id="vaultTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Pseudonym</th>
+              <th>Sample</th>
+            </tr>
+          </thead>
+          <tbody id="vaultTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Operational Controls -->
+    <div class="controls-row">
+      <div class="toggle-control" title="Ask confirmation before executing each DOM action">
+        <label class="switch">
+          <input type="checkbox" id="approvalToggle" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="toggle-label">Step Approval</span>
+      </div>
+      <div class="engine-badge" id="engineIndicator">
+        <span class="engine-dot"></span>
+        <span id="engineName">Smart Deterministic Planner</span>
+      </div>
+    </div>
+
+    <!-- Agent Prompt Console -->
+    <section class="prompt-section">
+      <div class="prompt-box-wrapper">
+        <textarea 
+          id="promptInput" 
+          rows="3" 
+          placeholder="e.g. 'Search for Chandrayaan-3', 'Click Contact Us', or 'Fill contact form with email test@isro.gov.in and phone 9876543210'..."
+        ></textarea>
+        <div class="prompt-footer">
+          <span class="keyboard-tip">Press Ctrl+Enter or Cmd+Enter to run</span>
+          <button id="runBtn" class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Run Agent</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Action Suggestion Chips -->
+      <div class="chips-container">
+        <button class="chip" data-prompt="Search for Chandrayaan-3 mission updates">🔍 Search Page</button>
+        <button class="chip" data-prompt="Fill form with email test@isro.gov.in and phone 9876543210 and Aadhaar 200000000009">📝 Fill Form (PII Test)</button>
+        <button class="chip" data-prompt="Click the primary button or submit">🎯 Click Action</button>
+        <button class="chip" data-prompt="Scroll down to inspect page content">📜 Scroll Page</button>
+      </div>
+    </section>
+
+    <!-- Plan Preview & Step Cockpit -->
+    <section class="plan-section" id="planSection" style="display:none;">
+      <div class="plan-header">
+        <div class="plan-title-wrap">
+          <span class="plan-badge">EXECUTION PLAN</span>
+          <span class="plan-source" id="planSourceTag">DETERMINISTIC</span>
+        </div>
+        <div class="plan-actions-group">
+          <button id="runAllBtn" class="btn-sm btn-accent">Run All</button>
+          <button id="cancelPlanBtn" class="btn-sm btn-ghost">Cancel</button>
+        </div>
+      </div>
+      <div class="steps-list" id="stepsList"></div>
+    </section>
+
+    <!-- Live Execution Trace & Audit Log -->
+    <section class="card audit-card">
+      <div class="audit-header">
+        <span class="audit-title">REAL-TIME AGENT TRACE</span>
+        <button id="clearLogsBtn" class="btn-text-sm">Clear</button>
+      </div>
+      <div class="terminal-log" id="terminalLogs">
+        <div class="log-line info">[INIT] PRATYAKSHA Agent v1.0.0 initialized.</div>
+        <div class="log-line info">[VAULT] Local Privacy Firewall listening.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Agent Engine Settings</h3>
+        <button id="closeSettingsBtn" class="icon-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="engineSelect">Planner Engine</label>
+          <select id="engineSelect" class="form-input">
+            <option value="deterministic">Deterministic Semantic Planner (Offline / 0-Config)</option>
+            <option value="gemini">Google Gemini Cloud VLM (Requires API Key)</option>
+          </select>
+          <small class="form-hint">Deterministic planner works completely offline for standard search, click, scroll, and form-fill intents.</small>
+        </div>
+
+        <div class="form-group" id="geminiKeyGroup" style="display:none;">
+          <label for="geminiApiKey">Google Gemini API Key</label>
+          <input type="password" id="geminiApiKey" class="form-input" placeholder="AIzaSy...">
+          <small class="form-hint">Key is saved securely in local browser storage only.</small>
+        </div>
+
+        <div class="form-group" id="geminiModelGroup" style="display:none;">
+          <label for="geminiModel">Gemini Model</label>
+          <select id="geminiModel" class="form-input">
+            <option value="gemini-2.0-flash">gemini-2.0-flash (Fastest)</option>
+            <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="privacyLevel">Privacy Firewall Strictness</label>
+          <select id="privacyLevel" class="form-input">
+            <option value="strict">Strict (Verhoeff Aadhaar + PAN + Phone + Email)</option>
+            <option value="standard">Standard (Email + Phone)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveSettingsBtn" class="btn-primary">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

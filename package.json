@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "python3 -m http.server 8080 --directory Docs",
+    "demo": "python3 -m http.server 8080",
     "serve": "npx serve Docs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.12.0"
   }
 }
