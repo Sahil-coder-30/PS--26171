@@ -47,23 +47,36 @@
       throw new Error('PRATYAKSHA DOM engine is not initialized');
     }
 
-    const { action, selector, value, deltaY, durationMs } = actionItem;
+    const {
+      action,
+      target_id,
+      selector,
+      semantic_hint,
+      value,
+      deltaY,
+      durationMs
+    } = actionItem;
+
+    // Build flexible target descriptor
+    const target = (target_id !== undefined && target_id !== null)
+      ? target_id
+      : (selector || semantic_hint || actionItem);
 
     switch (action) {
       case 'CLICK':
-        return await window.PratyakshaDOM.click(selector);
+        return await window.PratyakshaDOM.click(target);
 
       case 'TYPE':
-        return await window.PratyakshaDOM.type(selector, value);
+        return await window.PratyakshaDOM.type(target, value);
 
       case 'PRESS_ENTER':
-        return await window.PratyakshaDOM.pressEnter(selector);
+        return await window.PratyakshaDOM.pressEnter(target);
 
       case 'HIGHLIGHT':
-        return window.PratyakshaDOM.highlight(selector, `🎯 TARGET: ${actionItem.description || selector}`);
+        return window.PratyakshaDOM.highlight(target, `🎯 TARGET: ${semantic_hint || selector || target_id || 'ELEMENT'}`);
 
       case 'SCROLL_INTO_VIEW':
-        return await window.PratyakshaDOM.scrollIntoView(selector);
+        return await window.PratyakshaDOM.scrollIntoView(target);
 
       case 'SCROLL':
         return await window.PratyakshaDOM.scroll(deltaY || 500);

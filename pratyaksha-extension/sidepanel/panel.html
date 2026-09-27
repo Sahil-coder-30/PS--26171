@@ -109,16 +109,16 @@
 
     <!-- Operational Controls -->
     <div class="controls-row">
-      <div class="toggle-control" title="Ask confirmation before executing each DOM action">
+      <div class="toggle-control" title="Fully Autonomous Execution: runs multi-turn tool calling without requiring step approval">
         <label class="switch">
-          <input type="checkbox" id="approvalToggle" checked>
+          <input type="checkbox" id="autonomousToggle" checked>
           <span class="slider round"></span>
         </label>
-        <span class="toggle-label">Step Approval</span>
+        <span class="toggle-label">⚡ Autonomous Loop</span>
       </div>
       <div class="engine-badge" id="engineIndicator">
         <span class="engine-dot"></span>
-        <span id="engineName">Smart Deterministic Planner</span>
+        <span id="engineName">LangGraph StateGraph</span>
       </div>
     </div>
 
@@ -128,41 +128,85 @@
         <textarea 
           id="promptInput" 
           rows="3" 
-          placeholder="e.g. 'Search for Chandrayaan-3', 'Click Contact Us', or 'Fill contact form with email test@isro.gov.in and phone 9876543210'..."
+          placeholder="e.g. 'Search for Chandrayaan-3 and click the first result', 'Fill contact form with email test@isro.gov.in and phone 9876543210'..."
         ></textarea>
         <div class="prompt-footer">
           <span class="keyboard-tip">Press Ctrl+Enter or Cmd+Enter to run</span>
-          <button id="runBtn" class="btn-primary">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polygon points="5 3 19 12 5 21 5 3"/>
-            </svg>
-            <span>Run Agent</span>
-          </button>
+          <div class="action-buttons-group">
+            <button id="stopBtn" class="btn-danger" style="display:none;" title="Emergency Stop">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+              </svg>
+              <span>Stop Agent</span>
+            </button>
+            <button id="runBtn" class="btn-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span>Run Agent</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Quick Action Suggestion Chips -->
       <div class="chips-container">
-        <button class="chip" data-prompt="Search for Chandrayaan-3 mission updates">🔍 Search Page</button>
+        <button class="chip" data-prompt="Search Google for ISRO Chandrayaan-3 latest discoveries and open Wikipedia">🔍 Search & Explore</button>
         <button class="chip" data-prompt="Fill form with email test@isro.gov.in and phone 9876543210 and Aadhaar 200000000009">📝 Fill Form (PII Test)</button>
-        <button class="chip" data-prompt="Click the primary button or submit">🎯 Click Action</button>
-        <button class="chip" data-prompt="Scroll down to inspect page content">📜 Scroll Page</button>
+        <button class="chip" data-prompt="Click on the main search bar or search input">🎯 Find & Click</button>
+        <button class="chip" data-prompt="Scroll down to inspect more content">📜 Scroll Page</button>
       </div>
     </section>
 
-    <!-- Plan Preview & Step Cockpit -->
-    <section class="plan-section" id="planSection" style="display:none;">
-      <div class="plan-header">
-        <div class="plan-title-wrap">
-          <span class="plan-badge">EXECUTION PLAN</span>
-          <span class="plan-source" id="planSourceTag">DETERMINISTIC</span>
+    <!-- Autonomous Execution Live Stream HUD -->
+    <section class="card agent-stream-card" id="agentStreamSection" style="display:none;">
+      <div class="stream-header">
+        <div class="stream-title-wrap">
+          <span class="live-dot pulse"></span>
+          <span class="stream-title">AUTONOMOUS STATEGRAPH STREAM</span>
         </div>
-        <div class="plan-actions-group">
-          <button id="runAllBtn" class="btn-sm btn-accent">Run All</button>
-          <button id="cancelPlanBtn" class="btn-sm btn-ghost">Cancel</button>
+        <div class="stream-meta">
+          <span class="stream-step-badge" id="streamStepBadge">Step 1/15</span>
         </div>
       </div>
-      <div class="steps-list" id="stepsList"></div>
+
+      <!-- State Indicator Pill -->
+      <div class="graph-state-hud" id="graphStateHud">
+        <span class="state-node active" id="nodePerceive">👁️ PERCEIVE</span>
+        <span class="state-arrow">➔</span>
+        <span class="state-node" id="nodeReason">🧠 REASON</span>
+        <span class="state-arrow">➔</span>
+        <span class="state-node" id="nodeAct">⚡ ACT</span>
+        <span class="state-arrow">➔</span>
+        <span class="state-node" id="nodeObserve">📋 OBSERVE</span>
+      </div>
+
+      <!-- Active Thought Bubble -->
+      <div class="stream-bubble thought-bubble" id="thoughtBubble" style="display:none;">
+        <div class="bubble-tag">🧠 AGENT REASONING</div>
+        <div class="bubble-content" id="thoughtText">Analyzing DOM...</div>
+      </div>
+
+      <!-- Active Action Card -->
+      <div class="stream-bubble action-bubble" id="actionBubble" style="display:none;">
+        <div class="bubble-tag">⚡ TOOL DISPATCHED</div>
+        <div class="bubble-content" id="actionText">navigate_to(...)</div>
+      </div>
+
+      <!-- Observation Bubble -->
+      <div class="stream-bubble obs-bubble" id="obsBubble" style="display:none;">
+        <div class="bubble-tag">👁️ DOM OBSERVATION</div>
+        <div class="bubble-content" id="obsText">Page loaded. Found 28 actionable elements.</div>
+      </div>
+
+      <!-- Completion Banner -->
+      <div class="stream-completion-banner" id="completionBanner" style="display:none;">
+        <div class="completion-icon">🎉</div>
+        <div class="completion-text">
+          <div class="completion-title">Task Complete!</div>
+          <div class="completion-desc" id="completionDesc"></div>
+        </div>
+      </div>
     </section>
 
     <!-- Live Execution Trace & Audit Log -->
@@ -187,12 +231,26 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="engineSelect">Planner Engine</label>
+          <label for="engineSelect">Planner Engine / AI Provider</label>
           <select id="engineSelect" class="form-input">
+            <option value="mistral" selected>Mistral AI (mistral-large-latest)</option>
+            <option value="gemini">Google Gemini Cloud VLM</option>
             <option value="deterministic">Deterministic Semantic Planner (Offline / 0-Config)</option>
-            <option value="gemini">Google Gemini Cloud VLM (Requires API Key)</option>
           </select>
-          <small class="form-hint">Deterministic planner works completely offline for standard search, click, scroll, and form-fill intents.</small>
+          <small class="form-hint">Mistral Large provides state-of-the-art autonomous reasoning with native tool calling.</small>
+        </div>
+
+        <div class="form-group" id="mistralGroup">
+          <label for="mistralApiKey">Mistral API Key</label>
+          <input type="password" id="mistralApiKey" class="form-input" placeholder="ElIVQ...">
+          <small class="form-hint">Stored securely in local browser storage only.</small>
+
+          <label for="mistralModel" style="margin-top: 8px;">Mistral Model</label>
+          <select id="mistralModel" class="form-input">
+            <option value="codestral-latest" selected>codestral-latest (Mistral Agent Flagship)</option>
+            <option value="mistral-large-latest">mistral-large-latest (Enterprise Tier)</option>
+            <option value="mistral-small-latest">mistral-small-latest (Fast)</option>
+          </select>
         </div>
 
         <div class="form-group" id="geminiKeyGroup" style="display:none;">
@@ -204,8 +262,8 @@
         <div class="form-group" id="geminiModelGroup" style="display:none;">
           <label for="geminiModel">Gemini Model</label>
           <select id="geminiModel" class="form-input">
-            <option value="gemini-2.0-flash">gemini-2.0-flash (Recommended / Fast)</option>
-            <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite (Ultra Lightweight)</option>
+            <option value="gemini-3.8-flash">gemini-3.8-flash (Recommended / Latest)</option>
+            <option value="gemini-2.5-flash">gemini-2.5-flash</option>
             <option value="gemini-1.5-flash">gemini-1.5-flash</option>
             <option value="gemini-1.5-pro">gemini-1.5-pro (High Reasoning)</option>
           </select>

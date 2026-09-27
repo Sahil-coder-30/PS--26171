@@ -6,12 +6,14 @@
 import { globalVault } from '../vault/pii-vault.js';
 import { AgentPlanner } from '../agent/planner.js';
 import { getEffectiveConfig } from '../env.js';
+import { LangGraphAgent } from '../agent/graph-engine.js';
 
 let activeTab = null;
 let pageContext = null;
 let currentPlan = [];
 let currentStepIndex = 0;
 let isExecuting = false;
+let activeAgent = null;
 
 // DOM Elements
 const statusPill = document.getElementById('statusPill');
@@ -29,17 +31,30 @@ const vaultEmpty = document.getElementById('vaultEmpty');
 const vaultTable = document.getElementById('vaultTable');
 const vaultTableBody = document.getElementById('vaultTableBody');
 
-const approvalToggle = document.getElementById('approvalToggle');
+const autonomousToggle = document.getElementById('autonomousToggle');
 const engineIndicator = document.getElementById('engineIndicator');
 const engineName = document.getElementById('engineName');
 
 const promptInput = document.getElementById('promptInput');
 const runBtn = document.getElementById('runBtn');
-const planSection = document.getElementById('planSection');
-const planSourceTag = document.getElementById('planSourceTag');
-const stepsList = document.getElementById('stepsList');
-const runAllBtn = document.getElementById('runAllBtn');
-const cancelPlanBtn = document.getElementById('cancelPlanBtn');
+const stopBtn = document.getElementById('stopBtn');
+
+// Autonomous Stream HUD Elements
+const agentStreamSection = document.getElementById('agentStreamSection');
+const streamStepBadge = document.getElementById('streamStepBadge');
+const nodePerceive = document.getElementById('nodePerceive');
+const nodeReason = document.getElementById('nodeReason');
+const nodeAct = document.getElementById('nodeAct');
+const nodeObserve = document.getElementById('nodeObserve');
+const thoughtBubble = document.getElementById('thoughtBubble');
+const thoughtText = document.getElementById('thoughtText');
+const actionBubble = document.getElementById('actionBubble');
+const actionText = document.getElementById('actionText');
+const obsBubble = document.getElementById('obsBubble');
+const obsText = document.getElementById('obsText');
+const completionBanner = document.getElementById('completionBanner');
+const completionDesc = document.getElementById('completionDesc');
+
 const terminalLogs = document.getElementById('terminalLogs');
 const clearLogsBtn = document.getElementById('clearLogsBtn');
 
@@ -49,6 +64,9 @@ const settingsModal = document.getElementById('settingsModal');
 const closeSettingsBtn = document.getElementById('closeSettingsBtn');
 const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 const engineSelect = document.getElementById('engineSelect');
+const mistralGroup = document.getElementById('mistralGroup');
+const mistralApiKey = document.getElementById('mistralApiKey');
+const mistralModel = document.getElementById('mistralModel');
 const geminiKeyGroup = document.getElementById('geminiKeyGroup');
 const geminiModelGroup = document.getElementById('geminiModelGroup');
 const geminiApiKey = document.getElementById('geminiApiKey');
@@ -72,14 +90,23 @@ function setupEventListeners() {
     vaultDrawer.classList.toggle('show');
   });
 
-  approvalToggle.addEventListener('change', (e) => {
-    chrome.storage.local.set({ approvalMode: e.target.checked });
-    log(`Step approval mode ${e.target.checked ? 'ENABLED' : 'DISABLED'}.`, 'info');
-  });
+  if (autonomousToggle) {
+    autonomousToggle.addEventListener('change', (e) => {
+      chrome.storage.local.set({ autonomousMode: e.target.checked });
+      log(`Autonomous Mode ${e.target.checked ? 'ENABLED' : 'DISABLED'}.`, 'info');
+    });
+  }
+
+  if (stopBtn) {
+    stopBtn.addEventListener('click', () => {
+      if (activeAgent) {
+        activeAgent.cancel();
+        log('🛑 Stop requested by user.', 'warn');
+      }
+    });
+  }
 
   runBtn.addEventListener('click', handleRunPrompt);
-  runAllBtn.addEventListener('click', executeAllSteps);
-  cancelPlanBtn.addEventListener('click', clearPlan);
 
   promptInput.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -104,9 +131,10 @@ function setupEventListeners() {
   settingsBtn.addEventListener('click', () => settingsModal.style.display = 'flex');
   closeSettingsBtn.addEventListener('click', () => settingsModal.style.display = 'none');
   engineSelect.addEventListener('change', () => {
-    const isGemini = engineSelect.value === 'gemini';
-    geminiKeyGroup.style.display = isGemini ? 'flex' : 'none';
-    geminiModelGroup.style.display = isGemini ? 'flex' : 'none';
+    const val = engineSelect.value;
+    if (mistralGroup) mistralGroup.style.display = val === 'mistral' ? 'flex' : 'none';
+    if (geminiKeyGroup) geminiKeyGroup.style.display = val === 'gemini' ? 'flex' : 'none';
+    if (geminiModelGroup) geminiModelGroup.style.display = val === 'gemini' ? 'flex' : 'none';
   });
   saveSettingsBtn.addEventListener('click', saveSettings);
 
@@ -132,51 +160,74 @@ function log(msg, type = 'info') {
 async function loadSettings() {
   const config = await getEffectiveConfig();
   const data = await chrome.storage.local.get([
-    'engineMode', 'geminiApiKey', 'geminiModel', 'privacyMode', 'approvalMode'
+    'engineMode', 'provider', 'mistralApiKey', 'mistralModel',
+    'geminiApiKey', 'geminiModel', 'privacyMode', 'autonomousMode'
   ]);
 
-  if (data.approvalMode !== undefined) {
-    approvalToggle.checked = data.approvalMode;
+  if (autonomousToggle && data.autonomousMode !== undefined) {
+    autonomousToggle.checked = data.autonomousMode;
   }
 
-  // Active key resolved from storage or env configuration
-  const activeKey = data.geminiApiKey || config.apiKey || '';
-  const defaultEngine = activeKey ? 'gemini' : 'deterministic';
-  const engine = data.engineMode || defaultEngine;
+  const provider = data.provider || config.provider || 'mistral';
+  engineSelect.value = provider;
 
-  engineSelect.value = engine;
-  engineName.textContent = engine === 'gemini' ? 'Gemini VLM Cloud' : 'Smart Offline Planner';
-  geminiKeyGroup.style.display = engine === 'gemini' ? 'flex' : 'none';
-  geminiModelGroup.style.display = engine === 'gemini' ? 'flex' : 'none';
+  if (mistralGroup) mistralGroup.style.display = provider === 'mistral' ? 'flex' : 'none';
+  if (geminiKeyGroup) geminiKeyGroup.style.display = provider === 'gemini' ? 'flex' : 'none';
+  if (geminiModelGroup) geminiModelGroup.style.display = provider === 'gemini' ? 'flex' : 'none';
 
-  geminiApiKey.value = activeKey;
-  geminiModel.value = data.geminiModel || config.model || 'gemini-2.0-flash';
+  if (provider === 'mistral') {
+    engineName.textContent = 'Mistral Agent (Autonomous)';
+  } else if (provider === 'gemini') {
+    engineName.textContent = 'Gemini VLM Cloud';
+  } else {
+    engineName.textContent = 'Smart Offline Planner';
+  }
+
+  if (mistralApiKey) mistralApiKey.value = data.mistralApiKey || config.mistralApiKey || '';
+  if (mistralModel) mistralModel.value = data.mistralModel || config.mistralModel || 'codestral-latest';
+
+  let activeGeminiModel = data.geminiModel || config.geminiModel || 'gemini-3.8-flash';
+  if (activeGeminiModel === 'gemini-2.0-flash' || activeGeminiModel === 'gemini-2.0-flash-lite') {
+    activeGeminiModel = 'gemini-3.8-flash';
+  }
+  if (geminiApiKey) geminiApiKey.value = data.geminiApiKey || config.geminiApiKey || '';
+  if (geminiModel) geminiModel.value = activeGeminiModel;
   if (data.privacyMode) privacyLevel.value = data.privacyMode;
 
-  // If key was discovered from env and not yet persisted to storage, save it
-  if (!data.geminiApiKey && activeKey) {
+  // Persist if loaded from env initially
+  if (!data.mistralApiKey && config.mistralApiKey) {
     await chrome.storage.local.set({
-      geminiApiKey: activeKey,
-      engineMode: engine,
-      geminiModel: geminiModel.value
+      mistralApiKey: config.mistralApiKey,
+      mistralModel: config.mistralModel || 'codestral-latest',
+      provider: 'mistral'
     });
-    log('🔑 Auto-detected Gemini API key from environment config.', 'info');
+    log('🔑 Auto-detected Mistral Agent API key from environment config.', 'info');
   }
 }
 
 // Save user settings
 async function saveSettings() {
-  const engine = engineSelect.value;
+  const provider = engineSelect.value;
   await chrome.storage.local.set({
-    engineMode: engine,
-    geminiApiKey: geminiApiKey.value.trim(),
-    geminiModel: geminiModel.value,
+    provider,
+    engineMode: provider,
+    mistralApiKey: mistralApiKey ? mistralApiKey.value.trim() : '',
+    mistralModel: mistralModel ? mistralModel.value : 'codestral-latest',
+    geminiApiKey: geminiApiKey ? geminiApiKey.value.trim() : '',
+    geminiModel: geminiModel ? geminiModel.value : 'gemini-3.8-flash',
     privacyMode: privacyLevel.value
   });
 
-  engineName.textContent = engine === 'gemini' ? 'Gemini VLM Cloud' : 'Smart Offline Planner';
+  if (provider === 'mistral') {
+    engineName.textContent = 'Mistral Agent (Autonomous)';
+  } else if (provider === 'gemini') {
+    engineName.textContent = 'Gemini VLM Cloud';
+  } else {
+    engineName.textContent = 'Smart Offline Planner';
+  }
+
   settingsModal.style.display = 'none';
-  log(`Settings updated. Active engine: ${engine.toUpperCase()}`, 'info');
+  log(`Settings updated. Active provider: ${provider.toUpperCase()}`, 'info');
 }
 
 // Refresh active tab and verify content script injection
@@ -248,73 +299,174 @@ async function handleRunPrompt() {
   }
 
   if (isExecuting) {
-    log('Agent is currently executing a task. Please wait or cancel.', 'warn');
+    log('Agent is currently executing a task. Please wait or click Stop Agent.', 'warn');
     return;
   }
 
+  const isAutonomous = autonomousToggle ? autonomousToggle.checked : true;
   setBusyState(true);
   log(`User Request: "${rawPrompt}"`, 'info');
 
   try {
-    // ── STEP 1: ON-DEVICE PRIVACY SHIELD ──
-    const { sanitizedText, detected } = globalVault.anonymize(rawPrompt);
-    updateVaultUI();
+    if (isAutonomous) {
+      // ══════════════════════════════════════════════════════════
+      // AUTONOMOUS LANGGRAPH STATEGRAPH EXECUTION LOOP
+      // ══════════════════════════════════════════════════════════
+      const config = await getEffectiveConfig();
+      const settings = await chrome.storage.local.get([
+        'provider', 'mistralApiKey', 'mistralModel', 'geminiApiKey', 'geminiModel'
+      ]);
 
-    if (detected.length > 0) {
-      log(`🔒 [PRIVACY FIREWALL] Sanitized ${detected.length} PII items before reasoning:`, 'privacy');
-      detected.forEach(d => {
-        log(`   ├─ ${d.type}: ${d.maskedSample} ➔ ${d.token}`, 'privacy');
+      const provider = settings.provider || config.provider || 'mistral';
+      const apiKey = provider === 'mistral'
+        ? (settings.mistralApiKey || config.mistralApiKey || '').trim()
+        : (settings.geminiApiKey || config.geminiApiKey || '').trim();
+
+      const model = provider === 'mistral'
+        ? (settings.mistralModel || config.mistralModel || 'codestral-latest')
+        : (settings.geminiModel || config.geminiModel || 'gemini-3.8-flash');
+
+      if (!apiKey) {
+        throw new Error(`${provider === 'mistral' ? 'Mistral' : 'Gemini'} API Key is missing. Click the ⚙ Settings icon or set it in .env.`);
+      }
+
+      if (agentStreamSection) agentStreamSection.style.display = 'block';
+      if (thoughtBubble) thoughtBubble.style.display = 'none';
+      if (actionBubble) actionBubble.style.display = 'none';
+      if (obsBubble) obsBubble.style.display = 'none';
+      if (completionBanner) completionBanner.style.display = 'none';
+      if (streamStepBadge) streamStepBadge.textContent = 'Step 1/15';
+
+      activeAgent = new LangGraphAgent({
+        provider,
+        apiKey,
+        model,
+        vault: globalVault,
+        maxSteps: 15,
+        onEvent: handleAgentEvent
       });
-      log(`Sanitized Prompt Wire: "${sanitizedText}"`, 'info');
-    }
 
-    // ── STEP 2: CONTEXT & PLANNING ──
-    if (!pageContext) {
-      await scanCurrentPage();
-    }
-
-    const settings = await chrome.storage.local.get(['engineMode', 'geminiApiKey', 'geminiModel']);
-    const config = await getEffectiveConfig();
-    const effectiveKey = (settings.geminiApiKey || config.apiKey || '').trim();
-    const effectiveEngine = settings.engineMode || (effectiveKey ? 'gemini' : 'deterministic');
-    const effectiveModel = settings.geminiModel || config.model || 'gemini-2.0-flash';
-
-    const options = {
-      useGemini: effectiveEngine === 'gemini',
-      apiKey: effectiveKey,
-      model: effectiveModel
-    };
-
-    const isGeminiActive = options.useGemini && options.apiKey;
-    log(`Generating action sequence using ${isGeminiActive ? `Google Gemini (${options.model})` : 'Smart Offline Planner'}...`, 'info');
-
-    const result = await AgentPlanner.generatePlan(rawPrompt, sanitizedText, pageContext || { elements: [] }, options);
-    currentPlan = result.plan;
-    currentStepIndex = 0;
-
-    planSourceTag.textContent = result.source;
-    if (result.source === 'GEMINI') {
-      log(`✨ Generated reasoning plan via Gemini Cloud (${options.model})!`, 'success');
-    } else if (isGeminiActive && result.error) {
-      log(`⚠️ Gemini Notice: ${result.error}. Switched seamlessly to Smart Offline Planner.`, 'warn');
-    }
-    log(`Plan generated: ${currentPlan.length} step(s) planned.`, 'success');
-
-    // ── STEP 3: RENDER & EXECUTE ──
-    renderPlan();
-    planSection.style.display = 'block';
-
-    const isApprovalMode = approvalToggle.checked;
-    if (!isApprovalMode) {
-      // Auto execute immediately
-      await executeAllSteps();
+      const result = await activeAgent.run(rawPrompt, activeTab);
+      if (result.success) {
+        log(`🎉 Autonomous Task Completed in ${result.steps} step(s)!`, 'success');
+      } else {
+        log(`Task ended: ${result.summary}`, 'warn');
+      }
     } else {
-      log('Approval mode active. Inspect steps above and click "Approve" or "Run All".', 'info');
-      setBusyState(false);
+      // Fallback deterministic / approval mode
+      const { sanitizedText, detected } = globalVault.anonymize(rawPrompt);
+      updateVaultUI();
+
+      if (detected.length > 0) {
+        log(`🔒 [PRIVACY FIREWALL] Sanitized ${detected.length} PII items:`, 'privacy');
+        detected.forEach(d => log(`   ├─ ${d.type}: ${d.maskedSample} ➔ ${d.token}`, 'privacy'));
+      }
+
+      if (!pageContext) await scanCurrentPage();
+
+      const settings = await chrome.storage.local.get(['engineMode', 'geminiApiKey', 'geminiModel']);
+      const config = await getEffectiveConfig();
+      const effectiveKey = (settings.geminiApiKey || config.apiKey || '').trim();
+      const effectiveEngine = settings.engineMode || (effectiveKey ? 'gemini' : 'deterministic');
+      let effectiveModel = settings.geminiModel || config.model || 'gemini-3.8-flash';
+      if (effectiveModel === 'gemini-2.0-flash' || effectiveModel === 'gemini-2.0-flash-lite') {
+        effectiveModel = 'gemini-3.8-flash';
+      }
+
+      const options = {
+        useGemini: effectiveEngine === 'gemini',
+        apiKey: effectiveKey,
+        model: effectiveModel
+      };
+
+      const isGeminiActive = options.useGemini && options.apiKey;
+      log(`Generating action plan with ${isGeminiActive ? `Google Gemini (${options.model})` : 'Smart Offline Planner'}...`, 'info');
+
+      const result = await AgentPlanner.generatePlan(rawPrompt, sanitizedText, pageContext || { elements: [] }, options);
+      currentPlan = result.plan;
+      currentStepIndex = 0;
+
+      if (planSection) {
+        renderPlan();
+        planSection.style.display = 'block';
+      }
+      log(`Plan ready: ${currentPlan.length} step(s) generated. Click Approve to run.`, 'info');
     }
   } catch (err) {
-    log(`Planning failed: ${err.message}`, 'error');
+    log(`[ERROR] ${err.message}`, 'error');
+  } finally {
     setBusyState(false);
+    activeAgent = null;
+  }
+}
+
+// Handler for LangGraph StateGraph streaming events
+function handleAgentEvent(event) {
+  switch (event.type) {
+    case 'TASK_START':
+      log(`🚀 [LANGGRAPH START] Objective: "${event.task}"`, 'info');
+      updateVaultUI();
+      break;
+
+    case 'PII_MASKED':
+      log(`🔒 [ISRO VAULT] Masked ${event.detected.length} PII item(s) on-device before reasoning:`, 'privacy');
+      event.detected.forEach(d => {
+        log(`   ├─ ${d.type}: ${d.maskedSample} ➔ ${d.token}`, 'privacy');
+      });
+      updateVaultUI();
+      break;
+
+    case 'STATE_CHANGE':
+      if (streamStepBadge) streamStepBadge.textContent = `Step ${event.step}/15`;
+      [nodePerceive, nodeReason, nodeAct, nodeObserve].forEach(el => el && el.classList.remove('active'));
+      if (event.state === 'PERCEIVING' && nodePerceive) nodePerceive.classList.add('active');
+      if (event.state === 'REASONING' && nodeReason) nodeReason.classList.add('active');
+      if (event.state === 'ACTING' && nodeAct) nodeAct.classList.add('active');
+      log(event.label, 'info');
+      break;
+
+    case 'THOUGHT':
+      if (thoughtBubble && thoughtText) {
+        thoughtBubble.style.display = 'block';
+        thoughtText.textContent = event.thought;
+      }
+      log(`🧠 Thought: ${event.thought}`, 'info');
+      break;
+
+    case 'TOOL_CALL':
+      if (actionBubble && actionText) {
+        actionBubble.style.display = 'block';
+        const formattedArgs = JSON.stringify(event.args, null, 1).replace(/\n\s*/g, ' ');
+        actionText.textContent = `${event.toolName}(${formattedArgs})`;
+      }
+      log(`⚡ Executing ${event.toolName}...`, 'info');
+      break;
+
+    case 'OBSERVATION':
+      [nodePerceive, nodeReason, nodeAct, nodeObserve].forEach(el => el && el.classList.remove('active'));
+      if (nodeObserve) nodeObserve.classList.add('active');
+      if (obsBubble && obsText) {
+        obsBubble.style.display = 'block';
+        obsText.textContent = event.observation;
+      }
+      log(`📋 Observation: ${event.observation}`, 'success');
+      break;
+
+    case 'TASK_COMPLETE':
+      if (completionBanner && completionDesc) {
+        completionBanner.style.display = 'flex';
+        completionDesc.textContent = event.summary;
+      }
+      log(`🏆 Completed: ${event.summary}`, 'success');
+      break;
+
+    case 'BUDGET_REACHED':
+      log(`🛑 ${event.summary}`, 'warn');
+      break;
+
+    case 'CANCELLED':
+      log(`🛑 ${event.message}`, 'warn');
+      break;
   }
 }
 
@@ -485,6 +637,7 @@ function updateVaultUI() {
 function setBusyState(busy) {
   isExecuting = busy;
   runBtn.disabled = busy;
+  if (stopBtn) stopBtn.style.display = busy ? 'inline-flex' : 'none';
   if (busy) {
     statusPill.className = 'status-indicator busy';
     statusText.textContent = 'ACTING';

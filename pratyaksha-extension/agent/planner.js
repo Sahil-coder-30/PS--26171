@@ -288,7 +288,10 @@ export class AgentPlanner {
   static async planWithGemini(prompt, context, options) {
     const apiKey = (options.apiKey || '').trim();
     if (!apiKey) throw new Error('API key is empty');
-    const model = options.model || 'gemini-2.0-flash';
+    let model = options.model || 'gemini-3.8-flash';
+    if (model === 'gemini-2.0-flash' || model === 'gemini-2.0-flash-lite') {
+      model = 'gemini-3.8-flash';
+    }
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     // Compact element catalog (top 35 interactive elements)
