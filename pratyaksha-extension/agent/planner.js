@@ -28,6 +28,8 @@ export class AgentPlanner {
         }
       } catch (err) {
         console.warn('[PRATYAKSHA Planner] Gemini planning failed, falling back to deterministic planner:', err);
+        const fallbackPlan = this.planDeterministic(prompt, pageContext);
+        return { plan: fallbackPlan, source: 'DETERMINISTIC', error: err.message };
       }
     }
 
@@ -284,11 +286,12 @@ export class AgentPlanner {
    * @returns {Promise<Array<Object>>}
    */
   static async planWithGemini(prompt, context, options) {
-    const apiKey = options.apiKey;
+    const apiKey = (options.apiKey || '').trim();
+    if (!apiKey) throw new Error('API key is empty');
     const model = options.model || 'gemini-2.0-flash';
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    // Compact element catalog (top 30 interactive elements)
+    // Compact element catalog (top 35 interactive elements)
     const elementsSample = (context.elements || []).slice(0, 35).map(el => ({
       tag: el.tag,
       type: el.type,
@@ -333,15 +336,37 @@ Do not wrap in markdown quotes if possible.`;
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API returned status ${response.status}`);
+      let errorMsg = `HTTP ${response.status}`;
+      try {
+        const errJson = await response.json();
+        if (errJson?.error?.message) {
+          errorMsg = errJson.error.message;
+        }
+      } catch (e) {
+        const errText = await response.text().catch(() => '');
+        if (errText) errorMsg += `: ${errText.slice(0, 150)}`;
+      }
+      throw new Error(`Gemini API error: ${errorMsg}`);
     }
 
     const data = await response.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!rawText) throw new Error('Empty response from Gemini API');
 
-    const cleanJson = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+    let cleanJson = rawText.trim();
+    const codeBlockMatch = cleanJson.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (codeBlockMatch) {
+      cleanJson = codeBlockMatch[1].trim();
+    } else {
+      const firstBracket = cleanJson.indexOf('[');
+      const lastBracket = cleanJson.lastIndexOf(']');
+      if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+        cleanJson = cleanJson.substring(firstBracket, lastBracket + 1);
+      }
+    }
+
     const parsedPlan = JSON.parse(cleanJson);
-    return Array.isArray(parsedPlan) ? parsedPlan : [];
+    const result = Array.isArray(parsedPlan) ? parsedPlan : (parsedPlan.plan || parsedPlan.steps || parsedPlan.actions || []);
+    return result;
   }
 }

@@ -5,6 +5,7 @@
 
 import { globalVault } from '../vault/pii-vault.js';
 import { AgentPlanner } from '../agent/planner.js';
+import { getEffectiveConfig } from '../env.js';
 
 let activeTab = null;
 let pageContext = null;
@@ -129,6 +130,7 @@ function log(msg, type = 'info') {
 
 // Load user settings
 async function loadSettings() {
+  const config = await getEffectiveConfig();
   const data = await chrome.storage.local.get([
     'engineMode', 'geminiApiKey', 'geminiModel', 'privacyMode', 'approvalMode'
   ]);
@@ -137,15 +139,29 @@ async function loadSettings() {
     approvalToggle.checked = data.approvalMode;
   }
 
-  const engine = data.engineMode || 'deterministic';
+  // Active key resolved from storage or env configuration
+  const activeKey = data.geminiApiKey || config.apiKey || '';
+  const defaultEngine = activeKey ? 'gemini' : 'deterministic';
+  const engine = data.engineMode || defaultEngine;
+
   engineSelect.value = engine;
   engineName.textContent = engine === 'gemini' ? 'Gemini VLM Cloud' : 'Smart Offline Planner';
   geminiKeyGroup.style.display = engine === 'gemini' ? 'flex' : 'none';
   geminiModelGroup.style.display = engine === 'gemini' ? 'flex' : 'none';
 
-  if (data.geminiApiKey) geminiApiKey.value = data.geminiApiKey;
-  if (data.geminiModel) geminiModel.value = data.geminiModel;
+  geminiApiKey.value = activeKey;
+  geminiModel.value = data.geminiModel || config.model || 'gemini-2.0-flash';
   if (data.privacyMode) privacyLevel.value = data.privacyMode;
+
+  // If key was discovered from env and not yet persisted to storage, save it
+  if (!data.geminiApiKey && activeKey) {
+    await chrome.storage.local.set({
+      geminiApiKey: activeKey,
+      engineMode: engine,
+      geminiModel: geminiModel.value
+    });
+    log('🔑 Auto-detected Gemini API key from environment config.', 'info');
+  }
 }
 
 // Save user settings
@@ -258,19 +274,30 @@ async function handleRunPrompt() {
     }
 
     const settings = await chrome.storage.local.get(['engineMode', 'geminiApiKey', 'geminiModel']);
+    const config = await getEffectiveConfig();
+    const effectiveKey = (settings.geminiApiKey || config.apiKey || '').trim();
+    const effectiveEngine = settings.engineMode || (effectiveKey ? 'gemini' : 'deterministic');
+    const effectiveModel = settings.geminiModel || config.model || 'gemini-2.0-flash';
+
     const options = {
-      useGemini: settings.engineMode === 'gemini',
-      apiKey: settings.geminiApiKey,
-      model: settings.geminiModel
+      useGemini: effectiveEngine === 'gemini',
+      apiKey: effectiveKey,
+      model: effectiveModel
     };
 
-    log(`Generating action sequence using ${options.useGemini && options.apiKey ? 'Gemini 2.0 Flash' : 'Smart Offline Planner'}...`, 'info');
+    const isGeminiActive = options.useGemini && options.apiKey;
+    log(`Generating action sequence using ${isGeminiActive ? `Google Gemini (${options.model})` : 'Smart Offline Planner'}...`, 'info');
 
     const result = await AgentPlanner.generatePlan(rawPrompt, sanitizedText, pageContext || { elements: [] }, options);
     currentPlan = result.plan;
     currentStepIndex = 0;
 
     planSourceTag.textContent = result.source;
+    if (result.source === 'GEMINI') {
+      log(`✨ Generated reasoning plan via Gemini Cloud (${options.model})!`, 'success');
+    } else if (isGeminiActive && result.error) {
+      log(`⚠️ Gemini Notice: ${result.error}. Switched seamlessly to Smart Offline Planner.`, 'warn');
+    }
     log(`Plan generated: ${currentPlan.length} step(s) planned.`, 'success');
 
     // ── STEP 3: RENDER & EXECUTE ──

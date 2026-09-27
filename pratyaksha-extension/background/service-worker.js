@@ -3,18 +3,24 @@
  * ISRO Problem Statement 26171
  */
 
+import { getEffectiveConfig } from '../env.js';
+
 // Configure Side Panel to open when the toolbar action is clicked
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error('[PRATYAKSHA SW] Error enabling sidePanel:', error));
 
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('[PRATYAKSHA] Extension installed/updated:', details.reason);
+  const config = await getEffectiveConfig();
 
-  chrome.storage.local.get(['privacyMode', 'engineMode', 'approvalMode'], (res) => {
+  chrome.storage.local.get(['privacyMode', 'engineMode', 'approvalMode', 'geminiApiKey', 'geminiModel'], (res) => {
+    const activeKey = res.geminiApiKey || config.apiKey || '';
     chrome.storage.local.set({
       privacyMode: res.privacyMode || 'strict',
-      engineMode: res.engineMode || 'deterministic',
+      engineMode: res.engineMode || (activeKey ? 'gemini' : 'deterministic'),
+      geminiApiKey: activeKey,
+      geminiModel: res.geminiModel || config.model || 'gemini-2.0-flash',
       approvalMode: res.approvalMode !== undefined ? res.approvalMode : true
     });
   });
