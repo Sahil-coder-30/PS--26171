@@ -200,62 +200,54 @@ window.PratyakshaDOM = (function() {
    * 4. Semantic text hint fallback
    */
   function findElement(target) {
-    if (!target && target !== 0) return null;
+    // Accept a live DOM element directly
+    if (target instanceof Element) return target;
+    if (target === null || target === undefined) return null;
 
-    // Handle object payload
-    if (typeof target === 'object' && target !== null) {
-      if (target.target_id !== undefined && target.target_id !== null) {
-        const byId = findElement(target.target_id);
+    // Handle object payload { target_id, selector, semantic_hint }
+    if (typeof target === 'object') {
+      if (target.target_id != null) {
+        const byId = findElement(Number(target.target_id));
         if (byId) return byId;
       }
       if (target.selector) {
         const bySel = findElement(target.selector);
         if (bySel) return bySel;
       }
-      if (target.semantic_hint) {
-        return findSemanticElement(target.semantic_hint);
-      }
+      if (target.semantic_hint) return findSemanticElement(target.semantic_hint);
       return null;
     }
 
-    // 1. Check numeric ID from elementIdMap or DOM attribute
+    // 1. Numeric ID — try live DOM attribute first (most reliable post-rescan),
+    //    then fall back to the cached Map entry if the node is still attached.
     const numId = Number(target);
-    if (!isNaN(numId) && String(target).trim() !== '') {
-      if (elementIdMap.has(numId)) {
-        const cached = elementIdMap.get(numId);
-        if (document.body.contains(cached)) return cached;
-      }
-      const tagged = document.querySelector(`[data-pratyaksha-id="${numId}"]`);
-      if (tagged) return tagged;
+    if (Number.isFinite(numId) && numId > 0) {
+      const live = document.querySelector(`[data-pratyaksha-id="${numId}"]`);
+      if (live) return live;
+      const cached = elementIdMap.get(numId);
+      if (cached && document.body.contains(cached)) return cached;
     }
 
     const strTarget = String(target).trim();
+    if (!strTarget) return null;
 
-    // 2. Exact data-pratyaksha-id attribute lookup
-    if (/^\[data-pratyaksha-id=/.test(strTarget)) {
-      try {
-        const el = document.querySelector(strTarget);
-        if (el) return el;
-      } catch (e) {}
-    }
-
-    // 3. Try standard CSS selector
+    // 2. CSS selector
     try {
       const el = document.querySelector(strTarget);
       if (el) return el;
-    } catch (e) {
-      // Invalid selector string; proceed to semantic matcher
-    }
+    } catch (_) {}
 
-    // 4. Try semantic hint matcher
+    // 3. Semantic fuzzy matcher
     const semanticEl = findSemanticElement(strTarget);
     if (semanticEl) return semanticEl;
 
-    // 5. Clean text match over interactive elements
+    // 4. Plain text / aria match over interactive elements
     const clean = strTarget.replace(/[#\.\>\[\]]/g, ' ').trim().toLowerCase();
-    const candidates = Array.from(document.querySelectorAll('button, a, input, textarea, [role="button"], [role="textbox"]'));
-    return candidates.find(c => {
-      const txt = (c.innerText || c.value || '').toLowerCase();
+    const pool = Array.from(document.querySelectorAll(
+      'button, a, input, textarea, [role="button"], [role="textbox"], [role="link"]'
+    ));
+    return pool.find(c => {
+      const txt  = (c.innerText || c.value || '').toLowerCase();
       const aria = (c.getAttribute('aria-label') || '').toLowerCase();
       return (txt && txt.includes(clean)) || (aria && aria.includes(clean));
     }) || null;
@@ -410,14 +402,14 @@ window.PratyakshaDOM = (function() {
     },
 
     /**
-     * Scroll element into center of viewport
+     * Scroll element into center of viewport.
+     * Accepts a DOM element directly, a numeric ID, or a string selector.
      */
     async scrollIntoView(target) {
-      const el = findElement(target);
+      const el = (target instanceof Element) ? target : findElement(target);
       if (!el) return false;
-
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 180));
       return true;
     },
 
@@ -456,59 +448,70 @@ window.PratyakshaDOM = (function() {
     },
 
     /**
-     * Dispatches typing with framework compatibility:
-     * Handles <input>, <textarea>, and rich-text <div contenteditable="true">
+     * Types text into any input: <input>, <textarea>, contenteditable, combobox.
+     * Options: { clearFirst: bool } — clears field before typing.
      */
-    async type(target, value) {
-      const el = findElement(target);
+    async type(target, value, options = {}) {
+      const el = (target instanceof Element) ? target : findElement(target);
       if (!el) {
-        throw new Error(`Target input not found for typing: ${typeof target === 'object' ? JSON.stringify(target) : target}`);
+        throw new Error(`Input not found for typing: "${target}". Re-scan DOM and try again.`);
       }
 
       await this.scrollIntoView(el);
       const tagId = el.getAttribute('data-pratyaksha-id') || '';
-      this.highlight(el, `🔒 PRATYAKSHA: REHYDRATING & TYPING [${tagId ? `#${tagId}` : 'INPUT'}]`);
-      await new Promise(r => setTimeout(r, 180));
+      this.highlight(el, `⌨️ PRATYAKSHA: TYPING [${tagId ? `#${tagId}` : 'INPUT'}]`);
+      await new Promise(r => setTimeout(r, 150));
 
       el.focus();
 
-      const isContentEditable = el.getAttribute('contenteditable') === 'true' ||
-                                el.getAttribute('contenteditable') === '' ||
-                                el.isContentEditable;
+      const isContentEditable = el.isContentEditable ||
+                                el.getAttribute('contenteditable') === 'true' ||
+                                el.getAttribute('contenteditable') === '';
 
       if (isContentEditable) {
-        // Rich text editor (Gmail compose body, Slack, Notion)
+        // Rich text editors: Gmail body, Slack, Notion, Quill, etc.
+        if (options.clearFirst || value) {
+          try {
+            // Select all and delete
+            const sel = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            sel.removeAllRanges();
+            sel.addRange(range);
+            document.execCommand('delete', false);
+          } catch (_) { el.innerText = ''; }
+        }
         try {
-          const selection = window.getSelection();
-          const range = document.createRange();
-          range.selectNodeContents(el);
-          selection.removeAllRanges();
-          selection.addRange(range);
-          document.execCommand('delete');
           document.execCommand('insertText', false, value);
-        } catch (e) {
+        } catch (_) {
           el.innerText = value;
         }
-
         el.dispatchEvent(new InputEvent('input', { data: value, inputType: 'insertText', bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
-      } else {
-        // Native <input> or <textarea>
-        const isTextArea = el instanceof HTMLTextAreaElement;
-        const proto = isTextArea ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
-        const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
 
-        if (nativeSetter) {
-          nativeSetter.call(el, value);
-        } else {
-          el.value = value;
+      } else {
+        // Native <input> / <textarea>
+        if (options.clearFirst) {
+          try {
+            // Use native setter to trigger React/Vue/Angular state
+            const isTA = el instanceof HTMLTextAreaElement;
+            const proto = isTA ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+            const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+            (setter ? setter.call(el, '') : (el.value = ''));
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+          } catch (_) { el.value = ''; }
         }
+
+        const isTA = el instanceof HTMLTextAreaElement;
+        const proto = isTA ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+        const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+        if (setter) setter.call(el, value); else el.value = value;
 
         el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: value }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
       }
 
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 180));
       return true;
     },
 
@@ -562,14 +565,190 @@ window.PratyakshaDOM = (function() {
       const h1s = Array.from(document.querySelectorAll('h1')).map(h => h.innerText.trim()).filter(Boolean);
       const h2s = Array.from(document.querySelectorAll('h2')).slice(0, 5).map(h => h.innerText.trim()).filter(Boolean);
       const metaDesc = document.querySelector('meta[name="description"]')?.content || '';
+      return { title, metaDesc, mainHeadings: h1s, subHeadings: h2s, url: window.location.href };
+    },
+
+    /**
+     * Extracts visible page text
+     */
+    extractPageText(maxChars = 3000) {
+      try {
+        const clone = document.body.cloneNode(true);
+        clone.querySelectorAll('script,style,noscript,svg,iframe,nav,footer').forEach(e => e.remove());
+        const raw = (clone.innerText || clone.textContent || '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+        return raw.slice(0, maxChars);
+      } catch (_) { return ''; }
+    },
+
+    /**
+     * read_page: smart extraction — prefers semantic main content regions,
+     * falls back to full body. Optionally scoped to a CSS selector.
+     */
+    readPage(selector = null, maxChars = 4000) {
+      try {
+        let root;
+        if (selector) {
+          root = document.querySelector(selector);
+          if (!root) return `No element matched selector "${selector}".`;
+        } else {
+          // Prefer semantic content regions
+          root = document.querySelector('main') ||
+                 document.querySelector('article') ||
+                 document.querySelector('[role="main"]') ||
+                 document.querySelector('#main') ||
+                 document.querySelector('#content') ||
+                 document.body;
+        }
+        const clone = root.cloneNode(true);
+        clone.querySelectorAll('script,style,noscript,svg,iframe,nav,footer,header').forEach(e => e.remove());
+        const raw = (clone.innerText || clone.textContent || '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+        return raw.slice(0, maxChars);
+      } catch (e) { return `readPage error: ${e.message}`; }
+    },
+
+    /**
+     * get_page_metadata: returns structured metadata about the current page
+     */
+    getPageMetadata() {
+      const get = (sel, attr = 'content') => document.querySelector(sel)?.[attr] || '';
+      const getLinkHref = (rel) => document.querySelector(`link[rel="${rel}"]`)?.href || '';
 
       return {
-        title,
-        metaDesc,
-        mainHeadings: h1s,
-        subHeadings: h2s,
-        url: window.location.href
+        title:         document.title,
+        url:           window.location.href,
+        canonical:     getLinkHref('canonical'),
+        description:   get('meta[name="description"]') || get('meta[property="og:description"]'),
+        og_title:      get('meta[property="og:title"]'),
+        og_image:      get('meta[property="og:image"]'),
+        author:        get('meta[name="author"]'),
+        published:     get('meta[property="article:published_time"]') || get('meta[name="date"]'),
+        lang:          document.documentElement.lang || '',
+        charset:       document.characterSet || ''
+      };
+    },
+
+    /**
+     * get_links: returns links as [{text, url}] with optional keyword filter
+     */
+    getLinks(filter = '', max = 25) {
+      const kw = filter.toLowerCase();
+      const anchors = Array.from(document.querySelectorAll('a[href]'));
+      const results = [];
+
+      for (const a of anchors) {
+        if (results.length >= max) break;
+        const text = (a.innerText || a.textContent || '').trim().replace(/\s+/g, ' ');
+        const url  = a.href || '';
+        if (!url || url.startsWith('javascript:') || url.startsWith('#')) continue;
+        if (kw && !text.toLowerCase().includes(kw) && !url.toLowerCase().includes(kw)) continue;
+        results.push({ text: text.slice(0, 80), url });
+      }
+
+      return results;
+    },
+
+    /**
+     * find_on_page: searches page text, scrolls to first match, returns context
+     */
+    findOnPage(searchText, caseSensitive = false) {
+      if (!searchText) return { found: false, count: 0, context: '' };
+
+      const bodyText = document.body.innerText || '';
+      const needle   = caseSensitive ? searchText : searchText.toLowerCase();
+      const haystack = caseSensitive ? bodyText   : bodyText.toLowerCase();
+
+      let count   = 0;
+      let idx     = 0;
+      let firstIdx = -1;
+      while ((idx = haystack.indexOf(needle, idx)) !== -1) {
+        count++;
+        if (firstIdx === -1) firstIdx = idx;
+        idx += needle.length;
+      }
+
+      if (count === 0) return { found: false, count: 0, context: '' };
+
+      // Extract context around first match
+      const start   = Math.max(0, firstIdx - 80);
+      const end     = Math.min(bodyText.length, firstIdx + needle.length + 80);
+      const context = bodyText.slice(start, end).replace(/\s+/g, ' ');
+
+      // Use browser find API to highlight and scroll
+      try { window.find(searchText, caseSensitive, false, true, false, true, false); } catch (_) {}
+
+      return { found: true, count, context };
+    },
+
+    /**
+     * extract_structured: extract fields from DOM into a JSON object.
+     * fields: [{ name, selector, attribute? }]
+     */
+    extractStructured(fields = [], rootSelector = null) {
+      const root = rootSelector ? (document.querySelector(rootSelector) || document) : document;
+      const result = {};
+
+      for (const field of fields) {
+        if (!field.name || !field.selector) continue;
+        try {
+          const els = Array.from(root.querySelectorAll(field.selector));
+          if (els.length === 0) {
+            result[field.name] = null;
+          } else if (els.length === 1) {
+            const el  = els[0];
+            const val = field.attribute
+              ? el.getAttribute(field.attribute)
+              : (el.innerText || el.textContent || el.value || '').trim();
+            result[field.name] = val;
+          } else {
+            // Multiple matches → return array
+            result[field.name] = els.map(el =>
+              field.attribute
+                ? el.getAttribute(field.attribute)
+                : (el.innerText || el.textContent || el.value || '').trim()
+            );
+          }
+        } catch (e) {
+          result[field.name] = `ERROR: ${e.message}`;
+        }
+      }
+
+      return result;
+    },
+
+    /**
+     * inspect_dom: returns accessibility/attribute info about a single element
+     */
+    inspectElement(target) {
+      const el = (target instanceof Element) ? target : findElement(target);
+      if (!el) return null;
+
+      const children = Array.from(el.children).slice(0, 5).map(c => ({
+        tag:  c.tagName.toLowerCase(),
+        text: (c.innerText || '').trim().slice(0, 40),
+        role: c.getAttribute('role') || ''
+      }));
+
+      const attrs = {};
+      for (const { name, value } of el.attributes) {
+        if (!['style', 'class'].includes(name)) attrs[name] = value;
+      }
+
+      return {
+        tag:         el.tagName.toLowerCase(),
+        id:          el.id || null,
+        role:        el.getAttribute('role') || el.getAttribute('aria-role') || null,
+        aria_label:  el.getAttribute('aria-label') || null,
+        placeholder: el.getAttribute('placeholder') || null,
+        text:        (el.innerText || el.textContent || '').trim().slice(0, 200),
+        value:       el.value || null,
+        href:        el.href || null,
+        type:        el.type || null,
+        disabled:    el.disabled || false,
+        pratyaksha_id: el.getAttribute('data-pratyaksha-id') || null,
+        attributes:  attrs,
+        children
       };
     }
   };
 })();
+

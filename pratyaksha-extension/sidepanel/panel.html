@@ -10,31 +10,71 @@
   <link rel="stylesheet" href="panel.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Top Brand Header -->
+  <div class="chat-app-root">
+
+    <!-- Top Navigation Header -->
     <header class="app-header">
-      <div class="brand-group">
-        <div class="isro-logo-mark">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polygon points="12 6 16 14 8 14 12 6"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <div class="brand-title">
-            <span class="hindi-text">प्रत्यक्ष</span> PRATYAKSHA
+      <div class="header-left">
+        <div class="brand-badge">
+          <div class="brand-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="12 6 16 14 8 14 12 6"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            </svg>
           </div>
-          <div class="brand-subtitle">ISRO PS-26171 · Privacy Shield Agent</div>
+          <div class="brand-meta">
+            <div class="brand-name">PRATYAKSHA</div>
+            <div class="engine-badge" id="engineIndicator">
+              <span class="engine-dot"></span>
+              <span id="engineName">Mistral Agent</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="header-actions">
-        <div class="status-indicator online" id="statusPill" title="Ready to execute">
-          <span class="status-dot"></span>
-          <span class="status-text">READY</span>
+
+      <div class="header-right">
+        <!-- Target Tab Context Pill -->
+        <div class="header-pill target-pill" id="targetPill" title="Target Webpage">
+          <span class="pill-icon">🌐</span>
+          <span class="pill-text" id="tabDomain">Detecting...</span>
+          <span class="elements-badge" id="elementsCount">0</span>
+          <button id="rescanBtn" class="pill-action-btn" title="Re-scan DOM">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+          </button>
         </div>
-        <button id="settingsBtn" class="icon-button" title="Configure Gemini API & Preferences">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+        <!-- Privacy Shield Pill -->
+        <button class="header-pill shield-pill" id="vaultBtn" title="Inspect Privacy Shield Token Vault">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span id="metricBlocked">0</span>
+          <span class="shield-label">Shielded</span>
+        </button>
+
+        <!-- Debug Trace Drawer Toggle -->
+        <button id="toggleTraceBtn" class="header-icon-btn" title="Toggle Real-Time Terminal Trace">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"/>
+            <line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+        </button>
+
+        <!-- New Chat / Clear Session -->
+        <button id="newChatBtn" class="header-icon-btn" title="New Session / Clear Chat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+
+        <!-- Settings Modal Toggle -->
+        <button id="settingsBtn" class="header-icon-btn" title="Settings & API Keys">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
@@ -42,185 +82,167 @@
       </div>
     </header>
 
-    <!-- Active Tab Context Card -->
-    <section class="card context-card">
-      <div class="context-header">
-        <span class="context-label">TARGET WEBPAGE</span>
-        <button id="rescanBtn" class="btn-text-action" title="Re-scan DOM interactive elements">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="23 4 23 10 17 10"/>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-          </svg>
-          Re-scan DOM
-        </button>
-      </div>
-      <div class="tab-info-row">
-        <span class="tab-badge" id="tabDomain">Loading...</span>
-        <span class="elements-badge" id="elementsCount">0 interactive elements</span>
-      </div>
-      <div class="tab-title-text" id="tabTitle">Detecting active Chrome tab...</div>
-    </section>
+    <!-- Main Scrollable Chat Stream Container -->
+    <main class="chat-thread-container" id="chatContainer">
+      <div class="chat-messages" id="chatMessages">
 
-    <!-- Privacy Shield Status HUD -->
-    <section class="card privacy-shield-card">
-      <div class="privacy-header">
-        <div class="shield-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>ISRO PRIVACY FIREWALL</span>
-        </div>
-        <span class="vault-tag">100% Client-Side</span>
-      </div>
-      <div class="metrics-grid">
-        <div class="metric-item">
-          <div class="metric-val" id="metricBlocked">0</div>
-          <div class="metric-desc">PII Shielded</div>
-        </div>
-        <div class="metric-item">
-          <div class="metric-val" id="metricTokens">0</div>
-          <div class="metric-desc">Active Tokens</div>
-        </div>
-        <div class="metric-item">
-          <div class="metric-val" id="metricEngine">WASM/Rule</div>
-          <div class="metric-desc">Verhoeff / PAN</div>
-        </div>
-      </div>
-      <div class="vault-drawer-toggle" id="toggleVaultDetails">
-        <span>Inspect Session Token Vault</span>
-        <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </div>
-      <div class="vault-drawer-content" id="vaultDrawer">
-        <div class="vault-empty" id="vaultEmpty">No sensitive data detected in current session. Enter Aadhaar, PAN, phone or email to test live anonymization.</div>
-        <table class="vault-table" id="vaultTable" style="display:none;">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Pseudonym</th>
-              <th>Sample</th>
-            </tr>
-          </thead>
-          <tbody id="vaultTableBody"></tbody>
-        </table>
-      </div>
-    </section>
+        <!-- Welcome State (Displayed when no messages) -->
+        <div class="welcome-card" id="welcomeScreen">
+          <div class="welcome-logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="12 6 16 14 8 14 12 6"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <h2 class="welcome-title">प्रत्यक्ष PRATYAKSHA</h2>
+          <p class="welcome-subtitle">Autonomous Browser Agent · Privacy Shield Edition (ISRO PS-26171)</p>
+          
+          <div class="target-card-compact">
+            <div class="target-card-header">
+              <span class="target-card-dot"></span>
+              <span class="target-card-label">Active Webpage</span>
+            </div>
+            <div class="tab-title-text" id="tabTitle">Detecting active Chrome tab...</div>
+          </div>
 
-    <!-- Operational Controls -->
-    <div class="controls-row">
-      <div class="toggle-control" title="Fully Autonomous Execution: runs multi-turn tool calling without requiring step approval">
-        <label class="switch">
-          <input type="checkbox" id="autonomousToggle" checked>
-          <span class="slider round"></span>
-        </label>
-        <span class="toggle-label">⚡ Autonomous Loop</span>
-      </div>
-      <div class="engine-badge" id="engineIndicator">
-        <span class="engine-dot"></span>
-        <span id="engineName">LangGraph StateGraph</span>
-      </div>
-    </div>
-
-    <!-- Agent Prompt Console -->
-    <section class="prompt-section">
-      <div class="prompt-box-wrapper">
-        <textarea 
-          id="promptInput" 
-          rows="3" 
-          placeholder="e.g. 'Search for Chandrayaan-3 and click the first result', 'Fill contact form with email test@isro.gov.in and phone 9876543210'..."
-        ></textarea>
-        <div class="prompt-footer">
-          <span class="keyboard-tip">Press Ctrl+Enter or Cmd+Enter to run</span>
-          <div class="action-buttons-group">
-            <button id="stopBtn" class="btn-danger" style="display:none;" title="Emergency Stop">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
-              </svg>
-              <span>Stop Agent</span>
+          <div class="suggestion-chips-grid">
+            <button class="chip" data-prompt="Search for Chandrayaan-3 mission achievements on Google and open official ISRO link">
+              <span class="chip-icon">🔍</span>
+              <span class="chip-text">Search Chandrayaan-3</span>
             </button>
-            <button id="runBtn" class="btn-primary">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polygon points="5 3 19 12 5 21 5 3"/>
-              </svg>
-              <span>Run Agent</span>
+            <button class="chip" data-prompt="Fill form with email test@isro.gov.in, phone 9876543210 and Aadhaar 200000000009">
+              <span class="chip-icon">🛡️</span>
+              <span class="chip-text">Test PII Shield</span>
             </button>
+            <button class="chip" data-prompt="Find and click the search bar or main search input on this page">
+              <span class="chip-icon">🎯</span>
+              <span class="chip-text">Click Search Field</span>
+            </button>
+            <button class="chip" data-prompt="Scroll down to inspect more content on this page">
+              <span class="chip-icon">📜</span>
+              <span class="chip-text">Scroll Page</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Bottom Input Dock -->
+    <footer class="chat-input-dock" id="inputDock">
+      <div class="dock-top-bar">
+        <div class="dock-left-controls">
+          <label class="switch-sm" title="Fully Autonomous LangGraph Execution Loop">
+            <input type="checkbox" id="autonomousToggle" checked>
+            <span class="slider-sm round"></span>
+            <span class="switch-text">⚡ Auto</span>
+          </label>
+        </div>
+        <div class="dock-right-status">
+          <div class="status-indicator online" id="statusPill" title="Ready to execute">
+            <span class="status-dot"></span>
+            <span class="status-text">READY</span>
           </div>
         </div>
       </div>
 
-      <!-- Quick Action Suggestion Chips -->
-      <div class="chips-container">
-        <button class="chip" data-prompt="Search Google for ISRO Chandrayaan-3 latest discoveries and open Wikipedia">🔍 Search & Explore</button>
-        <button class="chip" data-prompt="Fill form with email test@isro.gov.in and phone 9876543210 and Aadhaar 200000000009">📝 Fill Form (PII Test)</button>
-        <button class="chip" data-prompt="Click on the main search bar or search input">🎯 Find & Click</button>
-        <button class="chip" data-prompt="Scroll down to inspect more content">📜 Scroll Page</button>
-      </div>
-    </section>
-
-    <!-- Autonomous Execution Live Stream HUD -->
-    <section class="card agent-stream-card" id="agentStreamSection" style="display:none;">
-      <div class="stream-header">
-        <div class="stream-title-wrap">
-          <span class="live-dot pulse"></span>
-          <span class="stream-title">AUTONOMOUS STATEGRAPH STREAM</span>
-        </div>
-        <div class="stream-meta">
-          <span class="stream-step-badge" id="streamStepBadge">Step 1/15</span>
-        </div>
-      </div>
-
-      <!-- State Indicator Pill -->
-      <div class="graph-state-hud" id="graphStateHud">
-        <span class="state-node active" id="nodePerceive">👁️ PERCEIVE</span>
-        <span class="state-arrow">➔</span>
-        <span class="state-node" id="nodeReason">🧠 REASON</span>
-        <span class="state-arrow">➔</span>
-        <span class="state-node" id="nodeAct">⚡ ACT</span>
-        <span class="state-arrow">➔</span>
-        <span class="state-node" id="nodeObserve">📋 OBSERVE</span>
-      </div>
-
-      <!-- Active Thought Bubble -->
-      <div class="stream-bubble thought-bubble" id="thoughtBubble" style="display:none;">
-        <div class="bubble-tag">🧠 AGENT REASONING</div>
-        <div class="bubble-content" id="thoughtText">Analyzing DOM...</div>
-      </div>
-
-      <!-- Active Action Card -->
-      <div class="stream-bubble action-bubble" id="actionBubble" style="display:none;">
-        <div class="bubble-tag">⚡ TOOL DISPATCHED</div>
-        <div class="bubble-content" id="actionText">navigate_to(...)</div>
-      </div>
-
-      <!-- Observation Bubble -->
-      <div class="stream-bubble obs-bubble" id="obsBubble" style="display:none;">
-        <div class="bubble-tag">👁️ DOM OBSERVATION</div>
-        <div class="bubble-content" id="obsText">Page loaded. Found 28 actionable elements.</div>
-      </div>
-
-      <!-- Completion Banner -->
-      <div class="stream-completion-banner" id="completionBanner" style="display:none;">
-        <div class="completion-icon">🎉</div>
-        <div class="completion-text">
-          <div class="completion-title">Task Complete!</div>
-          <div class="completion-desc" id="completionDesc"></div>
+      <div class="dock-input-row">
+        <textarea
+          id="promptInput"
+          rows="1"
+          placeholder="Ask PRATYAKSHA to browse, search, or interact on this page..."
+          autocomplete="off"
+        ></textarea>
+        
+        <div class="dock-actions">
+          <button id="stopBtn" class="btn-stop-dock" style="display:none;" title="Stop Execution">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="5" y="5" width="14" height="14" rx="2"/>
+            </svg>
+            <span>Stop</span>
+          </button>
+          <button id="runBtn" class="btn-send-dock" title="Run Agent (Enter)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <line x1="12" y1="19" x2="12" y2="5"/>
+              <polyline points="5 12 12 5 19 12"/>
+            </svg>
+          </button>
         </div>
       </div>
-    </section>
 
-    <!-- Live Execution Trace & Audit Log -->
-    <section class="card audit-card">
-      <div class="audit-header">
-        <span class="audit-title">REAL-TIME AGENT TRACE</span>
-        <button id="clearLogsBtn" class="btn-text-sm">Clear</button>
+      <div class="dock-hint-row">
+        <span>Enter to run · Shift+Enter for new line · 100% on-device PII masking</span>
+      </div>
+    </footer>
+
+    <!-- Token Vault Slide-Over Drawer -->
+    <div class="drawer-backdrop" id="vaultDrawerBackdrop" style="display:none;"></div>
+    <aside class="slide-drawer" id="vaultDrawer" style="display:none;">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <h3>Privacy Shield Token Vault</h3>
+        </div>
+        <button id="closeVaultDrawerBtn" class="drawer-close-btn">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-val" id="metricBlockedDrawer">0</div>
+            <div class="metric-desc">PII Shielded</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val" id="metricTokens">0</div>
+            <div class="metric-desc">Active Tokens</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val" id="metricEngine">WASM</div>
+            <div class="metric-desc">Verhoeff/PAN</div>
+          </div>
+        </div>
+
+        <div class="vault-table-wrapper">
+          <div class="vault-empty" id="vaultEmpty">
+            No sensitive citizen data in active session.<br>
+            Aadhaar, PAN, phone numbers, and emails are anonymized on-device before reasoning.
+          </div>
+          <table class="vault-table" id="vaultTable" style="display:none;">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Pseudonym</th>
+                <th>Sample</th>
+              </tr>
+            </thead>
+            <tbody id="vaultTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Collapsible Bottom Terminal Trace Drawer -->
+    <div class="trace-drawer" id="traceDrawer" style="display:none;">
+      <div class="trace-header">
+        <div class="trace-title">
+          <span class="trace-dot"></span>
+          <span>REAL-TIME AGENT TRACE</span>
+        </div>
+        <div class="trace-actions">
+          <button id="clearLogsBtn" class="btn-text-sm">Clear</button>
+          <button id="closeTraceBtn" class="btn-text-sm">&times;</button>
+        </div>
       </div>
       <div class="terminal-log" id="terminalLogs">
         <div class="log-line info">[INIT] PRATYAKSHA Agent v1.0.0 initialized.</div>
         <div class="log-line info">[VAULT] Local Privacy Firewall listening.</div>
       </div>
-    </section>
-  </div>
+    </div>
+
+  </div><!-- /chat-app-root -->
 
   <!-- Settings Modal -->
   <div class="modal-overlay" id="settingsModal" style="display:none;">
@@ -233,32 +255,28 @@
         <div class="form-group">
           <label for="engineSelect">Planner Engine / AI Provider</label>
           <select id="engineSelect" class="form-input">
-            <option value="mistral" selected>Mistral AI (mistral-large-latest)</option>
+            <option value="mistral" selected>Mistral AI (codestral / mistral-large)</option>
             <option value="gemini">Google Gemini Cloud VLM</option>
             <option value="deterministic">Deterministic Semantic Planner (Offline / 0-Config)</option>
           </select>
-          <small class="form-hint">Mistral Large provides state-of-the-art autonomous reasoning with native tool calling.</small>
+          <small class="form-hint">Mistral Codestral provides high-speed autonomous reasoning with native tool calling.</small>
         </div>
-
         <div class="form-group" id="mistralGroup">
           <label for="mistralApiKey">Mistral API Key</label>
           <input type="password" id="mistralApiKey" class="form-input" placeholder="ElIVQ...">
           <small class="form-hint">Stored securely in local browser storage only.</small>
-
           <label for="mistralModel" style="margin-top: 8px;">Mistral Model</label>
           <select id="mistralModel" class="form-input">
-            <option value="codestral-latest" selected>codestral-latest (Mistral Agent Flagship)</option>
+            <option value="codestral-latest" selected>codestral-latest (Recommended / Flagship)</option>
             <option value="mistral-large-latest">mistral-large-latest (Enterprise Tier)</option>
             <option value="mistral-small-latest">mistral-small-latest (Fast)</option>
           </select>
         </div>
-
         <div class="form-group" id="geminiKeyGroup" style="display:none;">
           <label for="geminiApiKey">Google Gemini API Key</label>
           <input type="password" id="geminiApiKey" class="form-input" placeholder="AIzaSy...">
           <small class="form-hint">Key is saved securely in local browser storage only.</small>
         </div>
-
         <div class="form-group" id="geminiModelGroup" style="display:none;">
           <label for="geminiModel">Gemini Model</label>
           <select id="geminiModel" class="form-input">
@@ -268,7 +286,6 @@
             <option value="gemini-1.5-pro">gemini-1.5-pro (High Reasoning)</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="privacyLevel">Privacy Firewall Strictness</label>
           <select id="privacyLevel" class="form-input">
